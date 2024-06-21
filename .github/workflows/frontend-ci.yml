@@ -15,13 +15,16 @@ on:
 jobs:
     build-and-test:
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./frontend
         steps:
             - uses: actions/checkout@v4
+
             - name: Setup Node.js environment
               uses: actions/setup-node@v4.0.2
               with:
                   node-version: 20.9.0
-            - run: cd frontend
             - run: npm ci
             - run: npm run lint
             - run: npm test
