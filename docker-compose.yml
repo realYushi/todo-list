@@ -19,7 +19,7 @@ services:
             - "${FRONTEND_PORT}:3000"
         depends_on:
             - backend
-        image: realyushi/todo-list:backend-latest
+        image: realyushi/todo-list:frontend-latest
 
     db:
         image: mcr.microsoft.com/mssql/server:2022-latest
