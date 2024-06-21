@@ -1,0 +1,43 @@
+name: Backend CI/CD
+
+on:
+    push:
+        branches:
+            - main
+            - development
+            - hotfix/**
+            - feature/**
+    pull_request:
+        branches:
+            - main
+            - development
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v
+
+            - name: Setup .NET Core
+              uses: actions/setup-dotnet@v4.0.0
+              with:
+                  dotnet-version: "8.0.x"
+
+            - name: Restore dependencies
+              run: dotnet restore backend/*.csproj
+
+            - name: Create .env file
+              run: |
+                  echo BACKEND_PORT=${{ secrets.BACKEND_PORT }} >> .env
+                  echo FRONTEND_PORT=${{ secrets.FRONTEND_PORT }} >> .env
+                  echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+                  echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+                  echo DB_USER=${{ secrets.DB_USER }} >> .env
+                  echo SA_PASSWORD=${{ secrets.SA_PASSWORD }} >> .env
+                  echo ACCEPT_EULA=${{ secrets.ACCEPT_EULA }} >> .env
+
+            - name: Build
+              run: dotnet build backend/*.csproj --no-restore -c Release
+
+            - name: Run tests
+              run: dotnet test backend/*.csproj --no-build --verbosity normal

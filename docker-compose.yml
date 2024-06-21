@@ -9,6 +9,7 @@ services:
             ConnectionStrings__Default: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};"
         depends_on:
             - db
+        image: realyushi/todo-list:backend-latest
 
     frontend:
         build:
@@ -18,9 +19,10 @@ services:
             - "${FRONTEND_PORT}:3000"
         depends_on:
             - backend
+        image: realyushi/todo-list:backend-latest
 
     db:
-        image: mcr.microsoft.com/mssql/server:2019-latest
+        image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
             SA_PASSWORD: "${SA_PASSWORD}"
             ACCEPT_EULA: "${ACCEPT_EULA}"
