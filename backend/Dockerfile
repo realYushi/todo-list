@@ -1,14 +1,26 @@
-# Builder stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+# Base stage: Set up the common base for building the project
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
 WORKDIR /app
 COPY ./src/*.csproj ./
 RUN dotnet restore
-COPY ./src/ ./
+
+# Build stage: Compiles the application
+FROM base AS build
+COPY ./src ./
 RUN dotnet publish -c Release -o out
 
-# Runner stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Test stage: Runs tests 
+FROM build AS test
+# Assuming test projects are copied similarly and use `dotnet test`
+# Note: Adjust paths and project files as necessary
+COPY ./tests ./
+RUN dotnet test
+
+# Production stage: Prepares the runtime environment
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS production
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build /app/out .
 EXPOSE 5000
+RUN adduser --disabled-password --gecos "" myuser
+USER myuser
 ENTRYPOINT ["dotnet", "ToDoListAPI.dll"]

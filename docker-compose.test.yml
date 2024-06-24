@@ -1,0 +1,16 @@
+services:
+    backend:
+        build:
+            target: test
+        environment:
+            DOTNET_ENVIRONMENT: Testing
+            ConnectionStrings__Default: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};"
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+            target: test
+        volumes:
+            - ./frontend:/app/frontend
+            - /app/frontend/node_modules
+        command: npm run test-cucumber && npm run test-jestds

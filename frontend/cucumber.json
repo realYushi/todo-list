@@ -1,0 +1,8 @@
+{
+    "default": {
+        "import": ["./tests/feature-tests/step-definitions/**/*.js"],
+        "paths": ["./tests/feature-tests/features/**/*.feature"],
+        "format": ["progress", "json:./tests/reports/cucumber-report.json"],
+        "logLevel": "debug"
+    }
+}

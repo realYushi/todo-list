@@ -1,25 +1,26 @@
-.PHONY: build-backend build-frontend run-backend run-frontend stop-backend stop-frontend test-backend test-frontend
+# Makefile for managing the lifecycle of the project using Docker Compose
 
-build-backend:
-    docker-compose build backend
+.PHONY: build test deploy clean
 
-build-frontend:
-    docker-compose build frontend
+# Default build environment
+BUILD_ENV ?= dev
 
-run-backend:
-    docker-compose up -d backend
+# Build the project
+build:
+	docker-compose -f docker-compose.yml   build
 
-run-frontend:
-    docker-compose up -d frontend
+# Run tests
+test:
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
 
-stop-backend:
-    docker-compose stop backend
 
-stop-frontend:
-    docker-compose stop frontend
+# Deploy the project (use BUILD_ENV=prod for production)
+deploy:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-test-backend:
-    docker-compose run --rm backend dotnet test
+# Clean up resources
+clean:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 
-test-frontend:
-    docker-compose run --rm frontend npm test
+# Pull the latest images

@@ -1,0 +1,15 @@
+services:
+    backend:
+        build:
+            target: production
+        ports:
+            - "80:5000" # Assume production uses port 80 externally
+        environment:
+            DOTNET_ENVIRONMENT: Production
+    frontend:
+        build:
+            target: production
+        environment:
+            NODE_ENV: Production
+    db:
+        ports: []
