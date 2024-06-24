@@ -1,61 +1,112 @@
 using TechTalk.SpecFlow;
-using NUnit.Framework;
-[Binding]
-public class TodoListManagementSteps
+
+namespace ToDoListTests
 {
-    private readonly ScenarioContext _scenarioContext;
-
-    public TodoListManagementSteps(ScenarioContext scenarioContext)
+    [Binding]
+    public class ToDoListSteps
     {
-        _scenarioContext = scenarioContext;
-    }
+        private readonly ScenarioContext _scenarioContext;
 
-    [Given(@"I am on the task creation page")]
-    public void GivenIAmOnTheTaskCreationPage()
-    {
-        // Implement navigation to the task creation page
-        _scenarioContext.Pending();
-    }
+        public ToDoListSteps(ScenarioContext scenarioContext)
+        {
+            _scenarioContext = scenarioContext;
+        }
 
-    [When(@"I click the '(.*)' button without entering any text")]
-    public void WhenIClickTheButtonWithoutEnteringAnyText(string buttonName)
-    {
-        // Implement the action of clicking the button without entering text
-        _scenarioContext.Pending();
-    }
+        [Given(@"I navigate to the task creation page")]
+        public void GivenINavigateToTheTaskCreationPage()
+        {
+            _scenarioContext.Pending();
+        }
 
-    [Then(@"I should see a warning message ""(.*)""")]
-    public void ThenIShouldSeeAWarningMessage(string warningMessage)
-    {
-        // Implement assertion for warning message
-        _scenarioContext.Pending();
-    }
+        [Given(@"I am at the task creation screen")]
+        public void GivenIAmAtTheTaskCreationScreen()
+        {
+            _scenarioContext.Pending();
+        }
 
-    [Given(@"""(.*)"" is an existing task in my list")]
-    public void GivenIsAnExistingTaskInMyList(string task)
-    {
-        // Implement adding a task to the list as a setup step
-        _scenarioContext.Pending();
-    }
+        [Given(@"""(.*)"" is listed for editing")]
+        [Given(@"""(.*)"" is marked for deletion")]
+        [Given(@"""(.*)"" is listed for deletion")]
+        [Given(@"""(.*)"" exists in my task list")]
+        public void GivenTaskIsListedForAction(string task)
+        {
+            _scenarioContext.Pending();
+        }
 
-    [When(@"I click on the '(.*)' button next to ""(.*)""")]
-    public void WhenIClickOnTheButtonNextTo(string button, string task)
-    {
-        // Implement the action of clicking a button next to a specific task
-        _scenarioContext.Pending();
-    }
+        [When(@"I type ""(.*)"" into the task input field")]
+        public void WhenITypeIntoTheTaskInputField(string task)
+        {
+            _scenarioContext.Pending();
+        }
 
-    [When(@"I change the task text to ""(.*)""")]
-    public void WhenIChangeTheTaskTextTo(string newText)
-    {
-        // Implement the action of changing the task text
-        _scenarioContext.Pending();
-    }
+        [When(@"I press the ""(.*)"" button")]
+        public void WhenIPressTheButton(string button)
+        {
+            _scenarioContext.Pending();
+        }
 
-    [Then(@"the task should still read ""(.*)"" in my tasks list")]
-    public void ThenTheTaskShouldStillReadInMyTasksList(string expectedTaskText)
-    {
-        // Implement assertion that the task text remains unchanged
-        _scenarioContext.Pending();
+        [When(@"I attempt to add an empty task")]
+        public void WhenIAttemptToAddAnEmptyTask()
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"I edit ""(.*)"" to say ""(.*)""")]
+        public void WhenIEditToSay(string originalTask, string updatedTask)
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"I cancel editing the task")]
+        public void WhenICancelEditingTheTask()
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"I confirm deletion of ""(.*)""")]
+        [When(@"I initiate deletion of ""(.*)""")]
+        public void WhenIConfirmDeletionOf(string task)
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"a confirmation dialog asking ""(.*)"" appears")]
+        public void WhenAConfirmationDialogAskingAppears(string message)
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"I confirm the deletion")]
+        public void WhenIConfirmTheDeletion()
+        {
+            _scenarioContext.Pending();
+        }
+
+        [When(@"I view the main task list page")]
+        public void WhenIViewTheMainTaskListPage()
+        {
+            _scenarioContext.Pending();
+        }
+
+        [Then(@"the task ""(.*)"" should appear in the list")]
+        [Then(@"the task ""(.*)"" should be removed from my tasks list")]
+        [Then(@"the task ""(.*)"" remains unchanged in the list")]
+        [Then(@"the task should now list as ""(.*)""")]
+        public void ThenTheTaskShouldBeUpdatedAccordingly(string task)
+        {
+            _scenarioContext.Pending();
+        }
+
+        [Then(@"a warning ""(.*)"" should display")]
+        public void ThenAWarningShouldDisplay(string message)
+        {
+            _scenarioContext.Pending();
+        }
+
+        [Then(@"I should see ""(.*)"", ""(.*)"", and ""(.*)"" in the list")]
+        public void ThenIShouldSeeTasksInTheList(string task1, string task2, string task3)
+        {
+            _scenarioContext.Pending();
+        }
     }
 }

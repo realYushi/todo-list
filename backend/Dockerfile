@@ -13,7 +13,6 @@ RUN dotnet publish -c Release -o out
 FROM build AS test
 # Assuming test projects are copied similarly and use `dotnet test`
 # Note: Adjust paths and project files as necessary
-COPY ./tests ./
 RUN dotnet test
 
 # Production stage: Prepares the runtime environment

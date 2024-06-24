@@ -92,16 +92,16 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             {
                 this.ScenarioStart();
 #line 5
-    testRunner.Given("I am on the task creation page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("I navigate to the task creation page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 6
-    testRunner.When("I enter \"Buy groceries\" into the task input field", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I type \"Buy groceries\" into the task input field", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 7
-    testRunner.And("I click the \'Add Task\' button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I press the \"Add Task\" button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 8
-    testRunner.Then("\"Buy groceries\" should be added to my tasks list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the task \"Buy groceries\" should appear in the list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -125,13 +125,13 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             {
                 this.ScenarioStart();
 #line 11
-    testRunner.Given("I am on the task creation page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("I am at the task creation screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
-    testRunner.When("I click the \'Add Task\' button without entering any text", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I attempt to add an empty task", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 13
-    testRunner.Then("I should see a warning message \"Task cannot be empty\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("a warning \"Task cannot be empty\" should display", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -155,19 +155,13 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             {
                 this.ScenarioStart();
 #line 16
-    testRunner.Given("\"Buy groceries\" is an existing task in my list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("\"Buy groceries\" exists in my task list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 17
-    testRunner.When("I click on the \'Edit\' button next to \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I edit \"Buy groceries\" to say \"Buy groceries and bread\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 18
-    testRunner.And("I change the task text to \"Buy groceries and bread\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 19
-    testRunner.And("I click the \'Save\' button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 20
-    testRunner.Then("the task should update to \"Buy groceries and bread\" in my tasks list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the task should now list as \"Buy groceries and bread\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -180,7 +174,7 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cancel editing a task", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 22
+#line 20
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -190,20 +184,14 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             else
             {
                 this.ScenarioStart();
+#line 21
+    testRunner.Given("\"Buy groceries\" is listed for editing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 22
+    testRunner.When("I cancel editing the task", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
 #line 23
-    testRunner.Given("\"Buy groceries\" is an existing task in my list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 24
-    testRunner.When("I click on the \'Edit\' button next to \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 25
-    testRunner.And("I change the task text to \"Buy groceries and bread\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 26
-    testRunner.And("I click the \'Cancel\' button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 27
-    testRunner.Then("the task should still read \"Buy groceries\" in my tasks list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the task \"Buy groceries\" remains unchanged in the list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -216,7 +204,7 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Successfully delete a task", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 29
+#line 25
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -226,13 +214,13 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             else
             {
                 this.ScenarioStart();
-#line 30
-    testRunner.Given("\"Buy groceries\" is an existing task in my list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 26
+    testRunner.Given("\"Buy groceries\" is listed for deletion", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 31
-    testRunner.When("I click the \'Delete\' button next to \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 27
+    testRunner.When("I confirm deletion of \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 32
+#line 28
     testRunner.Then("\"Buy groceries\" should be removed from my tasks list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -246,7 +234,7 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Confirm before deleting a task", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 34
+#line 30
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -256,19 +244,19 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             else
             {
                 this.ScenarioStart();
+#line 31
+    testRunner.Given("\"Buy groceries\" is marked for deletion", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 32
+    testRunner.When("I initiate deletion of \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 33
+    testRunner.And("a confirmation dialog asking \"Are you sure?\" appears", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 34
+    testRunner.And("I confirm the deletion", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 35
-    testRunner.Given("\"Buy groceries\" is an existing task in my list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 36
-    testRunner.When("I click the \'Delete\' button next to \"Buy groceries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 37
-    testRunner.And("a confirmation dialog appears asking \"Are you sure?\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 38
-    testRunner.And("I click \'Yes\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 39
     testRunner.Then("\"Buy groceries\" should be removed from my tasks list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -282,7 +270,7 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View tasks in a list", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 41
+#line 37
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -292,14 +280,14 @@ namespace ToDoListAPI.Tests.Feature_Tests.Features
             else
             {
                 this.ScenarioStart();
-#line 42
+#line 38
     testRunner.Given("I have added the tasks \"Buy groceries\", \"Call mom\", and \"Pay bills\" to my list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 43
-    testRunner.When("I navigate to the main page of the To-Do List app", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 39
+    testRunner.When("I view the main task list page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 44
-    testRunner.Then("I should see all tasks listed as \"Buy groceries\", \"Call mom\", and \"Pay bills\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 40
+    testRunner.Then("I should see \"Buy groceries\", \"Call mom\", and \"Pay bills\" in the list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
