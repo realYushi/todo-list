@@ -1,0 +1,377 @@
+openapi: "3.0.2"
+
+info:
+    title: my todo-list API
+    version: "1.0"
+paths:
+    /tasks:
+        get:
+            summary: Retrieve all tasks
+            description: Returns a list of all tasks in the system.
+            parameters:
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                  description: Filter tasks by status
+                - in: query
+                  name: due_date
+                  schema:
+                      type: string
+                      format: date
+                  description: Filter tasks by due date
+            responses:
+                "200":
+                    description: A JSON array of tasks
+        post:
+            summary: Create a new task
+            description: Creates a new task with the data provided in the request body.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                title:
+                                    type: string
+                                    description: The title of the task
+                                description:
+                                    type: string
+                                    description: A detailed description of the task
+                                due_date:
+                                    type: string
+                                    format: date
+                                    description: The due date for the task
+                                status:
+                                    type: string
+                                    enum: [pending, in_progress, completed]
+                                    description: The current status of the task
+            responses:
+                "201":
+                    description: The task was successfully created
+    /tasks/{id}:
+        get:
+            summary: Retrieve a specific task by ID
+            description: Returns the details of a specific task identified by its ID.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task to retrieve
+            responses:
+                "200":
+                    description: Details of a specific task by json
+        put:
+            summary: Update an existing task
+            description: Updates the details of an existing task identified by its ID with the data provided in the request body.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task to update
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                title:
+                                    type: string
+                                    description: The new title of the task
+                                description:
+                                    type: string
+                                    description: A new detailed description of the task
+                                due_date:
+                                    type: string
+                                    format: date
+                                    description: The new due date for the task
+                                status:
+                                    type: string
+                                    enum: [pending, in_progress, completed]
+                                    description: The new status of the task
+            responses:
+                "200":
+                    description: The task was successfully updated
+        delete:
+            summary: Delete a task
+            description: Deletes a specific task identified by its ID from the system.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task to delete
+            responses:
+                "204":
+                    description: The task was successfully deleted
+    /lists:
+        get:
+            summary: Retrieve all lists
+            description: Returns a list of all task lists in the system.
+            parameters:
+                - in: query
+                  name: name
+                  schema:
+                      type: string
+                  description: Filter lists by name
+            responses:
+                "200":
+                    description: A JSON array of task lists
+        post:
+            summary: Create a new list
+            description: Creates a new task list with the data provided in the request body.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    description: The name of the task list
+                                description:
+                                    type: string
+                                    description: A detailed description of the task list
+            responses:
+                "201":
+                    description: The task list was successfully created
+    /lists/{id}:
+        get:
+            summary: Retrieve a specific list by ID
+            description: Returns the details of a specific task list identified by its ID.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task list to retrieve
+            responses:
+                "200":
+                    description: Details of a specific task list
+        put:
+            summary: Update an existing list
+            description: Updates the details of an existing task list identified by its ID with the data provided in the request body.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task list to update
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    description: The new name of the task list
+                                description:
+                                    type: string
+                                    description: A new detailed description of the task list
+            responses:
+                "200":
+                    description: The task list was successfully updated
+        delete:
+            summary: Delete a list
+            description: Deletes a specific task list identified by its ID from the system.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the task list to delete
+            responses:
+                "204":
+                    description: The task list was successfully deleted
+    /users:
+        get:
+            summary: Retrieve all users
+            description: Returns a list of all users in the system.
+            parameters:
+                - in: query
+                  name: role
+                  schema:
+                      type: string
+                  description: Filter users by role
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                  description: Filter users by status
+            responses:
+                "200":
+                    description: A JSON array of users
+        post:
+            summary: Create a new user
+            description: Creates a new user with the data provided in the request body.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                    description: The username of the user
+                                email:
+                                    type: string
+                                    format: email
+                                    description: The email address of the user
+                                role:
+                                    type: string
+                                    description: The role of the user (e.g., admin, user)
+                                status:
+                                    type: string
+                                    description: The status of the user (e.g., active, inactive)
+            responses:
+                "201":
+                    description: The user was successfully created
+    /users/{id}:
+        get:
+            summary: Retrieve a specific user by ID
+            description: Returns the details of a specific user identified by their ID.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the user to retrieve
+            responses:
+                "200":
+                    description: Details of a specific user
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    username:
+                                        type: string
+                                    email:
+                                        type: string
+                                    role:
+                                        type: string
+                                    status:
+                                        type: string
+        put:
+            summary: Update an existing user
+            description: Updates the details of an existing user identified by their ID with the data provided in the request body.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the user to update
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                email:
+                                    type: string
+                                    format: email
+                                role:
+                                    type: string
+                                status:
+                                    type: string
+            responses:
+                "200":
+                    description: The user was successfully updated
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    username:
+                                        type: string
+                                    email:
+                                        type: string
+                                    role:
+                                        type: string
+                                    status:
+                                        type: string
+        delete:
+            summary: Delete a user
+            description: Deletes a specific user identified by their ID from the system.
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the user to delete
+            responses:
+                "204":
+                    description: The user was successfully deleted
+components:
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+    schemas:
+        Task:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                description:
+                    type: string
+                due_date:
+                    type: string
+                    format: date
+                status:
+                    type: string
+                    enum: [pending, in_progress, completed]
+                list_id:
+                    type: string
+        List:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                user_id:
+                    type: string
+        User:
+            type: object
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                email:
+                    type: string
+                    format: email
+                role:
+                    type: string
+                status:
+                    type: string
