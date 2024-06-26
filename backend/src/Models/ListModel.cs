@@ -1,8 +1,8 @@
 using System;
 
-namespace TodoListAPI.Models
+namespace ToDoListAPI.Models
 {
-    public class List
+    public class ListModel
     {
     public string Id { get; set; }
     public string Name { get; set; }

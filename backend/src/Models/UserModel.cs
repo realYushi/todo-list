@@ -1,8 +1,8 @@
 using System;
 
-namespace TodoListAPI.Models
+namespace ToDoListAPI.Models
 {
-    public class User
+    public class UserModel
     {
         public string Id { get; set; }
         public string Username { get; set; }
