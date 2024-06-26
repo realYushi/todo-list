@@ -1,6 +1,8 @@
 services:
     backend:
         build:
+            context: ./backend
+            dockerfile: Dockerfile
             target: test
         environment:
             DOTNET_ENVIRONMENT: Testing

@@ -11,8 +11,8 @@ build:
 
 # Run tests
 test:
-	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
+	docker-compose -f docker-compose.yml -f docker-compose.test_.yml build
+	docker-compose -f docker-compose.yml -f docker-compose.test_.yml up --abort-on-container-exit
 
 
 # Deploy the project (use BUILD_ENV=prod for production)
