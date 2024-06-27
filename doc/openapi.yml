@@ -7,25 +7,33 @@ paths:
     /tasks:
         get:
             summary: Retrieve all tasks
-            description: Returns a list of all tasks in the system.
+            description: Fetches a list of tasks, optionally filtered by status or due date.
             parameters:
                 - in: query
                   name: status
                   schema:
                       type: string
-                  description: Filter tasks by status
+                  description: Filter tasks based on their status (e.g., pending, in_progress, completed).
+                  example: completed
                 - in: query
                   name: due_date
                   schema:
                       type: string
                       format: date
-                  description: Filter tasks by due date
+                  description: Filter tasks based on their due date in YYYY-MM-DD format.
+                  example: 2024-06-27
             responses:
                 "200":
-                    description: A JSON array of tasks
+                    description: A JSON array of task objects.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Task"
         post:
             summary: Create a new task
-            description: Creates a new task with the data provided in the request body.
+            description: Creates a task with the given details.
             requestBody:
                 required: true
                 content:
@@ -35,45 +43,60 @@ paths:
                             properties:
                                 title:
                                     type: string
-                                    description: The title of the task
+                                    description: Title of the task.
+                                    example: Buy groceries
                                 description:
                                     type: string
-                                    description: A detailed description of the task
+                                    description: Detailed description of the task.
+                                    example: Purchase milk, eggs, and bread from the local supermarket.
                                 due_date:
                                     type: string
                                     format: date
-                                    description: The due date for the task
+                                    description: Due date of the task in YYYY-MM-DD format.
+                                    example: 2024-07-01
                                 status:
                                     type: string
                                     enum: [pending, in_progress, completed]
-                                    description: The current status of the task
+                                    description: Current status of the task.
+                                    example: pending
             responses:
                 "201":
-                    description: The task was successfully created
+                    description: Task created successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
     /tasks/{id}:
         get:
-            summary: Retrieve a specific task by ID
-            description: Returns the details of a specific task identified by its ID.
+            summary: Retrieve a specific task
+            description: Fetches details of a specific task by its ID.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task to retrieve
+                      description: The unique identifier of the task.
+                      example: "12345"
             responses:
                 "200":
-                    description: Details of a specific task by json
+                    description: Returns detailed information about the task.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+
         put:
             summary: Update an existing task
-            description: Updates the details of an existing task identified by its ID with the data provided in the request body.
+            description: Updates the specified task with the provided details.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task to update
+                  description: The unique identifier of the task to update.
+                  example: "12345"
             requestBody:
                 required: true
                 content:
@@ -83,50 +106,69 @@ paths:
                             properties:
                                 title:
                                     type: string
-                                    description: The new title of the task
+                                    description: Updated title of the task.
+                                    example: Update groceries list
                                 description:
                                     type: string
-                                    description: A new detailed description of the task
+                                    description: Updated detailed description of the task.
+                                    example: Purchase vegetables and fruits.
                                 due_date:
                                     type: string
                                     format: date
-                                    description: The new due date for the task
+                                    description: Updated due date for the task.
+                                    example: 2024-08-01
                                 status:
                                     type: string
                                     enum: [pending, in_progress, completed]
-                                    description: The new status of the task
+                                    description: Updated status of the task.
+                                    example: in_progress
             responses:
                 "200":
-                    description: The task was successfully updated
+                    description: Task updated successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+
         delete:
             summary: Delete a task
-            description: Deletes a specific task identified by its ID from the system.
+            description: Permanently deletes a task identified by its ID from the system.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task to delete
+                  description: The unique identifier of the task to delete.
+                  example: "12345"
             responses:
                 "204":
-                    description: The task was successfully deleted
+                    description: Task deleted successfully. No content is returned.
+
     /lists:
         get:
             summary: Retrieve all lists
-            description: Returns a list of all task lists in the system.
+            description: Fetches a list of all task lists, optionally filtered by list name.
             parameters:
                 - in: query
                   name: name
                   schema:
                       type: string
-                  description: Filter lists by name
+                  description: Filter lists by their name.
+                  example: "Grocery List"
             responses:
                 "200":
-                    description: A JSON array of task lists
+                    description: An array of task lists.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/List"
+
         post:
             summary: Create a new list
-            description: Creates a new task list with the data provided in the request body.
+            description: Creates a new task list with specified name and description.
             requestBody:
                 required: true
                 content:
@@ -136,37 +178,49 @@ paths:
                             properties:
                                 name:
                                     type: string
-                                    description: The name of the task list
+                                    description: Name of the task list.
+                                    example: "Work Tasks"
                                 description:
                                     type: string
-                                    description: A detailed description of the task list
+                                    description: Detailed description of the task list.
+                                    example: "List for tracking all work-related tasks."
             responses:
                 "201":
-                    description: The task list was successfully created
+                    description: Task list created successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/List"
+
     /lists/{id}:
         get:
             summary: Retrieve a specific list by ID
-            description: Returns the details of a specific task list identified by its ID.
+            description: Returns detailed information about a specific task list, identified by its ID.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task list to retrieve
+                  description: Unique identifier of the task list.
             responses:
                 "200":
-                    description: Details of a specific task list
+                    description: Details of a specific task list.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/List"
+
         put:
             summary: Update an existing list
-            description: Updates the details of an existing task list identified by its ID with the data provided in the request body.
+            description: Updates details of a specific task list using the provided data.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task list to update
+                  description: Unique identifier of the task list to update.
             requestBody:
                 required: true
                 content:
@@ -176,156 +230,115 @@ paths:
                             properties:
                                 name:
                                     type: string
-                                    description: The new name of the task list
+                                    description: New name of the task list.
+                                    example: "Personal Errands"
                                 description:
                                     type: string
-                                    description: A new detailed description of the task list
+                                    description: New detailed description of the task list.
+                                    example: "List for personal tasks and errands."
             responses:
                 "200":
-                    description: The task list was successfully updated
+                    description: Task list updated successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/List"
+
         delete:
             summary: Delete a list
-            description: Deletes a specific task list identified by its ID from the system.
+            description: Permanently deletes a specific task list, identified by its ID.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the task list to delete
+                  description: Unique identifier of the task list to delete.
             responses:
                 "204":
-                    description: The task list was successfully deleted
+                    description: Task list deleted successfully.
     /users:
         get:
             summary: Retrieve all users
-            description: Returns a list of all users in the system.
+            description: Fetches a list of all users in the system, optionally filtered by role or status.
             parameters:
                 - in: query
                   name: role
                   schema:
                       type: string
-                  description: Filter users by role
+                  description: Filter users by their role (e.g., admin, user).
+                  example: admin
                 - in: query
                   name: status
                   schema:
                       type: string
-                  description: Filter users by status
+                  description: Filter users by their current status (e.g., active, inactive).
+                  example: active
             responses:
                 "200":
-                    description: A JSON array of users
-        post:
-            summary: Create a new user
-            description: Creates a new user with the data provided in the request body.
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                username:
-                                    type: string
-                                    description: The username of the user
-                                email:
-                                    type: string
-                                    format: email
-                                    description: The email address of the user
-                                role:
-                                    type: string
-                                    description: The role of the user (e.g., admin, user)
-                                status:
-                                    type: string
-                                    description: The status of the user (e.g., active, inactive)
-            responses:
-                "201":
-                    description: The user was successfully created
+                    description: A JSON array of user objects.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/User"
     /users/{id}:
         get:
             summary: Retrieve a specific user by ID
-            description: Returns the details of a specific user identified by their ID.
+            description: Returns the details of a specific user identified by their unique ID.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the user to retrieve
+                  description: Unique identifier of the user to retrieve.
             responses:
                 "200":
-                    description: Details of a specific user
+                    description: Detailed information about the user.
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: string
-                                    username:
-                                        type: string
-                                    email:
-                                        type: string
-                                    role:
-                                        type: string
-                                    status:
-                                        type: string
+                                $ref: "#/components/schemas/User"
+
         put:
             summary: Update an existing user
-            description: Updates the details of an existing user identified by their ID with the data provided in the request body.
+            description: Updates the details of an existing user identified by their unique ID.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the user to update
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            type: object
-                            properties:
-                                username:
-                                    type: string
-                                email:
-                                    type: string
-                                    format: email
-                                role:
-                                    type: string
-                                status:
-                                    type: string
+                            $ref: "#/components/schemas/User"
             responses:
                 "200":
-                    description: The user was successfully updated
+                    description: User updated successfully.
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: string
-                                    username:
-                                        type: string
-                                    email:
-                                        type: string
-                                    role:
-                                        type: string
-                                    status:
-                                        type: string
+                                $ref: "#/components/schemas/User"
+
         delete:
             summary: Delete a user
-            description: Deletes a specific user identified by their ID from the system.
+            description: Deletes a specific user identified by their unique ID from the system.
             parameters:
                 - in: path
                   name: id
                   required: true
                   schema:
                       type: string
-                  description: The ID of the user to delete
+                  description: Unique identifier of the user to delete.
             responses:
                 "204":
-                    description: The user was successfully deleted
+                    description: User deleted successfully.
+
 components:
     securitySchemes:
         BearerAuth:
@@ -335,43 +348,63 @@ components:
     schemas:
         Task:
             type: object
+            description: Represents a task with all necessary details including ID, title, description, due date, status, and associated list ID.
             properties:
                 id:
                     type: string
+                    description: A unique identifier for the task.
                 title:
                     type: string
+                    description: The title of the task.
                 description:
                     type: string
+                    description: A detailed description of the task.
                 due_date:
                     type: string
                     format: date
+                    description: The due date of the task in YYYY-MM-DD format.
                 status:
                     type: string
                     enum: [pending, in_progress, completed]
+                    description: The current status of the task.
                 list_id:
                     type: string
+                    description: The identifier of the list to which this task belongs.
+
         List:
             type: object
+            description: Represents a collection of tasks grouped under a single list, identified by a unique ID, name, and associated user ID.
             properties:
                 id:
                     type: string
+                    description: A unique identifier for the list.
                 name:
                     type: string
+                    description: The name of the list.
                 description:
                     type: string
+                    description: A detailed description of what the list is about.
                 user_id:
                     type: string
+                    description: The identifier of the user who owns or manages the list.
+
         User:
             type: object
+            description: Represents a user in the system, including details such as username, email, role, and status.
             properties:
                 id:
                     type: string
+                    description: A unique identifier for the user.
                 username:
                     type: string
+                    description: The user's login name or handle.
                 email:
                     type: string
                     format: email
+                    description: The user's email address.
                 role:
                     type: string
+                    description: The role assigned to the user, which could affect their permissions in the system.
                 status:
                     type: string
+                    description: Indicates whether the user's account is active or inactive.
