@@ -17,6 +17,6 @@ namespace ToDoListAPI.Models
 
         public UserModel User { get; set; }
 
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskModel> Tasks { get; set; }
     }
 }

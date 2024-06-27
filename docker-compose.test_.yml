@@ -6,7 +6,7 @@ services:
             target: test
         environment:
             DOTNET_ENVIRONMENT: Testing
-            ConnectionStrings__Default: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};"
+            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};"
     frontend:
         build:
             context: ./frontend

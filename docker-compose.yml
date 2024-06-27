@@ -7,7 +7,7 @@ services:
         ports:
             - "${BACKEND_PORT}:5000"
         environment:
-            ConnectionStrings__Default: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};"
+            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};Encrypt=true; TrustServerCertificate=true;"
         depends_on:
             - db
 
