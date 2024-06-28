@@ -10,8 +10,8 @@ using ToDoListAPI.Data;
 
 namespace ToDoListAPI.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ToDoListContext))]
+    partial class ToDoListContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -22,18 +22,20 @@ namespace ToDoListAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ToDoListAPI.Models.ListModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.List", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -43,69 +45,79 @@ namespace ToDoListAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Lists");
+                    b.ToTable("Lists", (string)null);
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.TaskModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.Task", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("DueDate")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ListId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DueDate");
+
                     b.HasIndex("ListId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.UserModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.ListModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.List", b =>
                 {
-                    b.HasOne("ToDoListAPI.Models.UserModel", "User")
+                    b.HasOne("ToDoListAPI.Models.User", "User")
                         .WithMany("Lists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -114,9 +126,9 @@ namespace ToDoListAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.TaskModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.Task", b =>
                 {
-                    b.HasOne("ToDoListAPI.Models.ListModel", "List")
+                    b.HasOne("ToDoListAPI.Models.List", "List")
                         .WithMany("Tasks")
                         .HasForeignKey("ListId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -125,12 +137,12 @@ namespace ToDoListAPI.Migrations
                     b.Navigation("List");
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.ListModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.List", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("ToDoListAPI.Models.UserModel", b =>
+            modelBuilder.Entity("ToDoListAPI.Models.User", b =>
                 {
                     b.Navigation("Lists");
                 });
