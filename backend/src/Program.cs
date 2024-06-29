@@ -5,38 +5,54 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
-
-// Retrieve the connection string from appsettings.json or environment variables
-var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                        ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-
-// Correctly configure ToDoListContext with the resolved connection string
-builder.Services.AddDbContext<ToDoListContext>(options =>
-    options.UseSqlServer(dbConnectionString));
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ToDoListContext>();
-    dbContext.Database.Migrate(); // This line applies all pending migrations
-}
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// Map controllers to endpoints
-app.MapControllers();
+ConfigureApp(app);
 
 app.Run();
+
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    services.AddControllers();
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+
+    var dbConnectionString = configuration.GetConnectionString("DefaultConnection")
+                            ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    services.AddDbContext<ToDoListContext>(options =>
+        options.UseSqlServer(dbConnectionString));
+}
+
+void ConfigureApp(WebApplication app)
+{
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        ApplyMigrations(app);
+    }
+
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+}
+
+void ApplyMigrations(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ToDoListContext>();
+        try
+        {
+            dbContext.Database.Migrate(); // Applies all pending migrations
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            Console.WriteLine($"An error occurred while applying database migrations: {ex.Message}");
+        }
+    }
+}
