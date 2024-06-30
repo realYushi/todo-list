@@ -1,5 +1,5 @@
 using ToDoListAPI.Models;
-namespace ToDoListAPI.Interface
+namespace ToDoListAPI.Interfaces
 {
     public interface ITaskRepository
     {
