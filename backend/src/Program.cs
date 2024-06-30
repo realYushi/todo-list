@@ -24,6 +24,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                             ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
     services.AddDbContext<ToDoListContext>(options =>
         options.UseSqlServer(dbConnectionString));
+    services.AddAutoMapper(typeof(Program));
 }
 
 void ConfigureApp(WebApplication app)

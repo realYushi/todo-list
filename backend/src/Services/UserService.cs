@@ -1,5 +1,8 @@
+using Microsoft.VisualBasic;
 using ToDoListAPI.DTOs;
+using ToDoListAPI.Models;
 using ToDoListAPI.Interfaces;
+using AutoMapper;
 namespace ToDoListAPI.Services
 
 {
@@ -7,10 +10,11 @@ namespace ToDoListAPI.Services
     public class UserService : IUserService
     {
         readonly IUserRepository _userRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
         public UserDTO CreateUser(UserDTO user)
         {
