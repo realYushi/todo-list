@@ -1,5 +1,5 @@
 using ToDoListAPI.DTOs;
-namespace ToDoListAPI.Interface
+namespace ToDoListAPI.Interfaces
 {
     public interface IUserService
     {
