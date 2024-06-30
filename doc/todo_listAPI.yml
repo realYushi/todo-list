@@ -258,6 +258,22 @@ paths:
                 "204":
                     description: Task list deleted successfully.
     /users:
+        post:
+            summary: Create a new user
+            description: Creates a new user with the provided details.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/User"
+            responses:
+                "201":
+                    description: User created successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/User"
         get:
             summary: Retrieve all users
             description: Fetches a list of all users in the system, optionally filtered by role or status.

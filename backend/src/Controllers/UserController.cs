@@ -13,6 +13,7 @@ namespace ToDoListAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+
         /// <summary>
         /// Retrieve all users
         /// </summary>
@@ -39,13 +40,39 @@ namespace ToDoListAPI.Controllers
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <remarks>Creates a new user with the provided details.</remarks>
+        /// <param name="user"></param>
+        /// <response code="201">User created successfully.</response>
+        [HttpPost]
+        [Route("/users")]
+        [Consumes("application/json")]
+        [ValidateModelState]
+        [SwaggerOperation("UsersPost")]
+        [SwaggerResponse(statusCode: 201, type: typeof(User), description: "User created successfully.")]
+        public virtual IActionResult UsersPost([FromBody] User user)
+        {
 
+            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
+            // return StatusCode(201, default(User));
+            string exampleJson = null;
+            exampleJson = "{\n  \"role\" : \"role\",\n  \"id\" : \"id\",\n  \"email\" : \"email\",\n  \"username\" : \"username\",\n  \"status\" : \"status\"\n}";
+
+            var example = exampleJson != null
+            ? JsonConvert.DeserializeObject<User>(exampleJson)
+            : default(User);
+            //TODO: Change the data returned
+            return new ObjectResult(example);
+        }
         /// <summary>
         /// Delete a user
         /// </summary>
         /// <remarks>Deletes a specific user identified by their unique ID from the system.</remarks>
         /// <param name="id">Unique identifier of the user to delete.</param>
         /// <response code="204">User deleted successfully.</response>
+
         [HttpDelete]
         [Route("/users/{id}")]
         [ValidateModelState]

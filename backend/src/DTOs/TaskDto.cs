@@ -2,14 +2,16 @@ namespace ToDoListAPI.DTOs;
 
 public class TaskDto
 {
-    // Assuming you have an Id property in your Task model
-    public int Id { get; set; }
-
-    // Include other properties that you want to expose
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public bool IsCompleted { get; set; }
-
-    // Optionally include related data as needed, simplified
-    public int ListId { get; set; } // Reference to the list this task belongs to
+    public String Id { get; set; }
+    public String Title { get; set; }
+    public String Description { get; set; }
+    public DateTime DueDate { get; set; }
+    public String ListId { get; set; }
+    public StatusEnum Status { get; set; }
+    public enum StatusEnum
+    {
+        PendingEnum = 1,
+        InProgressEnum = 2,
+        CompletedEnum = 3
+    }
 }
