@@ -9,7 +9,7 @@ namespace ToDoListAPI.Models
 
 
         // Navigation property
-        public virtual required List List { get; set; }
+        public virtual List List { get; set; }
 
     }
 }

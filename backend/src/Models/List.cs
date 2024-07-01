@@ -5,8 +5,8 @@ namespace ToDoListAPI.Models
     {
 
         // Navigation properties
-        public virtual required User User { get; set; }
-        public virtual required ICollection<Models.Task> Tasks { get; set; }
+        public virtual User User { get; set; }
+        public virtual ICollection<Models.Task> Tasks { get; set; }
 
     }
 }

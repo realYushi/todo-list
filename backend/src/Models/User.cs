@@ -5,7 +5,7 @@ namespace ToDoListAPI.Models
     {
 
         // Navigation property for lists owned by the user
-        public virtual required ICollection<List> Lists { get; set; }
+        public virtual ICollection<List> Lists { get; set; }
 
     }
 }

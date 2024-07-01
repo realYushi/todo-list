@@ -4,9 +4,9 @@ namespace ToDoListAPI.Interfaces
     public interface ITaskService
     {
         IEnumerable<TaskDto> GetAllTasks();
-        TaskDto GetTask(int id);
+        TaskDto GetTask(String id);
         TaskDto CreateTask(TaskDto task);
-        TaskDto UpdateTask(int id, TaskDto task);
-        void DeleteTask(int id);
+        TaskDto UpdateTask(String id, TaskDto task);
+        void DeleteTask(String id);
     }
 }

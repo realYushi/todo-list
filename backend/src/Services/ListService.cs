@@ -19,7 +19,7 @@ namespace ToDoListAPI.Services
             throw new NotImplementedException();
         }
 
-        public void DeleteList(int id)
+        public void DeleteList(String id)
         {
             throw new NotImplementedException();
         }
@@ -29,12 +29,12 @@ namespace ToDoListAPI.Services
             throw new NotImplementedException();
         }
 
-        public ListDto GetList(int id)
+        public ListDto GetList(String id)
         {
             throw new NotImplementedException();
         }
 
-        public ListDto UpdateList(int id, ListDto list)
+        public ListDto UpdateList(String id, ListDto list)
         {
             throw new NotImplementedException();
         }

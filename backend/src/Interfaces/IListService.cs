@@ -7,9 +7,9 @@ namespace ToDoListAPI.Interfaces
 
   {
     IEnumerable<ListDto> GetAllLists();
-    void DeleteList(int id);
-    ListDto GetList(int id);
-    ListDto UpdateList(int id, ListDto list);
+    void DeleteList(String id);
+    ListDto GetList(String id);
+    ListDto UpdateList(String id, ListDto list);
     ListDto CreateList(ListDto list);
   }
 }

@@ -5,9 +5,9 @@ namespace ToDoListAPI.Interfaces
     public interface IListRepository
     {
         IEnumerable<List> GetAllLists();
-        void DeleteList(int id);
-        List GetList(int id);
-        List UpdateList(int id, List list);
+        void DeleteList(String id);
+        List GetList(String id);
+        List UpdateList(String id, List list);
         List CreateList(List list);
 
     }

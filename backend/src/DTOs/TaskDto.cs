@@ -10,6 +10,7 @@ public class TaskDto
     public StatusEnum Status { get; set; }
     public enum StatusEnum
     {
+        PendingEnum = 1,
         InProgressEnum = 2,
         CompletedEnum = 3
     }
