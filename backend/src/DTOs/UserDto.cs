@@ -1,6 +1,6 @@
 namespace ToDoListAPI.DTOs
 {
-    public class UserDTO
+    public class UserDto
     {
         public string Id { get; set; }
         public string Username { get; set; }

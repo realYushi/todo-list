@@ -16,7 +16,7 @@ namespace ToDoListAPI.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public UserDTO CreateUser(UserDTO user)
+        public UserDto CreateUser(UserDto user)
         {
             throw new NotImplementedException();
         }
@@ -26,17 +26,17 @@ namespace ToDoListAPI.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<UserDTO> GetAllUsers(string role, string status)
+        public IEnumerable<UserDto> GetAllUsers(string role, string status)
         {
             throw new NotImplementedException();
         }
 
-        public UserDTO GetUser(string id)
+        public UserDto GetUser(string id)
         {
             throw new NotImplementedException();
         }
 
-        public UserDTO UpdateUser(string id, UserDTO user)
+        public UserDto UpdateUser(string id, UserDto user)
         {
             throw new NotImplementedException();
         }
