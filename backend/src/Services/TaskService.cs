@@ -1,5 +1,4 @@
 using ToDoListAPI.DTOs;
-using ToDoListAPI.Interface;
 using ToDoListAPI.Interfaces;
 using AutoMapper;
 namespace ToDoListAPI.Services
