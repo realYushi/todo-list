@@ -9,7 +9,7 @@ namespace ToDoListAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public void DeleteTask(int id)
+        public void DeleteTask(String id)
         {
             throw new NotImplementedException();
         }
@@ -19,12 +19,12 @@ namespace ToDoListAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Models.Task GetTask(int id)
+        public Models.Task GetTask(String id)
         {
             throw new NotImplementedException();
         }
 
-        public Models.Task UpdateTask(int id, Models.Task task)
+        public Models.Task UpdateTask(String id, Models.Task task)
         {
             throw new NotImplementedException();
         }
