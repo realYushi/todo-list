@@ -1,9 +1,17 @@
+using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 
 namespace ToDoListAPI.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
+        private ToDoListContext context;
+
+        public TaskRepository(ToDoListContext context)
+        {
+            this.context = context;
+        }
+
         public Models.Task CreateTask(Models.Task task)
         {
             throw new NotImplementedException();

@@ -1,3 +1,4 @@
+using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
 namespace ToDoListAPI.Repositories
@@ -5,6 +6,13 @@ namespace ToDoListAPI.Repositories
     public class UserRepository : IUserRepository
 
     {
+        private ToDoListContext context;
+
+        public UserRepository(ToDoListContext context)
+        {
+            this.context = context;
+        }
+
         public User CreateUser(User user)
         {
             throw new NotImplementedException();

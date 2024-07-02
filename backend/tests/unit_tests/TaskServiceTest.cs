@@ -99,8 +99,8 @@ public class TaskServiceTest
         var result = _taskService.CreateTask(sampleTaskDto);
         // Assert
         result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<Task>(); // Checks that result is of type Task
-        result.Should().BeEquivalentTo(sampleTask, options => options.ComparingByMembers<Task>()); // Deep compare the actual result to expected DTO
+        result.Should().BeOfType<TaskDto>(); // Checks that result is of type Task
+        result.Should().BeEquivalentTo(sampleTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
 
         _taskRepository.Verify(repo => repo.CreateTask(It.IsAny<Task>()), Times.Once); // Verify that the CreateTask method was called exactly once
         _mapper.Verify(mapper => mapper.Map<Task>(sampleTaskDto), Times.Once); // Verify that the mapping to Task was called exactly once with the specific input

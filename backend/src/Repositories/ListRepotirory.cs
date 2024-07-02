@@ -1,9 +1,17 @@
+using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
 namespace ToDoListAPI.Repositories
 {
     public class ListRepository : IListRepository
     {
+        private ToDoListContext context;
+
+        public ListRepository(ToDoListContext context)
+        {
+            this.context = context;
+        }
+
         public List CreateList(List list)
         {
             throw new NotImplementedException();
