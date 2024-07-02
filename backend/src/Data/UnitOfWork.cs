@@ -1,27 +1,25 @@
 using System;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
-using ToDoListAPI.Repositories;
 namespace ToDoListAPI.Data
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ToDoListContext _context;
-        private Lazy<ITaskRepository> _taskRepository;
-        private Lazy<IListRepository> _listRepository;
-        private Lazy<IUserRepository> _userRepository;
+        private readonly ITaskRepository _taskRepository;
+        private readonly IListRepository _listRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UnitOfWork(ToDoListContext context)
+        public UnitOfWork(ToDoListContext context, ITaskRepository taskRepository, IListRepository listRepository, IUserRepository userRepository)
         {
             _context = context;
-            _taskRepository = new Lazy<ITaskRepository>(() => new TaskRepository(_context));
-            _listRepository = new Lazy<IListRepository>(() => new ListRepository(_context));
-            _userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context));
+            _taskRepository = taskRepository;
+            _listRepository = listRepository;
+            _userRepository = userRepository;
         }
-
-        public ITaskRepository TaskRepository => _taskRepository.Value;
-        public IListRepository ListRepository => _listRepository.Value;
-        public IUserRepository UserRepository => _userRepository.Value;
+        public ITaskRepository TaskRepository => _taskRepository;
+        public IListRepository ListRepository => _listRepository;
+        public IUserRepository UserRepository => _userRepository;
 
         public void Save()
         {
@@ -32,5 +30,6 @@ namespace ToDoListAPI.Data
         {
             _context.Dispose();
         }
+
     }
 }
