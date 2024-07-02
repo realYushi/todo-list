@@ -39,7 +39,9 @@ jobs:
                   echo ACCEPT_EULA=${{ secrets.ACCEPT_EULA }} >> .env
 
             - name: Build
-              run: dotnet build --no-restore -c Release
+              #   run: dotnet build --no-restore -c Release
 
+              run: dotnet build --no-restore -c
             - name: Run tests
-              run: dotnet test --no-build --configuration Release --verbosity normal
+              #   run: dotnet test --no-build --configuration Release --verbosity normal
+              run: dotnet test --no-build --verbosity normal
