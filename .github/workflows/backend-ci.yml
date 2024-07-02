@@ -17,7 +17,7 @@ jobs:
         runs-on: ubuntu-latest
         defaults:
             run:
-                working-directory: ./backend/src
+                working-directory: ./backend
         steps:
             - uses: actions/checkout@v4
             - name: Setup .NET Core
@@ -25,23 +25,28 @@ jobs:
               with:
                   dotnet-version: "8.0.x"
 
+            - name: Cache NuGet packages
+              uses: actions/cache@v3
+              with:
+                  path: ~/.nuget/packages
+                  key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-nuget-
+
             - name: Restore dependencies
               run: dotnet restore
 
             - name: Create .env file
               run: |
-                  echo BACKEND_PORT=${{ secrets.BACKEND_PORT }} >> .env
-                  echo FRONTEND_PORT=${{ secrets.FRONTEND_PORT }} >> .env
-                  echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-                  echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-                  echo DB_USER=${{ secrets.DB_USER }} >> .env
-                  echo SA_PASSWORD=${{ secrets.SA_PASSWORD }} >> .env
-                  echo ACCEPT_EULA=${{ secrets.ACCEPT_EULA }} >> .env
+                  echo BACKEND_PORT=${{ secrets.BACKEND_PORT }} >> src/.env
+                  echo FRONTEND_PORT=${{ secrets.FRONTEND_PORT }} >> src/.env
+                  echo DB_PORT=${{ secrets.DB_PORT }} >> src/.env
+                  echo DB_NAME=${{ secrets.DB_NAME }} >> src/.env
+                  echo DB_USER=${{ secrets.DB_USER }} >> src/.env
+                  echo SA_PASSWORD=${{ secrets.SA_PASSWORD }} >> src/.env
+                  echo ACCEPT_EULA=${{ secrets.ACCEPT_EULA }} >> src/.env
 
             - name: Build
-              #   run: dotnet build --no-restore -c Release
-
-              run: dotnet build --no-restore
+              run: dotnet build --no-restore -c Release
             - name: Run tests
-              #   run: dotnet test --no-build --configuration Release --verbosity normal
-              run: dotnet test --no-build --verbosity normal
+              run: dotnet test --no-build --configuration Release --verbosity normal
