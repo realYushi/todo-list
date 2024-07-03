@@ -7,22 +7,23 @@ using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
 using Task = ToDoListAPI.Models.Task;
 using FluentAssertions;
+using ToDoListAPI.Data;
 
 
 [TestFixture]
 public class TaskServiceTest
 {
     private ITaskService _taskService;
-    private Mock<ITaskRepository> _taskRepository;
+    private Mock<IUnitOfWork> _unitOfWork;
     private Mock<IMapper> _mapper;
     private Task sampleTask;
     private TaskDto sampleTaskDto;
     [SetUp]
     public void Setup()
     {
-        _taskRepository = new Mock<ITaskRepository>();
+        _unitOfWork = new Mock<IUnitOfWork>();
         _mapper = new Mock<IMapper>();
-        _taskService = new TaskService(_taskRepository.Object, _mapper.Object);
+        _taskService = new TaskService(_mapper.Object, _unitOfWork.Object);
         // Initialize shared task data
 
         sampleTask = new Task
@@ -52,7 +53,7 @@ public class TaskServiceTest
         // Arrange
         var tasks = new List<Task> { sampleTask };
         var tasksDto = new List<TaskDto> { sampleTaskDto };
-        _taskRepository.Setup(repo => repo.GetAllTasks()).Returns(tasks);
+        _unitOfWork.Setup(repo => repo.TaskRepository.GetAllTasks()).Returns(tasks);
         _mapper.Setup(mapper => mapper.Map<IEnumerable<TaskDto>>(It.IsAny<IEnumerable<Task>>())).Returns(tasksDto);
         // Act
         var result = _taskService.GetAllTasks();
@@ -64,7 +65,7 @@ public class TaskServiceTest
         result.Should().ContainItemsAssignableTo<TaskDto>(); // Ensures all items are of type TaskDto
         result.Should().BeEquivalentTo(tasksDto, options => options.ComparingByMembers<TaskDto>().WithStrictOrdering()); // Ensures the items are in the same order as expected
 
-        _taskRepository.Verify(repo => repo.GetAllTasks(), Times.Once); // Verify that the GetAllTasks method was called exactly once
+        _unitOfWork.Verify(repo => repo.TaskRepository.GetAllTasks(), Times.Once); // Verify that the GetAllTasks method was called exactly once
         _mapper.Verify(mapper => mapper.Map<IEnumerable<TaskDto>>(tasks), Times.Once); // Verify that the mapping was called exactly once with the specific input
 
 
@@ -75,7 +76,7 @@ public class TaskServiceTest
     {
         // Arrange
         var taskId = "1";
-        _taskRepository.Setup(repo => repo.GetTask(taskId)).Returns(sampleTask);
+        _unitOfWork.Setup(repo => repo.TaskRepository.GetTask(taskId)).Returns(sampleTask);
         _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(sampleTaskDto);
         // Act
         var result = _taskService.GetTask(taskId);
@@ -84,7 +85,7 @@ public class TaskServiceTest
         result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
         result.Should().BeEquivalentTo(sampleTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
 
-        _taskRepository.Verify(repo => repo.GetTask(taskId), Times.Once); // Verify that the GetTask method was called exactly once
+        _unitOfWork.Verify(repo => repo.TaskRepository.GetTask(taskId), Times.Once); // Verify that the GetTask method was called exactly once
         _mapper.Verify(mapper => mapper.Map<TaskDto>(sampleTask), Times.Once); // Verify that the mapping was called exactly once with the specific input
     }
 
@@ -92,19 +93,23 @@ public class TaskServiceTest
     public void TestCreateTask()
     {
         // Arrange
-        _taskRepository.Setup(repo => repo.CreateTask(It.IsAny<Task>())).Returns(sampleTask);
+        _unitOfWork.Setup(repo => repo.TaskRepository.CreateTask(It.IsAny<Task>())).Returns(sampleTask);
         _mapper.Setup(mapper => mapper.Map<Task>(It.IsAny<TaskDto>())).Returns(sampleTask);
         _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(sampleTaskDto);
+
         // Act
         var result = _taskService.CreateTask(sampleTaskDto);
+
         // Assert
         result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<TaskDto>(); // Checks that result is of type Task
+        result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
         result.Should().BeEquivalentTo(sampleTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
 
-        _taskRepository.Verify(repo => repo.CreateTask(It.IsAny<Task>()), Times.Once); // Verify that the CreateTask method was called exactly once
+        _unitOfWork.Verify(repo => repo.TaskRepository.CreateTask(It.IsAny<Task>()), Times.Once); // Verify that the CreateTask method was called exactly once
         _mapper.Verify(mapper => mapper.Map<Task>(sampleTaskDto), Times.Once); // Verify that the mapping to Task was called exactly once with the specific input
+        _mapper.Verify(mapper => mapper.Map<TaskDto>(sampleTask), Times.Once); // Verify that the mapping back to TaskDto was called exactly once
     }
+
 
     [Test]
     public void TestUpdateTask()
@@ -131,7 +136,7 @@ public class TaskServiceTest
             ListId = updatedTask.ListId
         };
 
-        _taskRepository.Setup(repo => repo.UpdateTask(taskId, It.IsAny<Task>())).Returns(updatedTask);
+        _unitOfWork.Setup(repo => repo.TaskRepository.UpdateTask(taskId, It.IsAny<Task>())).Returns(updatedTask);
         _mapper.Setup(mapper => mapper.Map<Task>(It.IsAny<TaskDto>())).Returns(updatedTask);
         _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(updatedTaskDto);
 
@@ -143,7 +148,7 @@ public class TaskServiceTest
         result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
         result.Should().BeEquivalentTo(updatedTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
 
-        _taskRepository.Verify(repo => repo.UpdateTask(taskId, It.IsAny<Task>()), Times.Once); // Verify that the UpdateTask method was called exactly once
+        _unitOfWork.Verify(repo => repo.TaskRepository.UpdateTask(taskId, It.IsAny<Task>()), Times.Once); // Verify that the UpdateTask method was called exactly once
         _mapper.Verify(mapper => mapper.Map<Task>(updatedTaskDto), Times.Once); // Verify that the mapping to Task was called exactly once with the specific input
         _mapper.Verify(mapper => mapper.Map<TaskDto>(updatedTask), Times.Once); // Verify that the mapping to TaskDto was called exactly once with the specific input
     }
@@ -154,13 +159,13 @@ public class TaskServiceTest
     {
         // Arrange
         var taskId = "1";
-        _taskRepository.Setup(repo => repo.DeleteTask(taskId));
+        _unitOfWork.Setup(repo => repo.TaskRepository.DeleteTask(taskId));
 
         // Act
         _taskService.DeleteTask(taskId);
 
         // Assert
 
-        _taskRepository.Verify(repo => repo.DeleteTask(taskId), Times.Once); // Verify that the DeleteTask method was called exactly once
+        _unitOfWork.Verify(repo => repo.TaskRepository.DeleteTask(taskId), Times.Once); // Verify that the DeleteTask method was called exactly once
     }
 }
