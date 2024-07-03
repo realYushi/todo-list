@@ -22,6 +22,55 @@ namespace ToDoListAPI.Data
             ConfigureUserEntity(modelBuilder);
             ConfigureTaskEntity(modelBuilder);
             ConfigureRelationships(modelBuilder);
+            // Seed data
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = "user1",
+                    Username = "johndoe",
+                    Email = "john.doe@example.com",
+                    Role = "Admin",
+                    Status = "Active"
+                }
+            );
+
+            modelBuilder.Entity<List>().HasData(
+                new List
+                {
+                    Id = "list1",
+                    Name = "Home Tasks",
+                    Description = "Tasks to do at home.",
+                    UserId = "user1"
+                },
+                new List
+                {
+                    Id = "list2",
+                    Name = "Work Tasks",
+                    Description = "Tasks to do at work.",
+                    UserId = "user1"
+                }
+            );
+
+            modelBuilder.Entity<Models.Task>().HasData(
+                new Models.Task
+                {
+                    Id = "task1",
+                    Title = "Wash dishes",
+                    Description = "Wash all the dishes from dinner.",
+                    DueDate = DateTime.Now.AddDays(1),
+                    Status = Models.Task.StatusEnum.PendingEnum,
+                    ListId = "list1"
+                },
+                new Models.Task
+                {
+                    Id = "task2",
+                    Title = "Prepare presentation",
+                    Description = "Prepare the monthly performance presentation.",
+                    DueDate = DateTime.Now.AddDays(3),
+                    Status = Models.Task.StatusEnum.InProgressEnum,
+                    ListId = "list2"
+                }
+            );
         }
 
         private void ConfigureListEntity(ModelBuilder modelBuilder)

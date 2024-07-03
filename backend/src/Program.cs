@@ -50,9 +50,9 @@ void ConfigureApp(WebApplication app)
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-        ApplyMigrations(app);
     }
 
+    ApplyMigrations(app);
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();

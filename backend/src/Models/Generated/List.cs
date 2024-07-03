@@ -31,7 +31,7 @@ namespace ToDoListAPI.Models.Generated
         /// </summary>
         /// <value>A unique identifier for the list.</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// The name of the list.
