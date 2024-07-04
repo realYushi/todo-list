@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoListAPI.Data;
 
@@ -11,9 +12,11 @@ using ToDoListAPI.Data;
 namespace ToDoListAPI.Migrations
 {
     [DbContext(typeof(ToDoListContext))]
-    partial class ToDoListContextModelSnapshot : ModelSnapshot
+    [Migration("20240704123138_updateSeeding")]
+    partial class updateSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,7 +105,7 @@ namespace ToDoListAPI.Migrations
                         {
                             Id = "task1",
                             Description = "Wash all the dishes from dinner.",
-                            DueDate = new DateTime(2023, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DueDate = new DateTime(2024, 7, 6, 0, 31, 38, 374, DateTimeKind.Local).AddTicks(8380),
                             ListId = "list1",
                             Status = 1,
                             Title = "Wash dishes"
@@ -111,7 +114,7 @@ namespace ToDoListAPI.Migrations
                         {
                             Id = "task2",
                             Description = "Prepare the monthly performance presentation.",
-                            DueDate = new DateTime(2023, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DueDate = new DateTime(2024, 7, 8, 0, 31, 38, 374, DateTimeKind.Local).AddTicks(8450),
                             ListId = "list2",
                             Status = 2,
                             Title = "Prepare presentation"

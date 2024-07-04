@@ -1,6 +1,7 @@
 using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
+using Microsoft.EntityFrameworkCore;
 namespace ToDoListAPI.Data.Repositories
 {
     public class ListRepository : IListRepository
@@ -12,29 +13,33 @@ namespace ToDoListAPI.Data.Repositories
             this.context = context;
         }
 
-        public List CreateList(List list)
+        public Models.List CreateList(Models.List list)
         {
-            throw new NotImplementedException();
+            var createdList = context.Lists.Add(list);
+            return createdList.Entity;
         }
 
         public void DeleteList(String id)
         {
-            throw new NotImplementedException();
+            context.Lists.Remove(context.Lists.Find(id));
         }
 
-        public IEnumerable<List> GetAllLists()
+        public IEnumerable<Models.List> GetAllLists()
         {
-            throw new NotImplementedException();
+            var lists = context.Lists;
+            return lists;
         }
 
-        public List GetList(String id)
+        public Models.List GetList(String id)
         {
-            throw new NotImplementedException();
+            var list = context.Lists.Find(id);
+            return list;
         }
 
-        public List UpdateList(String id, List list)
+        public Models.List UpdateList(String id, Models.List list)
         {
-            throw new NotImplementedException();
+            var updatedList = context.Lists.Update(list);
+            return updatedList.Entity;
         }
     }
 }

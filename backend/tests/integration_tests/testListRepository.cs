@@ -75,9 +75,9 @@ public class testListRepository : RepositoryTestBase
 
         // Assert
         result.Id.Should().NotBeNull("ID should be assigned after creation.");
-        result.Name.Should().Be("School Tasks");
-        result.Description.Should().Be("Tasks to do at school.");
-        result.UserId.Should().Be("user2");
+        result.Name.Should().Be(list.Name);
+        result.Description.Should().Be(list.Description);
+        result.UserId.Should().Be(list.UserId);
         var createdList = listRepository.GetList(list.Id);
         createdList.Should().NotBeNull();
     }

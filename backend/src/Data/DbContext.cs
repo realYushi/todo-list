@@ -65,7 +65,7 @@ namespace ToDoListAPI.Data
                     Id = "task1",
                     Title = "Wash dishes",
                     Description = "Wash all the dishes from dinner.",
-                    DueDate = DateTime.Now.AddDays(1),
+                    DueDate = new DateTime(2023, 12, 31),
                     Status = Models.Task.StatusEnum.PendingEnum,
                     ListId = "list1"
                 },
@@ -74,7 +74,7 @@ namespace ToDoListAPI.Data
                     Id = "task2",
                     Title = "Prepare presentation",
                     Description = "Prepare the monthly performance presentation.",
-                    DueDate = DateTime.Now.AddDays(3),
+                    DueDate = new DateTime(2023, 12, 31),
                     Status = Models.Task.StatusEnum.InProgressEnum,
                     ListId = "list2"
                 }

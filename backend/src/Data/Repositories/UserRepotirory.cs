@@ -1,10 +1,10 @@
 using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
+using Microsoft.EntityFrameworkCore;
 namespace ToDoListAPI.Data.Repositories
 {
     public class UserRepository : IUserRepository
-
     {
         private ToDoListContext context;
 
@@ -13,29 +13,33 @@ namespace ToDoListAPI.Data.Repositories
             this.context = context;
         }
 
-        public User CreateUser(User user)
+        public Models.User CreateUser(Models.User user)
         {
-            throw new NotImplementedException();
+            var createdUser = context.Users.Add(user);
+            return createdUser.Entity;
         }
 
-        public void DeleteUser(string id)
+        public void DeleteUser(String id)
         {
-            throw new NotImplementedException();
+            context.Users.Remove(context.Users.Find(id));
         }
 
-        public IEnumerable<User> GetAllUsers(string role, string status)
+        public IEnumerable<Models.User> GetAllUsers(String role, String status)
         {
-            throw new NotImplementedException();
+            var users = context.Users.Where(user => user.Role == role && user.Status == status);
+            return users;
         }
 
-        public User GetUser(string id)
+        public Models.User GetUser(String id)
         {
-            throw new NotImplementedException();
+            var user = context.Users.Find(id);
+            return user;
         }
 
-        public User UpdateUser(string id, User user)
+        public Models.User UpdateUser(String id, Models.User user)
         {
-            throw new NotImplementedException();
+            var updatedUser = context.Users.Update(user);
+            return updatedUser.Entity;
         }
     }
 }

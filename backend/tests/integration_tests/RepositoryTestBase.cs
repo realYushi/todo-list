@@ -25,6 +25,7 @@ public class RepositoryTestBase
                         .Options;
 
         context = new ToDoListContext(options);
+        context.Database.Migrate();
         context.Database.BeginTransaction();
     }
 
