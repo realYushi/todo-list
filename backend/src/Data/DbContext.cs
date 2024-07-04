@@ -31,6 +31,14 @@ namespace ToDoListAPI.Data
                     Email = "john.doe@example.com",
                     Role = "Admin",
                     Status = "Active"
+                },
+                new User
+                {
+                    Id = "user2",
+                    Username = "janedoe",
+                    Email = "jane.doe@example.com",
+                    Role = "User",
+                    Status = "Active"
                 }
             );
 

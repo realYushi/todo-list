@@ -1,7 +1,7 @@
 using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
-namespace ToDoListAPI.Repositories
+namespace ToDoListAPI.Data.Repositories
 {
     public class UserRepository : IUserRepository
 

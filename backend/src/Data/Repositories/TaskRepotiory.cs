@@ -1,38 +1,38 @@
 using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
-using ToDoListAPI.Models;
-namespace ToDoListAPI.Repositories
+
+namespace ToDoListAPI.Data.Repositories
 {
-    public class ListRepository : IListRepository
+    public class TaskRepository : ITaskRepository
     {
         private ToDoListContext context;
 
-        public ListRepository(ToDoListContext context)
+        public TaskRepository(ToDoListContext context)
         {
             this.context = context;
         }
 
-        public List CreateList(List list)
+        public Models.Task CreateTask(Models.Task task)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteList(String id)
+        public void DeleteTask(String id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<List> GetAllLists()
+        public IEnumerable<Models.Task> GetAllTasks()
         {
             throw new NotImplementedException();
         }
 
-        public List GetList(String id)
+        public Models.Task GetTask(String id)
         {
             throw new NotImplementedException();
         }
 
-        public List UpdateList(String id, List list)
+        public Models.Task UpdateTask(String id, Models.Task task)
         {
             throw new NotImplementedException();
         }

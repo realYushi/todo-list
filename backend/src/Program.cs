@@ -3,7 +3,7 @@ using ToDoListAPI.Data; // Ensure this namespace correctly references where your
 using Microsoft.Extensions.DependencyInjection;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Services;
-using ToDoListAPI.Repositories;
+using ToDoListAPI.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
