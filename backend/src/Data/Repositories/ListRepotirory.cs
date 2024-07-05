@@ -13,33 +13,44 @@ namespace ToDoListAPI.Data.Repositories
             this.context = context;
         }
 
-        public Models.List CreateList(Models.List list)
+        public Models.List CreateList(Models.List list, string userId)
         {
+            list.UserId = userId; // Ensure the list is associated with the user
             var createdList = context.Lists.Add(list);
+            context.SaveChanges(); // Save changes here if not using a unit of work pattern
             return createdList.Entity;
         }
 
-        public void DeleteList(String id)
+        public void DeleteList(string id, string userId)
         {
-            context.Lists.Remove(context.Lists.Find(id));
+            var list = context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
+            if (list != null)
+            {
+                context.Lists.Remove(list);
+                context.SaveChanges(); // Save changes here if not using a unit of work pattern
+            }
         }
 
-        public IEnumerable<Models.List> GetAllLists()
+        public IEnumerable<Models.List> GetAllLists(string userId)
         {
-            var lists = context.Lists;
-            return lists;
+            return context.Lists.Where(l => l.UserId == userId).ToList();
         }
 
-        public Models.List GetList(String id)
+        public Models.List GetList(string id, string userId)
         {
-            var list = context.Lists.Find(id);
-            return list;
+            return context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
         }
 
-        public Models.List UpdateList(String id, Models.List list)
+        public Models.List UpdateList(string id, Models.List list, string userId)
         {
-            var updatedList = context.Lists.Update(list);
-            return updatedList.Entity;
+            var existingList = context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
+            if (existingList != null)
+            {
+                context.Entry(existingList).CurrentValues.SetValues(list);
+                context.SaveChanges(); // Save changes here if not using a unit of work pattern
+                return existingList;
+            }
+            return null;
         }
     }
 }

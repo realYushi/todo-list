@@ -9,42 +9,42 @@ namespace ToDoListAPI.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public TaskService(IMapper mapper, IUnitOfWork unitOfWork)
+        public TaskService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
-        public TaskDto CreateTask(TaskDto task)
+        public TaskDto CreateTask(TaskDto task, string userId)
         {
             Task taskEntity = _mapper.Map<Task>(task);
-            _unitOfWork.TaskRepository.CreateTask(taskEntity);
-            TaskDto createdTask = _mapper.Map<TaskDto>(taskEntity);
+            taskEntity.UserId = userId;  // Set the UserId for the task
+            _unitOfWork.TaskRepository.CreateTask(taskEntity, userId);
             _unitOfWork.Save();
-            return createdTask;
+            return _mapper.Map<TaskDto>(taskEntity);
         }
 
-        public void DeleteTask(string id)
+        public void DeleteTask(string id, string userId)
         {
-            _unitOfWork.TaskRepository.DeleteTask(id);
+            _unitOfWork.TaskRepository.DeleteTask(id, userId);
         }
 
-        public IEnumerable<TaskDto> GetAllTasks()
+        public IEnumerable<TaskDto> GetAllTasks(string userId)
         {
-            IEnumerable<Models.Task> tasks = _unitOfWork.TaskRepository.GetAllTasks();
+            IEnumerable<Task> tasks = _unitOfWork.TaskRepository.GetAllTasks(userId);
             return _mapper.Map<IEnumerable<TaskDto>>(tasks);
         }
 
-        public TaskDto GetTask(string id)
+        public TaskDto GetTask(string id, string userId)
         {
-            Task task = _unitOfWork.TaskRepository.GetTask(id);
+            Task task = _unitOfWork.TaskRepository.GetTask(id, userId);
             return _mapper.Map<TaskDto>(task);
         }
 
-        public TaskDto UpdateTask(string id, TaskDto task)
+        public TaskDto UpdateTask(string id, TaskDto task, string userId)
         {
             Task taskEntity = _mapper.Map<Models.Task>(task);
-            Task updatedTask = _unitOfWork.TaskRepository.UpdateTask(id, taskEntity);
+            Task updatedTask = _unitOfWork.TaskRepository.UpdateTask(id, taskEntity, userId);
             _unitOfWork.Save();
             return _mapper.Map<TaskDto>(updatedTask);
         }

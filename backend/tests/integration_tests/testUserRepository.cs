@@ -20,11 +20,12 @@ public class testUserRepository : RepositoryTestBase
         // Arrange
         var expected = new List<User>
         {
-            new User { Id = "user2", Username = "janedoe", Email = "jane.doe@example.com", Role = "User", Status = "Active" }
+            new User { UserId = "user2", Username = "janedoe", Email = "jane.doe@example.com", Role = "User", Status = "Active" }
         };
+        var userId = "user2"; // Corrected to use a single userId parameter
 
         // Act
-        var result = userRepository.GetAllUsers("User", "Active");
+        var result = userRepository.GetAllUsers(userId);
 
         // Assert
         result.Should().BeEquivalentTo(expected);
@@ -34,11 +35,11 @@ public class testUserRepository : RepositoryTestBase
     public void TestGetUser()
     {
         // Arrange
-        var expected = new User { Id = "user1", Username = "johndoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
-        var id = "user1";
+        var expected = new User { UserId = "user1", Username = "johndoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
+        var userId = "user1";
 
         // Act
-        var result = userRepository.GetUser(id);
+        var result = userRepository.GetUser(userId);
 
         // Assert
         result.Should().BeEquivalentTo(expected);
@@ -55,12 +56,12 @@ public class testUserRepository : RepositoryTestBase
         context.SaveChanges();
 
         // Assert
-        result.Id.Should().NotBeNull("ID should be assigned after creation.");
+        result.UserId.Should().NotBeNull("UserID should be assigned after creation."); // Changed from Id to UserId
         result.Username.Should().Be("sallydoe");
         result.Email.Should().Be("sally.doe@example.com");
         result.Role.Should().Be("User");
         result.Status.Should().Be("Active");
-        var createdUser = userRepository.GetUser(result.Id);
+        var createdUser = userRepository.GetUser(result.UserId); // Changed from Id to UserId
         createdUser.Should().NotBeNull();
     }
 
@@ -68,12 +69,12 @@ public class testUserRepository : RepositoryTestBase
     public void TestUpdateUser()
     {
         // Arrange
-        var updatedUser = new User { Id = "user1", Username = "johnnydoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
+        var updatedUser = new User { UserId = "user1", Username = "johnnydoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
 
         // Act
-        userRepository.UpdateUser(updatedUser.Id, updatedUser);
+        userRepository.UpdateUser(updatedUser.UserId, updatedUser); // Changed from Id to UserId
         context.SaveChanges();
-        var result = userRepository.GetUser(updatedUser.Id);
+        var result = userRepository.GetUser(updatedUser.UserId); // Changed from Id to UserId
 
         // Assert
         result.Should().BeEquivalentTo(updatedUser);
@@ -83,12 +84,12 @@ public class testUserRepository : RepositoryTestBase
     public void TestDeleteUser()
     {
         // Arrange
-        var id = "user1";
+        var userId = "user1";
 
         // Act
-        userRepository.DeleteUser(id);
+        userRepository.DeleteUser(userId);
         context.SaveChanges();
-        var result = userRepository.GetUser(id);
+        var result = userRepository.GetUser(userId);
 
         // Assert
         result.Should().BeNull();

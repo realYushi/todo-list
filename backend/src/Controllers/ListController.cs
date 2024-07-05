@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Newtonsoft.Json;
 using ToDoListAPI.Attributes;
 using ToDoListAPI.Models;
+using ToDoListAPI.Services;
 
 namespace ToDoListAPI.Controllers
 {
@@ -13,6 +14,13 @@ namespace ToDoListAPI.Controllers
     [ApiController]
     public class ListController : ControllerBase
     {
+        public ListController(ListService listService)
+        {
+            ListService = listService;
+        }
+
+        public ListService ListService { get; }
+
         [HttpGet]
         [Route("/lists")]
         [ValidateModelState]

@@ -26,7 +26,7 @@ public class UserServiceTest
 
         sampleUser = new User
         {
-            Id = "1",
+            UserId = "1",
             Username = "john_doe",
             Email = "john.doe@example.com",
             Role = "Administrator",
@@ -35,7 +35,7 @@ public class UserServiceTest
 
         sampleUserDto = new UserDto
         {
-            Id = "1",
+            UserId = "1",
             Username = "john_doe",
             Email = "john.doe@example.com",
             Role = "Administrator",
@@ -47,24 +47,22 @@ public class UserServiceTest
     public void TestGetAllUsers()
     {
         // Arrange
+        var userId = "1"; // Assuming you want to test with a specific user ID
         var users = new List<User> { sampleUser };
         var usersDto = new List<UserDto> { sampleUserDto };
-        _unitOfWork.Setup(repo => repo.UserRepository.GetAllUsers(It.IsAny<string>(), It.IsAny<string>())).Returns(users);
+        _unitOfWork.Setup(repo => repo.UserRepository.GetAllUsers(userId)).Returns(users);
         _mapper.Setup(mapper => mapper.Map<IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>())).Returns(usersDto);
         // Act
-        var result = _userService.GetAllUsers("Administrator", "Active");
+        var result = _userService.GetAllUsers(userId);
         // Assert
         result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<List<UserDto>>(); // Checks that result is of type User<UserDto>
+        result.Should().BeOfType<List<UserDto>>(); // Checks that result is of type List<UserDto>
         result.Should().HaveCount(users.Count); // Checks the count of returned users
         result.Should().BeEquivalentTo(usersDto, options => options.ComparingByMembers<UserDto>()); // Deep compare the actual result to expected DTOs
         result.Should().ContainItemsAssignableTo<UserDto>(); // Ensures all items are of type UserDto
-        result.Should().BeEquivalentTo(usersDto, options => options.ComparingByMembers<UserDto>().WithStrictOrdering()); // Ensures the items are in the same order as expected
 
-        _unitOfWork.Verify(repo => repo.UserRepository.GetAllUsers("Administrator", "Active"), Times.Once); // Verify that the GetAllUsers method was called exactly once
+        _unitOfWork.Verify(repo => repo.UserRepository.GetAllUsers(userId), Times.Once); // Verify that the GetAllUsers method was called exactly once
         _mapper.Verify(mapper => mapper.Map<IEnumerable<UserDto>>(users), Times.Once); // Verify that the mapping was called exactly once with the specific input
-
-
     }
 
     [Test]
@@ -113,7 +111,7 @@ public class UserServiceTest
         var userId = "1";
         var updatedUser = new User
         {
-            Id = userId,
+            UserId = userId,
             Username = "Updated User",
             Email = "update@example.com",
             Role = "User",
@@ -122,7 +120,7 @@ public class UserServiceTest
 
         var updatedUserDto = new UserDto
         {
-            Id = updatedUser.Id,
+            UserId = updatedUser.UserId,
             Username = updatedUser.Username,
             Email = updatedUser.Email,
             Role = updatedUser.Role,

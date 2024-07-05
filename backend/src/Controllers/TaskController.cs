@@ -4,8 +4,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using Newtonsoft.Json;
 using ToDoListAPI.Attributes;
 using ToDoListAPI.Models;
+using ToDoListAPI.Services;
 
 namespace ToDoListAPI.Controllers
+
 {
     /// <summary>
     /// 
@@ -13,6 +15,12 @@ namespace ToDoListAPI.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
+        private readonly TaskService _taskService;
+        public TaskController(TaskService taskService)
+        {
+            _taskService = taskService;
+        }
+
         /// <summary>
         /// Retrieve all tasks
         /// </summary>
@@ -28,16 +36,8 @@ namespace ToDoListAPI.Controllers
         public virtual IActionResult TasksGet([FromQuery(Name = "status")] string status, [FromQuery(Name = "due_date")] DateTime? dueDate)
         {
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Models.Task>));
-            string exampleJson = null;
-            exampleJson = "[ {\n  \"list_id\" : \"list_id\",\n  \"due_date\" : \"2000-01-23\",\n  \"description\" : \"description\",\n  \"id\" : \"id\",\n  \"title\" : \"title\",\n  \"status\" : \"pending\"\n}, {\n  \"list_id\" : \"list_id\",\n  \"due_date\" : \"2000-01-23\",\n  \"description\" : \"description\",\n  \"id\" : \"id\",\n  \"title\" : \"title\",\n  \"status\" : \"pending\"\n} ]";
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Models.Task>>(exampleJson)
-            : default(List<Models.Task>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            throw new NotImplementedException();
         }
 
         /// <summary>

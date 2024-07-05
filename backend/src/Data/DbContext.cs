@@ -26,17 +26,19 @@ namespace ToDoListAPI.Data
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
-                    Id = "user1",
+                    UserId = "user1",
                     Username = "johndoe",
                     Email = "john.doe@example.com",
+                    Password = "password",
                     Role = "Admin",
                     Status = "Active"
                 },
                 new User
                 {
-                    Id = "user2",
+                    UserId = "user2",
                     Username = "janedoe",
                     Email = "jane.doe@example.com",
+                    Password = "password",
                     Role = "User",
                     Status = "Active"
                 }
@@ -67,7 +69,8 @@ namespace ToDoListAPI.Data
                     Description = "Wash all the dishes from dinner.",
                     DueDate = new DateTime(2023, 12, 31),
                     Status = Models.Task.StatusEnum.PendingEnum,
-                    ListId = "list1"
+                    ListId = "list1",
+                    UserId = "user1"
                 },
                 new Models.Task
                 {
@@ -76,7 +79,8 @@ namespace ToDoListAPI.Data
                     Description = "Prepare the monthly performance presentation.",
                     DueDate = new DateTime(2023, 12, 31),
                     Status = Models.Task.StatusEnum.InProgressEnum,
-                    ListId = "list2"
+                    ListId = "list2",
+                    UserId = "user1"
                 }
             );
         }
@@ -98,7 +102,7 @@ namespace ToDoListAPI.Data
         {
             modelBuilder.Entity<User>()
                 .ToTable("Users")
-                .HasKey(u => u.Id);
+                .HasKey(u => u.UserId);
             modelBuilder.Entity<User>()
                 .Property(u => u.Username).IsRequired().HasMaxLength(150);
             modelBuilder.Entity<User>()
@@ -126,6 +130,8 @@ namespace ToDoListAPI.Data
                 .Property(t => t.Status).IsRequired();
             modelBuilder.Entity<Models.Task>()
                 .Property(t => t.ListId).IsRequired();
+            modelBuilder.Entity<Models.Task>()
+                .Property(t => t.UserId).IsRequired(); // Added UserId property
             modelBuilder.Entity<Models.Task>()
                 .HasIndex(t => t.DueDate);
         }

@@ -16,42 +16,37 @@ namespace ToDoListAPI.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public ListDto CreateList(ListDto list)
+        public ListDto CreateList(ListDto list, string userId)
         {
             List listEntity = _mapper.Map<List>(list);
-            _unitOfWork.ListRepository.CreateList(listEntity);
-            ListDto createdList = _mapper.Map<ListDto>(listEntity);
+            listEntity.UserId = userId; // Set UserId before passing to repository
+            List createdListEntity = _unitOfWork.ListRepository.CreateList(listEntity, userId);
             _unitOfWork.Save();
-            return createdList;
+            return _mapper.Map<ListDto>(createdListEntity);
         }
 
-        public void DeleteList(String id)
+        public void DeleteList(string id, string userId)
         {
-            String listId = id;
-            _unitOfWork.ListRepository.DeleteList(listId);
+            _unitOfWork.ListRepository.DeleteList(id, userId);
             _unitOfWork.Save();
         }
 
-        public IEnumerable<ListDto> GetAllLists()
+        public IEnumerable<ListDto> GetAllLists(string userId)
         {
-            IEnumerable<Models.List> lists = _unitOfWork.ListRepository.GetAllLists();
+            IEnumerable<Models.List> lists = _unitOfWork.ListRepository.GetAllLists(userId);
             return _mapper.Map<IEnumerable<ListDto>>(lists);
         }
 
-        public ListDto GetList(String id)
+        public ListDto GetList(string id, string userId)
         {
-            String listId = id;
-            List list = _unitOfWork.ListRepository.GetList(listId);
+            List list = _unitOfWork.ListRepository.GetList(id, userId);
             return _mapper.Map<ListDto>(list);
-
         }
 
-        public ListDto UpdateList(String id, ListDto list)
+        public ListDto UpdateList(string id, ListDto list, string userId)
         {
-            String listId = id;
-            ListDto updatedList = list;
-            List listEntity = _mapper.Map<List>(updatedList);
-            List updatedListEntity = _unitOfWork.ListRepository.UpdateList(listId, listEntity);
+            List listEntity = _mapper.Map<List>(list);
+            List updatedListEntity = _unitOfWork.ListRepository.UpdateList(id, listEntity, userId);
             _unitOfWork.Save();
             return _mapper.Map<ListDto>(updatedListEntity);
         }

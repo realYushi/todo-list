@@ -96,6 +96,7 @@ namespace ToDoListAPI.Models.Generated
         /// <value>The identifier of the list to which this task belongs.</value>
         [DataMember(Name = "list_id", EmitDefaultValue = false)]
         public string ListId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

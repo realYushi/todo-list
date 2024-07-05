@@ -31,7 +31,7 @@ namespace ToDoListAPI.Models.Generated
         /// </summary>
         /// <value>A unique identifier for the user.</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string UserId { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// The user&#39;s login name or handle.
@@ -46,6 +46,7 @@ namespace ToDoListAPI.Models.Generated
         /// <value>The user&#39;s email address.</value>
         [DataMember(Name = "email", EmitDefaultValue = false)]
         public string Email { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// The role assigned to the user, which could affect their permissions in the system.
@@ -69,7 +70,7 @@ namespace ToDoListAPI.Models.Generated
         {
             var sb = new StringBuilder();
             sb.Append("class User {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  Id: ").Append(UserId).Append("\n");
             sb.Append("  Username: ").Append(Username).Append("\n");
             sb.Append("  Email: ").Append(Email).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
@@ -111,9 +112,9 @@ namespace ToDoListAPI.Models.Generated
 
             return
                 (
-                    Id == other.Id ||
-                    Id != null &&
-                    Id.Equals(other.Id)
+                    UserId == other.UserId ||
+UserId != null &&
+                    UserId.Equals(other.UserId)
                 ) &&
                 (
                     Username == other.Username ||
@@ -147,8 +148,8 @@ namespace ToDoListAPI.Models.Generated
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Id != null)
-                    hashCode = hashCode * 59 + Id.GetHashCode();
+                if (UserId != null)
+                    hashCode = hashCode * 59 + UserId.GetHashCode();
                 if (Username != null)
                     hashCode = hashCode * 59 + Username.GetHashCode();
                 if (Email != null)

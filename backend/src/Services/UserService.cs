@@ -20,46 +20,35 @@ namespace ToDoListAPI.Services
         public UserDto CreateUser(UserDto user)
         {
             User userEntity = _mapper.Map<User>(user);
-            _unitOfWork.UserRepository.CreateUser(userEntity);
-            UserDto createdUser = _mapper.Map<UserDto>(userEntity);
+            _unitOfWork.UserRepository.CreateUser(userEntity); // Pass userId
             _unitOfWork.Save();
-            return createdUser;
-
+            return _mapper.Map<UserDto>(userEntity);
         }
 
-        public void DeleteUser(string id)
+        public void DeleteUser(string userId)
         {
-            String userId = id;
-            _unitOfWork.UserRepository.DeleteUser(userId);
+            _unitOfWork.UserRepository.DeleteUser(userId); // Pass userId
             _unitOfWork.Save();
-
         }
 
-        public IEnumerable<UserDto> GetAllUsers(string role, string status)
+        public IEnumerable<UserDto> GetAllUsers(string userId)
         {
-            String userRole = role;
-            String userStatus = status;
-            IEnumerable<User> users = _unitOfWork.UserRepository.GetAllUsers(userRole, userStatus);
+            IEnumerable<User> users = _unitOfWork.UserRepository.GetAllUsers(userId); // Pass userId
             return _mapper.Map<IEnumerable<UserDto>>(users);
-
         }
 
-        public UserDto GetUser(string id)
+        public UserDto GetUser(string userId)
         {
-            String userId = id;
-            User user = _unitOfWork.UserRepository.GetUser(userId);
+            User user = _unitOfWork.UserRepository.GetUser(userId); // Pass userId
             return _mapper.Map<UserDto>(user);
         }
 
-        public UserDto UpdateUser(string id, UserDto user)
+        public UserDto UpdateUser(string userId, UserDto user)
         {
-            String userId = id;
-            UserDto updatedUser = user;
-            User userEntity = _mapper.Map<User>(updatedUser);
-            User updatedUserEntity = _unitOfWork.UserRepository.UpdateUser(userId, userEntity);
+            User userEntity = _mapper.Map<User>(user);
+            User updatedUserEntity = _unitOfWork.UserRepository.UpdateUser(userId, userEntity); // Pass userId
             _unitOfWork.Save();
             return _mapper.Map<UserDto>(updatedUserEntity);
-
         }
     }
 }

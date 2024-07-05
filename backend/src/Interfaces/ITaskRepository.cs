@@ -3,10 +3,10 @@ namespace ToDoListAPI.Interfaces
 {
     public interface ITaskRepository
     {
-        IEnumerable<Models.Task> GetAllTasks();
-        Models.Task GetTask(String id);
-        Models.Task CreateTask(Models.Task task);
-        Models.Task UpdateTask(String id, Models.Task task);
-        void DeleteTask(String id);
+        IEnumerable<Models.Task> GetAllTasks(String userId);
+        Models.Task GetTask(String id, String userId);
+        Models.Task CreateTask(Models.Task task, String userId);
+        Models.Task UpdateTask(String id, Models.Task task, String userId);
+        void DeleteTask(String id, String userId);
     }
 }

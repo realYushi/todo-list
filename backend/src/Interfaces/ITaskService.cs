@@ -3,10 +3,10 @@ namespace ToDoListAPI.Interfaces
 {
     public interface ITaskService
     {
-        IEnumerable<TaskDto> GetAllTasks();
-        TaskDto GetTask(String id);
-        TaskDto CreateTask(TaskDto task);
-        TaskDto UpdateTask(String id, TaskDto task);
-        void DeleteTask(String id);
+        IEnumerable<TaskDto> GetAllTasks(String userId);
+        TaskDto GetTask(String userId, String id);
+        TaskDto CreateTask(TaskDto task, String userId);
+        TaskDto UpdateTask(string id, TaskDto task, string userId);
+        void DeleteTask(String userId, String id);
     }
 }

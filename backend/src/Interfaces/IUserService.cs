@@ -3,7 +3,7 @@ namespace ToDoListAPI.Interfaces
 {
     public interface IUserService
     {
-        IEnumerable<UserDto> GetAllUsers(string role, string status);
+        IEnumerable<UserDto> GetAllUsers(String userId);
         void DeleteUser(string id);
         UserDto GetUser(string id);
         UserDto CreateUser(UserDto user);

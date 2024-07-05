@@ -6,10 +6,10 @@ namespace ToDoListAPI.Interfaces
 
 
   {
-    IEnumerable<ListDto> GetAllLists();
-    void DeleteList(String id);
-    ListDto GetList(String id);
-    ListDto UpdateList(String id, ListDto list);
-    ListDto CreateList(ListDto list);
+    IEnumerable<ListDto> GetAllLists(String userId);
+    void DeleteList(String id, String userId);
+    ListDto GetList(String id, String userId);
+    ListDto UpdateList(String id, ListDto list, String userId);
+    ListDto CreateList(ListDto list, String userId);
   }
 }

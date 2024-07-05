@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Newtonsoft.Json;
 using ToDoListAPI.Attributes;
 using ToDoListAPI.Models;
+using ToDoListAPI.Services;
 
 namespace ToDoListAPI.Controllers
 {
@@ -13,6 +14,12 @@ namespace ToDoListAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        public UserController(UserService userService)
+        {
+            UserService = userService;
+        }
+
+        public UserService UserService { get; }
 
         /// <summary>
         /// Retrieve all users

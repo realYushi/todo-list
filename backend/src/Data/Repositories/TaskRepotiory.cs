@@ -13,31 +13,37 @@ namespace ToDoListAPI.Data.Repositories
             this.context = context;
         }
 
-        public Models.Task CreateTask(Models.Task task)
+        public Models.Task CreateTask(Models.Task task, string userId)
         {
+            task.UserId = userId;  // Ensure the UserId is set
             var createdTask = context.Tasks.Add(task);
             return createdTask.Entity;
         }
 
-        public void DeleteTask(String id)
+        public void DeleteTask(string id, string userId)
         {
-            context.Tasks.Remove(context.Tasks.Find(id));
+            var task = context.Tasks.FirstOrDefault(t => t.Id == id && t.UserId == userId);
+            if (task != null)
+            {
+                context.Tasks.Remove(task);
+            }
         }
 
-        public IEnumerable<Models.Task> GetAllTasks()
+        public IEnumerable<Models.Task> GetAllTasks(string userId)
         {
-            var tasks = context.Tasks;
+            var tasks = context.Tasks.Where(t => t.UserId == userId).AsQueryable();  // Filter by UserId
             return tasks;
         }
 
-        public Models.Task GetTask(String id)
+        public Models.Task GetTask(string id, string userId)
         {
-            var task = context.Tasks.Find(id);
+            var task = context.Tasks.FirstOrDefault(t => t.Id == id && t.UserId == userId);
             return task;
         }
 
-        public Models.Task UpdateTask(String id, Models.Task task)
+        public Models.Task UpdateTask(string id, Models.Task task, string userId)
         {
+            task.UserId = userId;  // Ensure the UserId is set
             var updatedTask = context.Tasks.Update(task);
             return updatedTask.Entity;
         }

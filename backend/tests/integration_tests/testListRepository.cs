@@ -16,6 +16,7 @@ public class testListRepository : RepositoryTestBase
     public void TestGetAllLists()
     {
         // Arrange
+        var userId = "user1"; // Added user ID for filtering
         var expect = new List<ToDoListAPI.Models.List>()
         {
             new ToDoListAPI.Models.List
@@ -35,7 +36,7 @@ public class testListRepository : RepositoryTestBase
         };
 
         // Act
-        var result = listRepository.GetAllLists();
+        var result = listRepository.GetAllLists(userId); // Updated to include userId
         // Assert
         result.Should().BeEquivalentTo(expect);
     }
@@ -52,8 +53,9 @@ public class testListRepository : RepositoryTestBase
             UserId = "user1"
         };
         var id = "list1";
+        var userId = "user1"; // Added user ID for filtering
         // Act
-        var result = listRepository.GetList(id);
+        var result = listRepository.GetList(id, userId); // Updated to include userId
         // Assert
         result.Should().BeEquivalentTo(expect);
     }
@@ -68,8 +70,9 @@ public class testListRepository : RepositoryTestBase
             Description = "Tasks to do at school.",
             UserId = "user2"
         };
+        var userId = "user2"; // Added user ID for creation
         // Act
-        var result = listRepository.CreateList(list);
+        var result = listRepository.CreateList(list, userId); // Updated to include userId
         context.SaveChanges();
 
 
@@ -78,7 +81,7 @@ public class testListRepository : RepositoryTestBase
         result.Name.Should().Be(list.Name);
         result.Description.Should().Be(list.Description);
         result.UserId.Should().Be(list.UserId);
-        var createdList = listRepository.GetList(list.Id);
+        var createdList = listRepository.GetList(result.Id, userId); // Updated to include userId
         createdList.Should().NotBeNull();
     }
 
@@ -93,10 +96,10 @@ public class testListRepository : RepositoryTestBase
             Description = "New Tasks to do at home.",
             UserId = "user1"
         };
+        var userId = "user1"; // Added user ID for updating
         // Act
-        listRepository.UpdateList(list.Id, list);
-        context.SaveChanges();
-        var result = listRepository.GetList(list.Id);
+        listRepository.UpdateList(list.Id, list, userId); // Updated to include userId
+        var result = listRepository.GetList(list.Id, userId); // Updated to include userId
         // Assert
         result.Should().BeEquivalentTo(list);
 
@@ -107,12 +110,10 @@ public class testListRepository : RepositoryTestBase
     {
         // Arrange
         var id = "list1";
-
-
+        var userId = "user1"; // Added user ID for deletion
         // Act
-        listRepository.DeleteList(id);
-        context.SaveChanges();
-        var result = listRepository.GetList(id);
+        listRepository.DeleteList(id, userId); // Updated to include userId
+        var result = listRepository.GetList(id, userId); // Updated to include userId
         // Assert
         result.Should().BeNull();
     }

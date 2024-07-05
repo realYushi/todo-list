@@ -9,7 +9,7 @@ namespace ToDoListAPI.AutoMapper
         public AutoMapperProfile()
         {
             CreateMap<User, UserDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role))
