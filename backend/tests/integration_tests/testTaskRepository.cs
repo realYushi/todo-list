@@ -29,8 +29,18 @@ public class testTaskRepository : RepositoryTestBase
                 Status = ToDoListAPI.Models.Task.StatusEnum.PendingEnum,
                 ListId = "list1",
                 UserId = "user1"  // Ensure the UserId is set in the expected object
+            },
+            new ToDoListAPI.Models.Task
+            {
+                Id = "task2",
+                Title = "Prepare presentation",
+                Description = "Prepare the monthly performance presentation.",
+                DueDate = new DateTime(2023, 12, 31),
+                Status = ToDoListAPI.Models.Task.StatusEnum.InProgressEnum,
+                ListId = "list2",
+                UserId = "user1"  // Ensure the UserId is set in the expected object
             }
-        };
+};
 
         // Act
         var result = taskRepository.GetAllTasks("user1");  // Corrected to pass only the userId

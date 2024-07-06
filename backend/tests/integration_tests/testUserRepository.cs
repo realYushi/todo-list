@@ -49,7 +49,7 @@ public class testUserRepository : RepositoryTestBase
     public void TestCreateUser()
     {
         // Arrange
-        var newUser = new User { Username = "sallydoe", Email = "sally.doe@example.com", Role = "User", Status = "Active" };
+        var newUser = new User { Username = "sallydoe", Password = "password", Email = "sally.doe@example.com", Role = "User", Status = "Active" };
 
         // Act
         var result = userRepository.CreateUser(newUser);
@@ -69,7 +69,7 @@ public class testUserRepository : RepositoryTestBase
     public void TestUpdateUser()
     {
         // Arrange
-        var updatedUser = new User { UserId = "user1", Username = "johnnydoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
+        var updatedUser = new User { UserId = "user1", Username = "johnnydoe", Password = "password", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
 
         // Act
         userRepository.UpdateUser(updatedUser.UserId, updatedUser); // Changed from Id to UserId
