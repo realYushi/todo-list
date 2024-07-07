@@ -24,9 +24,9 @@ namespace ToDoListAPI.Services
             return _mapper.Map<TaskDto>(taskEntity);
         }
 
-        public void DeleteTask(string id, string userId)
+        public bool DeleteTask(string id, string userId)
         {
-            _unitOfWork.TaskRepository.DeleteTask(id, userId);
+            return _unitOfWork.TaskRepository.DeleteTask(id, userId);
         }
 
         public IEnumerable<TaskDto> GetAllTasks(string userId)

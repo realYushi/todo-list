@@ -19,7 +19,17 @@ RUN dotnet test
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS production
 WORKDIR /app
 COPY --from=build /app/out .
-EXPOSE 5000
+EXPOSE 5001
+
+# Copy SSL certificate file
+COPY localhost.pfx /app/localhost.pfx
+
+# Set permissions for the certificate file
+RUN chmod 600 /app/localhost.pfx
+
 RUN adduser --disabled-password --gecos "" myuser
+# Change ownership of the app directory to myuser
+RUN chown -R myuser:myuser /app
+
 USER myuser
 ENTRYPOINT ["dotnet", "ToDoListAPI.dll"]

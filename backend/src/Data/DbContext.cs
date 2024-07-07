@@ -29,7 +29,7 @@ namespace ToDoListAPI.Data
                     UserId = "user1",
                     Username = "johndoe",
                     Email = "john.doe@example.com",
-                    Password = "password",
+                    Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.",
                     Role = "Admin",
                     Status = "Active"
                 },
@@ -38,7 +38,7 @@ namespace ToDoListAPI.Data
                     UserId = "user2",
                     Username = "janedoe",
                     Email = "jane.doe@example.com",
-                    Password = "password",
+                    Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.",
                     Role = "User",
                     Status = "Active"
                 }

@@ -5,140 +5,175 @@ using Newtonsoft.Json;
 using ToDoListAPI.Attributes;
 using ToDoListAPI.Models;
 using ToDoListAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using ToDoListAPI.DTOs;
 
 namespace ToDoListAPI.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class ListController : ControllerBase
     {
+        private readonly ListService _listService;
+
         public ListController(ListService listService)
         {
-            ListService = listService;
+            _listService = listService;
         }
 
-        public ListService ListService { get; }
-
+        /// <summary>
+        /// Get all lists for the authenticated user
+        /// </summary>
+        /// <returns>An array of task lists</returns>
+        /// <response code="200">Returns the list of task lists</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">No lists found</response>
         [HttpGet]
-        [Route("/lists")]
-        [ValidateModelState]
-        [SwaggerOperation("ListsGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<List>), description: "An array of task lists.")]
-        public virtual IActionResult ListsGet([FromQuery(Name = "name")] string name)
+        [SwaggerOperation("GetLists")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ListDto>), description: "An array of task lists.")]
+        [SwaggerResponse(statusCode: 401, description: "Unauthorized")]
+        [SwaggerResponse(statusCode: 404, description: "No lists found")]
+        public ActionResult<IEnumerable<ListDto>> GetLists()
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<List>));
-            string exampleJson = null;
-            exampleJson = "[ {\n  \"user_id\" : \"user_id\",\n  \"name\" : \"name\",\n  \"description\" : \"description\",\n  \"id\" : \"id\"\n}, {\n  \"user_id\" : \"user_id\",\n  \"name\" : \"name\",\n  \"description\" : \"description\",\n  \"id\" : \"id\"\n} ]";
+            var lists = _listService.GetAllLists(userId);
+            if (lists == null || !lists.Any())
+            {
+                return NotFound("No lists found.");
+            }
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<List>>(exampleJson)
-            : default(List<List>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            return Ok(lists);
         }
 
         /// <summary>
         /// Delete a list
         /// </summary>
-        /// <remarks>Permanently deletes a specific task list, identified by its ID.</remarks>
-        /// <param name="id">Unique identifier of the task list to delete.</param>
-        /// <response code="204">Task list deleted successfully.</response>
-        [HttpDelete]
-        [Route("/lists/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("ListsIdDelete")]
-        public virtual IActionResult ListsIdDelete([FromRoute(Name = "id")][Required] string id)
+        /// <param name="id">Unique identifier of the task list to delete</param>
+        /// <returns>No content</returns>
+        /// <response code="204">Task list deleted successfully</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">List not found</response>
+        [HttpDelete("{id}")]
+        [SwaggerOperation("DeleteList")]
+        [SwaggerResponse(statusCode: 204, description: "Task list deleted successfully")]
+        [SwaggerResponse(statusCode: 401, description: "Unauthorized")]
+        [SwaggerResponse(statusCode: 404, description: "List not found")]
+        public IActionResult DeleteList([FromRoute] string id)
         {
-
-            //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(204);
-
-            throw new NotImplementedException();
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
+            if (!_listService.DeleteList(id, userId))
+            {
+                return NotFound($"List with ID {id} not found.");
+            }
+            return NoContent();
         }
 
         /// <summary>
         /// Retrieve a specific list by ID
         /// </summary>
-        /// <remarks>Returns detailed information about a specific task list, identified by its ID.</remarks>
-        /// <param name="id">Unique identifier of the task list.</param>
-        /// <response code="200">Details of a specific task list.</response>
-        [HttpGet]
-        [Route("/lists/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("ListsIdGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List), description: "Details of a specific task list.")]
-        public virtual IActionResult ListsIdGet([FromRoute(Name = "id")][Required] string id)
+        /// <param name="id">Unique identifier of the task list</param>
+        /// <returns>Details of a specific task list</returns>
+        /// <response code="200">Returns the requested task list</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">List not found</response>
+        [HttpGet("{id}")]
+        [SwaggerOperation("GetList")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ListDto), description: "Details of a specific task list")]
+        [SwaggerResponse(statusCode: 401, description: "Unauthorized")]
+        [SwaggerResponse(statusCode: 404, description: "List not found")]
+        public ActionResult<ListDto> GetList([FromRoute] string id)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List));
-            string exampleJson = null;
-            exampleJson = "{\n  \"user_id\" : \"user_id\",\n  \"name\" : \"name\",\n  \"description\" : \"description\",\n  \"id\" : \"id\"\n}";
-
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List>(exampleJson)
-            : default(List);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
+            ListDto list = _listService.GetList(id, userId);
+            if (list == null)
+            {
+                return NotFound($"List with ID {id} not found.");
+            }
+            return Ok(list);
         }
 
         /// <summary>
         /// Update an existing list
         /// </summary>
-        /// <remarks>Updates details of a specific task list using the provided data.</remarks>
-        /// <param name="id">Unique identifier of the task list to update.</param>
-        /// <param name="listsIdPutRequest"></param>
-        /// <response code="200">Task list updated successfully.</response>
-        [HttpPut]
-        [Route("/lists/{id}")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        [SwaggerOperation("ListsIdPut")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List), description: "Task list updated successfully.")]
-        public virtual IActionResult ListsIdPut([FromRoute(Name = "id")][Required] string id, [FromBody] List listsIdPutRequest)
+        /// <param name="id">Unique identifier of the task list to update</param>
+        /// <param name="listDto">Updated list data</param>
+        /// <returns>Updated task list</returns>
+        /// <response code="200">Task list updated successfully</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">List not found</response>
+        [HttpPut("{id}")]
+        [SwaggerOperation("UpdateList")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ListDto), description: "Task list updated successfully")]
+        [SwaggerResponse(statusCode: 401, description: "Unauthorized")]
+        [SwaggerResponse(statusCode: 404, description: "List not found")]
+        public ActionResult<ListDto> UpdateList([FromRoute] string id, [FromBody] ListDto listDto)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List));
-            string exampleJson = null;
-            exampleJson = "{\n  \"user_id\" : \"user_id\",\n  \"name\" : \"name\",\n  \"description\" : \"description\",\n  \"id\" : \"id\"\n}";
-
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List>(exampleJson)
-            : default(List);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
+            ListDto updatedList = _listService.UpdateList(id, listDto, userId);
+            if (updatedList == null)
+            {
+                return NotFound($"List with ID {id} not found.");
+            }
+            return Ok(updatedList);
         }
 
         /// <summary>
         /// Create a new list
         /// </summary>
-        /// <remarks>Creates a new task list with specified name and description.</remarks>
-        /// <param name="listsPostRequest"></param>
-        /// <response code="201">Task list created successfully.</response>
+        /// <param name="listDto">New list data</param>
+        /// <returns>Newly created task list</returns>
+        /// <response code="201">Task list created successfully</response>
+        /// <response code="400">Invalid input</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost]
-        [Route("/lists")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        [SwaggerOperation("ListsPost")]
-        [SwaggerResponse(statusCode: 201, type: typeof(List), description: "Task list created successfully.")]
-        public virtual IActionResult ListsPost([FromBody] List listsPostRequest)
+        [SwaggerOperation("CreateList")]
+        [SwaggerResponse(statusCode: 201, type: typeof(ListDto), description: "Task list created successfully")]
+        [SwaggerResponse(statusCode: 400, description: "Invalid input")]
+        [SwaggerResponse(statusCode: 401, description: "Unauthorized")]
+        public ActionResult<ListDto> CreateList([FromBody] ListDto listDto)
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
+            if (listDto == null)
+            {
+                return BadRequest("List details are required.");
+            }
+            if (string.IsNullOrEmpty(listDto.Name))
+            {
+                return BadRequest("List name is required.");
+            }
+            ListDto createdList = _listService.CreateList(listDto, userId);
+            return CreatedAtAction(nameof(GetList), new { id = createdList.Id }, createdList);
+        }
 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201, default(List));
-            string exampleJson = null;
-            exampleJson = "{\n  \"user_id\" : \"user_id\",\n  \"name\" : \"name\",\n  \"description\" : \"description\",\n  \"id\" : \"id\"\n}";
-
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List>(exampleJson)
-            : default(List);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        private string GetUserId()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

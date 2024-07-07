@@ -30,16 +30,18 @@ public class UserServiceTest
             Username = "john_doe",
             Email = "john.doe@example.com",
             Role = "Administrator",
-            Status = "Active"
+            Status = "Active",
+            Password = "password"
         };
 
         sampleUserDto = new UserDto
         {
             UserId = "1",
-            Username = "john_doe",
+            UserName = "john_doe",
             Email = "john.doe@example.com",
             Role = "Administrator",
-            Status = "Active"
+            Status = "Active",
+            Password = "password"
         };
     }
 
@@ -50,10 +52,10 @@ public class UserServiceTest
         var userId = "1"; // Assuming you want to test with a specific user ID
         var users = new List<User> { sampleUser };
         var usersDto = new List<UserDto> { sampleUserDto };
-        _unitOfWork.Setup(repo => repo.UserRepository.GetAllUsers(userId)).Returns(users);
+        _unitOfWork.Setup(repo => repo.UserRepository.GetAllUsers()).Returns(users);
         _mapper.Setup(mapper => mapper.Map<IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>())).Returns(usersDto);
         // Act
-        var result = _userService.GetAllUsers(userId);
+        var result = _userService.GetAllUsers();
         // Assert
         result.Should().NotBeNull(); // Ensures the result is not null
         result.Should().BeOfType<List<UserDto>>(); // Checks that result is of type List<UserDto>
@@ -61,7 +63,7 @@ public class UserServiceTest
         result.Should().BeEquivalentTo(usersDto, options => options.ComparingByMembers<UserDto>()); // Deep compare the actual result to expected DTOs
         result.Should().ContainItemsAssignableTo<UserDto>(); // Ensures all items are of type UserDto
 
-        _unitOfWork.Verify(repo => repo.UserRepository.GetAllUsers(userId), Times.Once); // Verify that the GetAllUsers method was called exactly once
+        _unitOfWork.Verify(repo => repo.UserRepository.GetAllUsers(), Times.Once); // Verify that the GetAllUsers method was called exactly once
         _mapper.Verify(mapper => mapper.Map<IEnumerable<UserDto>>(users), Times.Once); // Verify that the mapping was called exactly once with the specific input
     }
 
@@ -70,17 +72,42 @@ public class UserServiceTest
     {
         // Arrange
         var userId = "1";
-        _unitOfWork.Setup(repo => repo.UserRepository.GetUser(userId)).Returns(sampleUser);
-        _mapper.Setup(mapper => mapper.Map<UserDto>(It.IsAny<User>())).Returns(sampleUserDto);
+        var userName = "john_doe";
+        var email = "john.doe@example.com";
+        var password = "password";
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+        var userWithValidHash = new User
+        {
+            UserId = userId,
+            Username = userName,
+            Email = email,
+            Role = "Administrator",
+            Status = "Active",
+            Password = hashedPassword
+        };
+
+        var userDtoWithValidHash = new UserDto
+        {
+            UserId = userId,
+            UserName = userName,
+            Email = email,
+            Role = "Administrator",
+            Status = "Active",
+            Password = password
+        };
+
+        _unitOfWork.Setup(repo => repo.UserRepository.GetUser(userName, email)).Returns(userWithValidHash);
+        _mapper.Setup(mapper => mapper.Map<UserDto>(It.IsAny<User>())).Returns(userDtoWithValidHash);
         // Act
-        var result = _userService.GetUser(userId);
+        var result = _userService.GetUser(userName, email, password);
         // Assert
         result.Should().NotBeNull(); // Ensures the result is not null
         result.Should().BeOfType<UserDto>(); // Checks that result is of type UserDto
-        result.Should().BeEquivalentTo(sampleUserDto, options => options.ComparingByMembers<UserDto>()); // Deep compare the actual result to expected DTO
+        result.Should().BeEquivalentTo(userDtoWithValidHash, options => options.ComparingByMembers<UserDto>()); // Deep compare the actual result to expected DTO
 
-        _unitOfWork.Verify(repo => repo.UserRepository.GetUser(userId), Times.Once); // Verify that the GetUser method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<UserDto>(sampleUser), Times.Once); // Verify that the mapping was called exactly once with the specific input
+        _unitOfWork.Verify(repo => repo.UserRepository.GetUser(userName, email), Times.Once); // Verify that the GetUser method was called exactly once
+        _mapper.Verify(mapper => mapper.Map<UserDto>(userWithValidHash), Times.Once); // Verify that the mapping was called exactly once with the specific input
     }
 
     [Test]
@@ -115,16 +142,18 @@ public class UserServiceTest
             Username = "Updated User",
             Email = "update@example.com",
             Role = "User",
-            Status = "Inactive"
+            Status = "Inactive",
+            Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx."
         };
 
         var updatedUserDto = new UserDto
         {
             UserId = updatedUser.UserId,
-            Username = updatedUser.Username,
+            UserName = updatedUser.Username,
             Email = updatedUser.Email,
             Role = updatedUser.Role,
-            Status = updatedUser.Status
+            Status = updatedUser.Status,
+            Password = updatedUser.Password
         };
 
         _unitOfWork.Setup(repo => repo.UserRepository.UpdateUser(userId, It.IsAny<User>())).Returns(updatedUser);

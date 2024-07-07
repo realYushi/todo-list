@@ -19,23 +19,25 @@ namespace ToDoListAPI.Data.Repositories
             return createdUser.Entity;
         }
 
-        public void DeleteUser(string userId)
+        public bool DeleteUser(string userId)
         {
             var user = context.Users.FirstOrDefault(u => u.UserId == userId);
             if (user != null)
             {
                 context.Users.Remove(user);
+                return true;
             }
+            return false;
         }
 
-        public IEnumerable<Models.User> GetAllUsers(string userId)
+        public IEnumerable<Models.User> GetAllUsers()
         {
-            return context.Users.Where(user => user.UserId == userId);
+            return context.Users;
         }
 
-        public Models.User GetUser(string userId)
+        public Models.User GetUser(string userName, string email)
         {
-            return context.Users.FirstOrDefault(u => u.UserId == userId);
+            return context.Users.FirstOrDefault(u => u.Username == userName && u.Email == email);
         }
 
         public Models.User UpdateUser(string userId, Models.User user)

@@ -1,15 +1,17 @@
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Interfaces;
-using ToDoListAPI.Data;
 using AutoMapper;
 using ToDoListAPI.Models;
 
+
 namespace ToDoListAPI.Services
 {
+
     public class ListService : IListService
     {
 
         private readonly IUnitOfWork _unitOfWork;
+
         private readonly IMapper _mapper;
         public ListService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -25,10 +27,12 @@ namespace ToDoListAPI.Services
             return _mapper.Map<ListDto>(createdListEntity);
         }
 
-        public void DeleteList(string id, string userId)
+        public bool DeleteList(string id, string userId)
         {
-            _unitOfWork.ListRepository.DeleteList(id, userId);
+            bool success = _unitOfWork.ListRepository.DeleteList(id, userId);
             _unitOfWork.Save();
+            return success;
+
         }
 
         public IEnumerable<ListDto> GetAllLists(string userId)

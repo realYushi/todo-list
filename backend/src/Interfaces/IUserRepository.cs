@@ -3,9 +3,9 @@ namespace ToDoListAPI.Interfaces
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAllUsers(String userId);
-        void DeleteUser(string id);
-        User GetUser(string id);
+        IEnumerable<User> GetAllUsers();
+        bool DeleteUser(string id);
+        User GetUser(string userName, string email);
         User CreateUser(User user);
         User UpdateUser(string id, User user);
     }

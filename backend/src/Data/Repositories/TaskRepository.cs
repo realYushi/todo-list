@@ -20,13 +20,15 @@ namespace ToDoListAPI.Data.Repositories
             return createdTask.Entity;
         }
 
-        public void DeleteTask(string id, string userId)
+        public bool DeleteTask(string id, string userId)
         {
-            var task = context.Tasks.FirstOrDefault(t => t.Id == id && t.UserId == userId);
-            if (task != null)
+            var task = context.Tasks.SingleOrDefault(t => t.Id == id && t.UserId == userId);
+            if (task == null)
             {
-                context.Tasks.Remove(task);
+                return false;
             }
+            context.Tasks.Remove(task);
+            return true;
         }
 
         public IEnumerable<Models.Task> GetAllTasks(string userId)

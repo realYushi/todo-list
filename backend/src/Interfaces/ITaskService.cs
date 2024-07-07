@@ -7,6 +7,6 @@ namespace ToDoListAPI.Interfaces
         TaskDto GetTask(String userId, String id);
         TaskDto CreateTask(TaskDto task, String userId);
         TaskDto UpdateTask(string id, TaskDto task, string userId);
-        void DeleteTask(String userId, String id);
+        bool DeleteTask(String userId, String id);
     }
 }

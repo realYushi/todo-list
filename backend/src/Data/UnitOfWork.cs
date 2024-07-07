@@ -13,7 +13,10 @@ namespace ToDoListAPI.Data
         public UnitOfWork(ToDoListContext context, ITaskRepository taskRepository, IListRepository listRepository, IUserRepository userRepository)
         {
             _context = context;
+
+
             _taskRepository = taskRepository;
+
             _listRepository = listRepository;
             _userRepository = userRepository;
         }

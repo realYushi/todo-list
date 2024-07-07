@@ -21,14 +21,18 @@ namespace ToDoListAPI.Data.Repositories
             return createdList.Entity;
         }
 
-        public void DeleteList(string id, string userId)
+        public bool DeleteList(string id, string userId)
         {
             var list = context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
-            if (list != null)
+            if (list == null)
             {
-                context.Lists.Remove(list);
-                context.SaveChanges(); // Save changes here if not using a unit of work pattern
+                return false; // List not found, return false
             }
+
+            context.Lists.Remove(list);
+            int changes = context.SaveChanges(); // Store the number of changes
+
+            return changes > 0; // Return true if any changes were made, otherwise false
         }
 
         public IEnumerable<Models.List> GetAllLists(string userId)

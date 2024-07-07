@@ -1,143 +1,163 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
-using Newtonsoft.Json;
-using ToDoListAPI.Attributes;
-using ToDoListAPI.Models;
+using ToDoListAPI.DTOs;
+using ToDoListAPI.Interfaces;
 using ToDoListAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ToDoListAPI.Controllers
-
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
-        private readonly TaskService _taskService;
-        public TaskController(TaskService taskService)
+        private readonly ITaskService _taskService;
+
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
         }
 
         /// <summary>
-        /// Retrieve all tasks
+        /// Get all tasks for the authenticated user
         /// </summary>
-        /// <remarks>Fetches a list of tasks, optionally filtered by status or due date.</remarks>
-        /// <param name="status">Filter tasks based on their status (e.g., pending, in_progress, completed).</param>
-        /// <param name="dueDate">Filter tasks based on their due date in YYYY-MM-DD format.</param>
-        /// <response code="200">A JSON array of task objects.</response>
+        /// <returns>A list of tasks</returns>
+        /// <response code="200">Returns the list of tasks</response>
+        /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/tasks")]
-        [ValidateModelState]
-        [SwaggerOperation("TasksGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Models.Task>), description: "A JSON array of task objects.")]
-        public virtual IActionResult TasksGet([FromQuery(Name = "status")] string status, [FromQuery(Name = "due_date")] DateTime? dueDate)
+        [SwaggerOperation(Summary = "Get all tasks", Description = "Retrieves all tasks for the authenticated user")]
+        [SwaggerResponse(StatusCodes.Status200OK, "List of tasks retrieved successfully", typeof(IEnumerable<TaskDto>))]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+        public ActionResult<IEnumerable<TaskDto>> GetAllTasks()
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-
-            throw new NotImplementedException();
+            var tasks = _taskService.GetAllTasks(userId);
+            return Ok(tasks);
         }
 
         /// <summary>
-        /// Delete a task
+        /// Delete a specific task
         /// </summary>
-        /// <remarks>Permanently deletes a task identified by its ID from the system.</remarks>
-        /// <param name="id">The unique identifier of the task to delete.</param>
-        /// <response code="204">Task deleted successfully. No content is returned.</response>
-        [HttpDelete]
-        [Route("/tasks/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("TasksIdDelete")]
-        public virtual IActionResult TasksIdDelete([FromRoute(Name = "id")][Required] string id)
+        /// <param name="id">The ID of the task to delete</param>
+        /// <response code="204">Task deleted successfully</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">Task not found</response>
+        [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Delete a task", Description = "Deletes a specific task by ID")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "Task deleted successfully")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found")]
+        public IActionResult DeleteTask(string id)
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-            //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(204);
+            bool found = _taskService.DeleteTask(id, userId);
+            if (!found)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
 
-            throw new NotImplementedException();
+            return NoContent();
         }
 
         /// <summary>
-        /// Retrieve a specific task
+        /// Get a specific task
         /// </summary>
-        /// <remarks>Fetches details of a specific task by its ID.</remarks>
-        /// <param name="id"></param>
-        /// <response code="200">Returns detailed information about the task.</response>
-        [HttpGet]
-        [Route("/tasks/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("TasksIdGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Models.Task), description: "Returns detailed information about the task.")]
-        public virtual IActionResult TasksIdGet([FromRoute(Name = "id")][Required] string id)
+        /// <param name="id">The ID of the task to retrieve</param>
+        /// <returns>The requested task</returns>
+        /// <response code="200">Returns the requested task</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">Task not found</response>
+        [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Get a task", Description = "Retrieves a specific task by ID")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task retrieved successfully", typeof(TaskDto))]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found")]
+        public ActionResult<TaskDto> GetTask(string id)
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Task));
-            string exampleJson = null;
-            exampleJson = "{\n  \"list_id\" : \"list_id\",\n  \"due_date\" : \"2000-01-23\",\n  \"description\" : \"description\",\n  \"id\" : \"id\",\n  \"title\" : \"title\",\n  \"status\" : \"pending\"\n}";
+            var task = _taskService.GetTask(id, userId);
+            if (task == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Models.Task>(exampleJson)
-            : default(Models.Task);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            return Ok(task);
         }
 
         /// <summary>
-        /// Update an existing task
+        /// Update a specific task
         /// </summary>
-        /// <remarks>Updates the specified task with the provided details.</remarks>
-        /// <param name="id">The unique identifier of the task to update.</param>
-        /// <param name="tasksIdPutRequest"></param>
-        /// <response code="200">Task updated successfully.</response>
-        [HttpPut]
-        [Route("/tasks/{id}")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        [SwaggerOperation("TasksIdPut")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Models.Task), description: "Task updated successfully.")]
-        public virtual IActionResult TasksIdPut([FromRoute(Name = "id")][Required] string id, [FromBody] Models.Task tasksIdPutRequest)
+        /// <param name="id">The ID of the task to update</param>
+        /// <param name="taskDto">The updated task data</param>
+        /// <returns>The updated task</returns>
+        /// <response code="200">Task updated successfully</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">Task not found</response>
+        [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Update a task", Description = "Updates a specific task by ID")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task updated successfully", typeof(TaskDto))]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found")]
+        public ActionResult<TaskDto> UpdateTask(string id, [FromBody] TaskDto taskDto)
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Task));
-            string exampleJson = null;
-            exampleJson = "{\n  \"list_id\" : \"list_id\",\n  \"due_date\" : \"2000-01-23\",\n  \"description\" : \"description\",\n  \"id\" : \"id\",\n  \"title\" : \"title\",\n  \"status\" : \"pending\"\n}";
+            var updatedTask = _taskService.UpdateTask(id, taskDto, userId);
+            if (updatedTask == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Models.Task>(exampleJson)
-            : default(Models.Task);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            return Ok(updatedTask);
         }
 
         /// <summary>
         /// Create a new task
         /// </summary>
-        /// <remarks>Creates a task with the given details.</remarks>
-        /// <param name="tasksPostRequest"></param>
-        /// <response code="201">Task created successfully.</response>
+        /// <param name="taskDto">The task data to create</param>
+        /// <returns>The created task</returns>
+        /// <response code="201">Task created successfully</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost]
-        [Route("/tasks")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        [SwaggerOperation("TasksPost")]
-        [SwaggerResponse(statusCode: 201, type: typeof(Models.Task), description: "Task created successfully.")]
-        public virtual IActionResult TasksPost([FromBody] Models.Task tasksPostRequest)
+        [SwaggerOperation(Summary = "Create a task", Description = "Creates a new task")]
+        [SwaggerResponse(StatusCodes.Status201Created, "Task created successfully", typeof(TaskDto))]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+        public ActionResult<TaskDto> CreateTask([FromBody] TaskDto taskDto)
         {
+            string userId = GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is required.");
+            }
 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201, default(Task));
-            string exampleJson = null;
-            exampleJson = "{\n  \"list_id\" : \"list_id\",\n  \"due_date\" : \"2000-01-23\",\n  \"description\" : \"description\",\n  \"id\" : \"id\",\n  \"title\" : \"title\",\n  \"status\" : \"pending\"\n}";
+            var createdTask = _taskService.CreateTask(taskDto, userId);
+            return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask);
+        }
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Models.Task>(exampleJson)
-            : default(Models.Task);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        private string GetUserId()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }
