@@ -12,7 +12,7 @@ namespace ToDoListAPI.Data
 
         public DbSet<List> Lists { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Models.Task> Tasks { get; set; }
+        public DbSet<ToDoListAPI.Models.Task> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,80 +22,26 @@ namespace ToDoListAPI.Data
             ConfigureUserEntity(modelBuilder);
             ConfigureTaskEntity(modelBuilder);
             ConfigureRelationships(modelBuilder);
-            // Seed data
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    UserId = "user1",
-                    Username = "johndoe",
-                    Email = "john.doe@example.com",
-                    Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.",
-                    Role = "Admin",
-                    Status = "Active"
-                },
-                new User
-                {
-                    UserId = "user2",
-                    Username = "janedoe",
-                    Email = "jane.doe@example.com",
-                    Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.",
-                    Role = "User",
-                    Status = "Active"
-                }
-            );
-
-            modelBuilder.Entity<List>().HasData(
-                new List
-                {
-                    Id = "list1",
-                    Name = "Home Tasks",
-                    Description = "Tasks to do at home.",
-                    UserId = "user1"
-                },
-                new List
-                {
-                    Id = "list2",
-                    Name = "Work Tasks",
-                    Description = "Tasks to do at work.",
-                    UserId = "user1"
-                }
-            );
-
-            modelBuilder.Entity<Models.Task>().HasData(
-                new Models.Task
-                {
-                    Id = "task1",
-                    Title = "Wash dishes",
-                    Description = "Wash all the dishes from dinner.",
-                    DueDate = new DateTime(2023, 12, 31),
-                    Status = Models.Task.StatusEnum.PendingEnum,
-                    ListId = "list1",
-                    UserId = "user1"
-                },
-                new Models.Task
-                {
-                    Id = "task2",
-                    Title = "Prepare presentation",
-                    Description = "Prepare the monthly performance presentation.",
-                    DueDate = new DateTime(2023, 12, 31),
-                    Status = Models.Task.StatusEnum.InProgressEnum,
-                    ListId = "list2",
-                    UserId = "user1"
-                }
-            );
         }
 
         private void ConfigureListEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<List>()
                 .ToTable("Lists")
-                .HasKey(l => l.Id);
+                .HasKey(l => l.ListId);
             modelBuilder.Entity<List>()
-                .Property(l => l.Name).IsRequired().HasMaxLength(255);
+                .Property(l => l.ListId)
+                .HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<List>()
+                .Property(l => l.Title).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<List>()
                 .Property(l => l.Description).HasMaxLength(1000);
             modelBuilder.Entity<List>()
                 .Property(l => l.UserId).IsRequired();
+            modelBuilder.Entity<List>()
+                .Property(l => l.CreatedAt).IsRequired();
+            modelBuilder.Entity<List>()
+                .Property(l => l.UpdatedAt);
         }
 
         private void ConfigureUserEntity(ModelBuilder modelBuilder)
@@ -104,46 +50,72 @@ namespace ToDoListAPI.Data
                 .ToTable("Users")
                 .HasKey(u => u.UserId);
             modelBuilder.Entity<User>()
+                .Property(u => u.UserId)
+                .HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<User>()
                 .Property(u => u.Username).IsRequired().HasMaxLength(150);
             modelBuilder.Entity<User>()
                 .Property(u => u.Email).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<User>()
-                .Property(u => u.Role).IsRequired().HasMaxLength(100);
+                .Property(u => u.Password).IsRequired();
             modelBuilder.Entity<User>()
-                .Property(u => u.Status).IsRequired().HasMaxLength(50);
+                .Property(u => u.Role).IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.Status).IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.CreatedAt).IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.UpdatedAt);
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username).IsUnique();
         }
 
         private void ConfigureTaskEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Models.Task>()
                 .ToTable("Tasks")
-                .HasKey(t => t.Id);
+                .HasKey(t => t.TaskId);
+            modelBuilder.Entity<Models.Task>()
+                .Property(t => t.TaskId)
+                .HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<Models.Task>()
                 .Property(t => t.Title).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<Models.Task>()
                 .Property(t => t.Description).HasMaxLength(1000);
             modelBuilder.Entity<Models.Task>()
-                .Property(t => t.DueDate).IsRequired();
+                .Property(t => t.DueDate);
             modelBuilder.Entity<Models.Task>()
                 .Property(t => t.Status).IsRequired();
             modelBuilder.Entity<Models.Task>()
                 .Property(t => t.ListId).IsRequired();
             modelBuilder.Entity<Models.Task>()
-                .Property(t => t.UserId).IsRequired(); // Added UserId property
+                .Property(t => t.UserId).IsRequired();
             modelBuilder.Entity<Models.Task>()
                 .HasIndex(t => t.DueDate);
+            modelBuilder.Entity<Models.Task>()
+                .Property(t => t.RowVersion)
+                .IsRowVersion();
         }
 
         private void ConfigureRelationships(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Models.Task>()
-                .HasOne<List>().WithMany().HasForeignKey(t => t.ListId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<User>()
-                .HasMany<List>(u => u.Lists).WithOne(l => l.User).HasForeignKey(l => l.UserId).OnDelete(DeleteBehavior.Cascade);
+                .HasMany(u => u.Lists)
+                .WithOne(l => l.User)
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Tasks)
+                .WithOne(t => t.User)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<List>()
-                .HasMany<Models.Task>(l => l.Tasks).WithOne(t => t.List).HasForeignKey(t => t.ListId).OnDelete(DeleteBehavior.Cascade);
+                .HasMany(l => l.Tasks)
+                .WithOne(t => t.List)
+                .HasForeignKey(t => t.ListId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

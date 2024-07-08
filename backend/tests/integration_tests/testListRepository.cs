@@ -1,87 +1,129 @@
 using NUnit.Framework;
 using ToDoListAPI.Models;
 using ToDoListAPI.Data.Repositories;
-using ToDoListAPI.Models.Generated;
 using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using List = ToDoListAPI.Models.List;
+
 [TestFixture]
 public class testListRepository : RepositoryTestBase
 {
     private ListRepository listRepository;
+    private Guid userId1 = Guid.NewGuid();
+    private Guid userId2 = Guid.NewGuid();
+    private Guid listId1 = Guid.NewGuid();
+    private Guid listId2 = Guid.NewGuid();
+
     [SetUp]
     public void SetUp()
     {
+        base.SetUp();
+        context.Database.EnsureCreated();
         listRepository = new ListRepository(context);
+        SeedData();
     }
+
+    private void SeedData()
+    {
+        context.Users.AddRange(
+            new User { UserId = userId1, Username = "User1", Email = "user1@example.com", Password = "password1" },
+            new User { UserId = userId2, Username = "User2", Email = "user2@example.com", Password = "password2" }
+        );
+        context.SaveChanges();
+
+        context.Lists.AddRange(
+            new List
+            {
+                ListId = listId1,
+                Title = "Home Tasks",
+                Description = "Tasks to do at home.",
+                UserId = userId1
+            },
+            new List
+            {
+                ListId = listId2,
+                Title = "Work Tasks",
+                Description = "Tasks to do at work.",
+                UserId = userId1
+            }
+        );
+        context.SaveChanges();
+    }
+
     [Test]
     public void TestGetAllLists()
     {
         // Arrange
-        var userId = "user1"; // Added user ID for filtering
-        var expect = new List<ToDoListAPI.Models.List>()
+        var expect = new List<List>()
         {
-            new ToDoListAPI.Models.List
-                {
-                    Id = "list1",
-                    Name = "Home Tasks",
-                    Description = "Tasks to do at home.",
-                    UserId = "user1"
-                },
-            new ToDoListAPI.Models.List
-                {
-                    Id = "list2",
-                    Name = "Work Tasks",
-                    Description = "Tasks to do at work.",
-                    UserId = "user1"
-                }
+            new List
+            {
+            ListId = listId1,
+                Title = "Home Tasks",
+                Description = "Tasks to do at home.",
+            UserId = userId1
+            },
+            new List
+            {
+                ListId = listId2,
+                Title = "Work Tasks",
+                Description = "Tasks to do at work.",
+                UserId = userId1
+    }
         };
-
         // Act
-        var result = listRepository.GetAllLists(userId); // Updated to include userId
+        var result = listRepository.GetAllListsAsync(userId1).Result;
         // Assert
-        result.Should().BeEquivalentTo(expect);
+        result.Should().BeEquivalentTo(expect, options => options
+            .Excluding(x => x.CreatedAt)
+            .Excluding(x => x.UpdatedAt)
+            .Excluding(x => x.User));
     }
 
     [Test]
     public void TestGetList()
     {
         // Arrange
-        var expect = new ToDoListAPI.Models.List
+        var expect = new List
         {
-            Id = "list1",
-            Name = "Home Tasks",
+            ListId = listId1,
+            Title = "Home Tasks",
             Description = "Tasks to do at home.",
-            UserId = "user1"
+            UserId = userId1
         };
-        var id = "list1";
-        var userId = "user1"; // Added user ID for filtering
+
         // Act
-        var result = listRepository.GetList(id, userId); // Updated to include userId
+        var result = listRepository.GetListAsync(listId1, userId1).Result;
+
         // Assert
-        result.Should().BeEquivalentTo(expect);
+        result.Should().BeEquivalentTo(expect, options => options
+            .Excluding(x => x.CreatedAt)
+            .Excluding(x => x.UpdatedAt)
+            .Excluding(x => x.User));
     }
 
     [Test]
     public void TestCreateList()
     {
         // Arrange
-        var list = new ToDoListAPI.Models.List
+        var list = new List
         {
-            Name = "School Tasks",
+            Title = "School Tasks",
             Description = "Tasks to do at school.",
-            UserId = "user2"
+            UserId = userId1
         };
-        var userId = "user2"; // Added user ID for creation
-        // Act
-        var result = listRepository.CreateList(list, userId); // Updated to include userId
-        context.SaveChanges();
 
+        // Act
+        var result = listRepository.CreateListAsync(list, userId1).Result;
 
         // Assert
-        result.Id.Should().NotBeNull("ID should be assigned after creation.");
-        result.Name.Should().Be(list.Name);
+        result.ListId.Should().NotBe(Guid.Empty);
+        result.Title.Should().Be(list.Title);
         result.Description.Should().Be(list.Description);
-        result.UserId.Should().Be(list.UserId);
-        var createdList = listRepository.GetList(result.Id, userId); // Updated to include userId
+        result.UserId.Should().Be(userId1);
+
+        var createdList = listRepository.GetListAsync(result.ListId, userId1).Result;
         createdList.Should().NotBeNull();
     }
 
@@ -89,32 +131,33 @@ public class testListRepository : RepositoryTestBase
     public void TestUpdateList()
     {
         // Arrange
-        var list = new ToDoListAPI.Models.List
+        var updatedList = new List
         {
-            Id = "list1",
-            Name = "New Home Tasks",
+            ListId = listId1,
+            Title = "New Home Tasks",
             Description = "New Tasks to do at home.",
-            UserId = "user1"
+            UserId = userId1
         };
-        var userId = "user1"; // Added user ID for updating
-        // Act
-        listRepository.UpdateList(list.Id, list, userId); // Updated to include userId
-        var result = listRepository.GetList(list.Id, userId); // Updated to include userId
-        // Assert
-        result.Should().BeEquivalentTo(list);
 
+        // Act
+        var result = listRepository.UpdateListAsync(listId1, updatedList, userId1).Result;
+
+        // Assert
+        result.Should().BeEquivalentTo(updatedList, options => options
+            .Excluding(x => x.CreatedAt)
+            .Excluding(x => x.UpdatedAt)
+            .Excluding(x => x.User));
     }
 
     [Test]
     public void TestDeleteList()
     {
-        // Arrange
-        var id = "list1";
-        var userId = "user1"; // Added user ID for deletion
         // Act
-        listRepository.DeleteList(id, userId); // Updated to include userId
-        var result = listRepository.GetList(id, userId); // Updated to include userId
+        var deleteResult = listRepository.DeleteListAsync(listId1, userId1).Result;
+        var getResult = listRepository.GetListAsync(listId1, userId1).Result;
+
         // Assert
-        result.Should().BeNull();
+        deleteResult.Should().BeTrue();
+        getResult.Should().BeNull();
     }
 }

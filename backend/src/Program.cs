@@ -1,14 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ToDoListAPI.Data;
 using ToDoListAPI.Data.Repositories;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Services;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseKestrel(options =>
@@ -21,44 +20,43 @@ builder.WebHost.UseKestrel(options =>
         });
     });
 });
-// Add services to the container.
 ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 ConfigureApp(app);
 
 app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    _ = services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Audience"],
-            ClockSkew = TimeSpan.Zero // Reduce the default clock skew if desired
-        };
-    });
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured"))),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                ClockSkew = TimeSpan.Zero
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["jwt"];
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
     services.AddControllers();
     services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
-
-    // Database
-    var dbConnectionString = configuration.GetConnectionString("DefaultConnection")
-                            ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
 
     if (string.IsNullOrEmpty(dbConnectionString))
     {
@@ -75,9 +73,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddScoped<ITaskService, TaskService>();
     services.AddScoped<IListService, ListService>();
     services.AddScoped<IUserService, UserService>();
-    services.AddScoped<IAuthService, AuthService>(); // Add this line to register AuthService
+    services.AddScoped<IAuthService, AuthService>();
     // Utilities
-    services.AddScoped<IUnitOfWork, UnitOfWork>();
     services.AddAutoMapper(typeof(Program));
 
     // Logging
@@ -86,20 +83,25 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         loggingBuilder.AddConsole();
         loggingBuilder.AddDebug();
     });
+
+    services.AddHttpContextAccessor();
 }
 
 void ConfigureApp(WebApplication app)
 {
     app.UseAuthentication();
     app.UseAuthorization();
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
 
     ApplyMigrations(app);
     app.UseHttpsRedirection();
+
+    app.UseCookiePolicy(new CookiePolicyOptions
+    {
+        MinimumSameSitePolicy = SameSiteMode.Strict,
+        HttpOnly = HttpOnlyPolicy.Always,
+        Secure = CookieSecurePolicy.Always
+    });
+
     app.MapControllers();
 }
 
@@ -113,7 +115,7 @@ void ApplyMigrations(WebApplication app)
 
         try
         {
-            dbContext.Database.Migrate(); // Applies all pending migrations
+            dbContext.Database.Migrate();
             logger.LogInformation("Database migrations applied successfully.");
         }
         catch (Exception ex)

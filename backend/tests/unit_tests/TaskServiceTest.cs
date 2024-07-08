@@ -5,47 +5,53 @@ using ToDoListAPI.Interfaces;
 using AutoMapper;
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
-using Task = ToDoListAPI.Models.Task;
 using FluentAssertions;
-using ToDoListAPI.Data;
-
+using System;
+using System.Collections.Generic;
 
 [TestFixture]
 public class TaskServiceTest
 {
-    private ITaskService _taskService;
-    private Mock<IUnitOfWork> _unitOfWork;
+    private TaskService _taskService;
+    private Mock<ITaskRepository> _taskRepository;
     private Mock<IMapper> _mapper;
-    private Task sampleTask;
-    private TaskDto sampleTaskDto;
-    private string userId = "user1"; // Add a user ID for testing
+    private ToDoListAPI.Models.Task _sampleTask;
+    private TaskDto _sampleTaskDto;
+    private Guid _userId;
+    private Guid _listId;
 
     [SetUp]
     public void Setup()
     {
-        _unitOfWork = new Mock<IUnitOfWork>();
+        _taskRepository = new Mock<ITaskRepository>();
         _mapper = new Mock<IMapper>();
-        _taskService = new TaskService(_unitOfWork.Object, _mapper.Object);
-        // Initialize shared task data
+        _taskService = new TaskService(_taskRepository.Object, _mapper.Object);
 
-        sampleTask = new Task
+        // Initialize shared task data
+        _userId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        _listId = Guid.Parse("00000000-0000-0000-0000-000000000002");
+        _sampleTask = new ToDoListAPI.Models.Task
         {
-            Id = "1",
+            TaskId = Guid.Parse("00000000-0000-0000-0000-000000000003"),
             Title = "Sample Task",
-            Description = "Sample Description",
-            DueDate = DateTime.Now.AddDays(1),
-            Status = Task.StatusEnum.PendingEnum,
-            ListId = "1",
+            Description = "This is a sample task description",
+            DueDate = new DateTime(2023, 7, 1, 12, 0, 0, DateTimeKind.Utc),
+            Status = ToDoListAPI.Models.Task.StatusEnum.Pending,
+            ListId = _listId,
+            UserId = _userId,
+            RowVersion = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }
         };
 
-        sampleTaskDto = new TaskDto
+        _sampleTaskDto = new TaskDto
         {
-            Id = sampleTask.Id,
-            Title = sampleTask.Title,
-            Description = sampleTask.Description,
-            DueDate = sampleTask.DueDate,
-            Status = TaskDto.StatusEnum.PendingEnum,
-            ListId = sampleTask.Id
+            TaskId = _sampleTask.TaskId,
+            Title = _sampleTask.Title,
+            Description = _sampleTask.Description,
+            DueDate = _sampleTask.DueDate,
+            Status = TaskDto.StatusEnum.Pending,
+            ListId = _sampleTask.ListId,
+            UserId = _sampleTask.UserId,
+            RowVersion = _sampleTask.RowVersion
         };
     }
 
@@ -53,121 +59,113 @@ public class TaskServiceTest
     public void TestGetAllTasks()
     {
         // Arrange
-        var tasks = new List<Task> { sampleTask };
-        var tasksDto = new List<TaskDto> { sampleTaskDto };
-        _unitOfWork.Setup(repo => repo.TaskRepository.GetAllTasks(userId)).Returns(tasks); // Include userId
-        _mapper.Setup(mapper => mapper.Map<IEnumerable<TaskDto>>(It.IsAny<IEnumerable<Task>>())).Returns(tasksDto);
+        var tasks = new List<ToDoListAPI.Models.Task> { _sampleTask };
+        var tasksDto = new List<TaskDto> { _sampleTaskDto };
+        _taskRepository.Setup(repo => repo.GetAllTasksAsync(_userId).Result).Returns(tasks);
+        _mapper.Setup(mapper => mapper.Map<IEnumerable<TaskDto>>(It.IsAny<IEnumerable<ToDoListAPI.Models.Task>>())).Returns(tasksDto);
+
         // Act
-        var result = _taskService.GetAllTasks(userId); // Include userId
+        var result = _taskService.GetAllTasksAsync(_userId).Result;
+
         // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<List<TaskDto>>(); // Checks that result is of type List<TaskDto>
-        result.Should().HaveCount(tasks.Count); // Checks the count of returned tasks
-        result.Should().BeEquivalentTo(tasksDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTOs
-        result.Should().ContainItemsAssignableTo<TaskDto>(); // Ensures all items are of type TaskDto
-        result.Should().BeEquivalentTo(tasksDto, options => options.ComparingByMembers<TaskDto>().WithStrictOrdering()); // Ensures the items are in the same order as expected
-
-        _unitOfWork.Verify(repo => repo.TaskRepository.GetAllTasks(userId), Times.Once); // Verify that the GetAllTasks method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<IEnumerable<TaskDto>>(tasks), Times.Once); // Verify that the mapping was called exactly once with the specific input
-
-
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(tasksDto);
+        _taskRepository.Verify(repo => repo.GetAllTasksAsync(_userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<IEnumerable<TaskDto>>(tasks), Times.Once);
     }
 
     [Test]
     public void TestGetTask()
     {
         // Arrange
-        var taskId = "1";
-        _unitOfWork.Setup(repo => repo.TaskRepository.GetTask(taskId, userId)).Returns(sampleTask); // Include userId
-        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(sampleTaskDto);
-        // Act
-        var result = _taskService.GetTask(taskId, userId); // Include userId
-        // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
-        result.Should().BeEquivalentTo(sampleTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
+        var taskId = _sampleTask.TaskId.Value;
+        _taskRepository.Setup(repo => repo.GetTaskAsync(taskId, _userId).Result).Returns(_sampleTask);
+        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<ToDoListAPI.Models.Task>())).Returns(_sampleTaskDto);
 
-        _unitOfWork.Verify(repo => repo.TaskRepository.GetTask(taskId, userId), Times.Once); // Verify that the GetTask method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<TaskDto>(sampleTask), Times.Once); // Verify that the mapping was called exactly once with the specific input
+        // Act
+        var result = _taskService.GetTaskAsync(taskId, _userId).Result;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(_sampleTaskDto);
+        _taskRepository.Verify(repo => repo.GetTaskAsync(taskId, _userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<TaskDto>(_sampleTask), Times.Once);
     }
 
     [Test]
     public void TestCreateTask()
     {
         // Arrange
-        _unitOfWork.Setup(repo => repo.TaskRepository.CreateTask(It.IsAny<Task>(), userId)).Returns(sampleTask); // Include userId
-        _mapper.Setup(mapper => mapper.Map<Task>(It.IsAny<TaskDto>())).Returns(sampleTask);
-        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(sampleTaskDto);
+        _taskRepository.Setup(repo => repo.CreateTaskAsync(It.IsAny<ToDoListAPI.Models.Task>(), _userId).Result).Returns(_sampleTask);
+        _mapper.Setup(mapper => mapper.Map<ToDoListAPI.Models.Task>(It.IsAny<TaskDto>())).Returns(_sampleTask);
+        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<ToDoListAPI.Models.Task>())).Returns(_sampleTaskDto);
 
         // Act
-        var result = _taskService.CreateTask(sampleTaskDto, userId); // Include userId
+        var result = _taskService.CreateTaskAsync(_sampleTaskDto, _userId).Result;
 
         // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
-        result.Should().BeEquivalentTo(sampleTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
-
-        _unitOfWork.Verify(repo => repo.TaskRepository.CreateTask(It.IsAny<Task>(), userId), Times.Once); // Verify that the CreateTask method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<Task>(sampleTaskDto), Times.Once); // Verify that the mapping to Task was called exactly once with the specific input
-        _mapper.Verify(mapper => mapper.Map<TaskDto>(sampleTask), Times.Once); // Verify that the mapping back to TaskDto was called exactly once
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(_sampleTaskDto);
+        _taskRepository.Verify(repo => repo.CreateTaskAsync(It.IsAny<ToDoListAPI.Models.Task>(), _userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<ToDoListAPI.Models.Task>(_sampleTaskDto), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<TaskDto>(_sampleTask), Times.Once);
     }
-
 
     [Test]
     public void TestUpdateTask()
     {
         // Arrange
-        var taskId = "1";
-        var updatedTask = new Task
+        var taskId = _sampleTask.TaskId.Value;
+        var updatedTask = new ToDoListAPI.Models.Task
         {
-            Id = taskId,
+            TaskId = taskId,
             Title = "Updated Task",
-            Description = "Updated Description",
-            DueDate = DateTime.Now.AddDays(2),
-            Status = Task.StatusEnum.InProgressEnum,
-            ListId = "1"
+            Description = "This is an updated task description",
+            DueDate = new DateTime(2023, 7, 15, 12, 0, 0, DateTimeKind.Utc),
+            Status = ToDoListAPI.Models.Task.StatusEnum.InProgress,
+            ListId = _listId,
+            UserId = _userId,
+            RowVersion = new byte[] { 8, 9, 10, 11, 12, 13, 14, 15 }
         };
 
         var updatedTaskDto = new TaskDto
         {
-            Id = updatedTask.Id,
+            TaskId = updatedTask.TaskId,
             Title = updatedTask.Title,
             Description = updatedTask.Description,
             DueDate = updatedTask.DueDate,
-            Status = TaskDto.StatusEnum.InProgressEnum,
-            ListId = updatedTask.ListId
+            Status = TaskDto.StatusEnum.InProgress,
+            ListId = updatedTask.ListId,
+            UserId = updatedTask.UserId,
+            RowVersion = updatedTask.RowVersion
         };
 
-        _unitOfWork.Setup(repo => repo.TaskRepository.UpdateTask(taskId, It.IsAny<Task>(), userId)).Returns(updatedTask); // Include userId
-        _mapper.Setup(mapper => mapper.Map<Task>(It.IsAny<TaskDto>())).Returns(updatedTask);
-        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<Task>())).Returns(updatedTaskDto);
+        _taskRepository.Setup(repo => repo.GetTaskAsync(taskId, _userId).Result).Returns(_sampleTask);
+        _taskRepository.Setup(repo => repo.UpdateTaskAsync(taskId, It.IsAny<ToDoListAPI.Models.Task>(), _userId).Result).Returns(updatedTask);
+        _mapper.Setup(mapper => mapper.Map<TaskDto>(It.IsAny<ToDoListAPI.Models.Task>())).Returns(updatedTaskDto);
 
         // Act
-        var result = _taskService.UpdateTask(taskId, updatedTaskDto, userId); // Include userId
+        var result = _taskService.UpdateTaskAsync(taskId, updatedTaskDto, _userId).Result;
 
         // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<TaskDto>(); // Checks that result is of type TaskDto
-        result.Should().BeEquivalentTo(updatedTaskDto, options => options.ComparingByMembers<TaskDto>()); // Deep compare the actual result to expected DTO
-
-        _unitOfWork.Verify(repo => repo.TaskRepository.UpdateTask(taskId, It.IsAny<Task>(), userId), Times.Once); // Verify that the UpdateTask method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<Task>(updatedTaskDto), Times.Once); // Verify that the mapping to Task was called exactly once with the specific input
-        _mapper.Verify(mapper => mapper.Map<TaskDto>(updatedTask), Times.Once); // Verify that the mapping to TaskDto was called exactly once with the specific input
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(updatedTaskDto);
+        _taskRepository.Verify(repo => repo.GetTaskAsync(taskId, _userId), Times.Once);
+        _taskRepository.Verify(repo => repo.UpdateTaskAsync(taskId, It.IsAny<ToDoListAPI.Models.Task>(), _userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<TaskDto>(updatedTask), Times.Once);
     }
-
 
     [Test]
     public void TestDeleteTask()
     {
         // Arrange
-        var taskId = "1";
-        _unitOfWork.Setup(repo => repo.TaskRepository.DeleteTask(taskId, userId)); // Include userId
-
+        var taskId = _sampleTask.TaskId.Value;
+        _taskRepository.Setup(repo => repo.DeleteTaskAsync(taskId, _userId).Result).Returns(true);
         // Act
-        _taskService.DeleteTask(taskId, userId); // Include userId
+        var result = _taskService.DeleteTaskAsync(taskId, _userId).Result;
 
         // Assert
-
-        _unitOfWork.Verify(repo => repo.TaskRepository.DeleteTask(taskId, userId), Times.Once); // Verify that the DeleteTask method was called exactly once
+        result.Should().BeTrue();
+        _taskRepository.Verify(repo => repo.DeleteTaskAsync(taskId, _userId), Times.Once);
     }
 }

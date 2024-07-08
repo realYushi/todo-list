@@ -3,41 +3,52 @@ using Moq;
 using ToDoListAPI.Services;
 using ToDoListAPI.Interfaces;
 using AutoMapper;
-using ToDoListAPI.Data;
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
 using FluentAssertions;
+using System;
+using System.Collections.Generic;
 
 [TestFixture]
 public class ListServiceTest
 {
     private IListService _listService;
-    private Mock<IUnitOfWork> _unitOfWork;
+    private Mock<IListRepository> _listRepository;
     private Mock<IMapper> _mapper;
     private List sampleList;
     private ListDto sampleListDto;
+    private DateTime fixedTime;
+
     [SetUp]
     public void Setup()
     {
-        _unitOfWork = new Mock<IUnitOfWork>();
+        _listRepository = new Mock<IListRepository>();
         _mapper = new Mock<IMapper>();
-        _listService = new ListService(_unitOfWork.Object, _mapper.Object);
-        // Initialize shared list data
+        _listService = new ListService(_listRepository.Object, _mapper.Object);
 
+        fixedTime = new DateTime(2023, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+
+        // Initialize shared list data
         sampleList = new List
         {
-            Id = "1",
-            Name = "Sample List",
+            ListId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Title = "Sample List",
             Description = "This is a sample list for demonstration purposes.",
-            UserId = "user123"
+            UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            CreatedAt = fixedTime,
+            UpdatedAt = null,
+            Tasks = new List<ToDoListAPI.Models.Task>()
         };
 
         sampleListDto = new ListDto
         {
-            Id = "1",
-            Name = "Sample List",
+            ListId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Title = "Sample List",
             Description = "This is a sample list for demonstration purposes.",
-            UserId = "user123"
+            UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            CreatedAt = fixedTime,
+            UpdatedAt = null,
+            Tasks = new List<TaskDto>()
         };
     }
 
@@ -45,119 +56,125 @@ public class ListServiceTest
     public void TestGetAllLists()
     {
         // Arrange
-        var userId = "user123"; // Define user ID
+        var userId = Guid.Parse("22222222-2222-2222-2222-222222222222");
         var lists = new List<List> { sampleList };
         var listsDto = new List<ListDto> { sampleListDto };
-        _unitOfWork.Setup(repo => repo.ListRepository.GetAllLists(userId)).Returns(lists); // Pass userId to GetAllLists
+        _listRepository.Setup(repo => repo.GetAllListsAsync(userId)).Returns(System.Threading.Tasks.Task.FromResult((IEnumerable<List>)lists));
         _mapper.Setup(mapper => mapper.Map<IEnumerable<ListDto>>(It.IsAny<IEnumerable<List>>())).Returns(listsDto);
-        // Act
-        var result = _listService.GetAllLists(userId); // Pass userId to GetAllLists
-        // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<List<ListDto>>(); // Checks that result is of type List<ListDto>
-        result.Should().HaveCount(lists.Count); // Checks the count of returned lists
-        result.Should().BeEquivalentTo(listsDto, options => options.ComparingByMembers<ListDto>()); // Deep compare the actual result to expected DTOs
-        result.Should().ContainItemsAssignableTo<ListDto>(); // Ensures all items are of type ListDto
-        result.Should().BeEquivalentTo(listsDto, options => options.ComparingByMembers<ListDto>().WithStrictOrdering()); // Ensures the items are in the same order as expected
 
-        _unitOfWork.Verify(repo => repo.ListRepository.GetAllLists(userId), Times.Once); // Verify that the GetAllLists method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<IEnumerable<ListDto>>(lists), Times.Once); // Verify that the mapping was called exactly once with the specific input
+        // Act
+        var result = _listService.GetAllListsAsync(userId).Result;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<List<ListDto>>();
+        result.Should().HaveCount(lists.Count);
+        result.Should().BeEquivalentTo(listsDto, options => options.ComparingByMembers<ListDto>());
+        result.Should().ContainItemsAssignableTo<ListDto>();
+        result.Should().BeEquivalentTo(listsDto, options => options.ComparingByMembers<ListDto>().WithStrictOrdering());
+
+        _listRepository.Verify(repo => repo.GetAllListsAsync(userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<IEnumerable<ListDto>>(lists), Times.Once);
     }
 
     [Test]
     public void TestGetList()
     {
         // Arrange
-        var listId = "1";
-        var userId = "user123"; // Define user ID
-        _unitOfWork.Setup(repo => repo.ListRepository.GetList(listId, userId)).Returns(sampleList); // Pass userId to GetList
+        var listId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var userId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        _listRepository.Setup(repo => repo.GetListAsync(listId, userId)).Returns(System.Threading.Tasks.Task.FromResult(sampleList));
         _mapper.Setup(mapper => mapper.Map<ListDto>(It.IsAny<List>())).Returns(sampleListDto);
-        // Act
-        var result = _listService.GetList(listId, userId); // Pass userId to GetList
-        // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<ListDto>(); // Checks that result is of type ListDto
-        result.Should().BeEquivalentTo(sampleListDto, options => options.ComparingByMembers<ListDto>()); // Deep compare the actual result to expected DTO
 
-        _unitOfWork.Verify(repo => repo.ListRepository.GetList(listId, userId), Times.Once); // Verify that the GetList method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<ListDto>(sampleList), Times.Once); // Verify that the mapping was called exactly once with the specific input
+        // Act
+        var result = _listService.GetListAsync(listId, userId).Result;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ListDto>();
+        result.Should().BeEquivalentTo(sampleListDto, options => options.ComparingByMembers<ListDto>());
+
+        _listRepository.Verify(repo => repo.GetListAsync(listId, userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<ListDto>(sampleList), Times.Once);
     }
 
     [Test]
     public void TestCreateList()
     {
         // Arrange
-        var userId = "user123"; // Define user ID
-        _unitOfWork.Setup(repo => repo.ListRepository.CreateList(It.IsAny<List>(), userId)).Returns(sampleList); // Pass userId to CreateList
+        var userId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        _listRepository.Setup(repo => repo.CreateListAsync(It.IsAny<List>(), userId)).Returns(System.Threading.Tasks.Task.FromResult(sampleList));
         _mapper.Setup(mapper => mapper.Map<List>(It.IsAny<ListDto>())).Returns(sampleList);
         _mapper.Setup(mapper => mapper.Map<ListDto>(It.IsAny<List>())).Returns(sampleListDto);
 
         // Act
-        var result = _listService.CreateList(sampleListDto, userId); // Pass userId to CreateList
+        var result = _listService.CreateListAsync(sampleListDto, userId).Result;
 
         // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<ListDto>(); // Checks that result is of type ListDto
-        result.Should().BeEquivalentTo(sampleListDto, options => options.ComparingByMembers<ListDto>()); // Deep compare the actual result to expected DTO
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ListDto>();
+        result.Should().BeEquivalentTo(sampleListDto, options => options.ComparingByMembers<ListDto>());
 
-        _unitOfWork.Verify(repo => repo.ListRepository.CreateList(It.IsAny<List>(), userId), Times.Once); // Verify that the CreateList method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<List>(sampleListDto), Times.Once); // Verify that the mapping to List was called exactly once with the specific input
-        _mapper.Verify(mapper => mapper.Map<ListDto>(sampleList), Times.Once); // Verify that the mapping back to ListDto was called exactly once
+        _listRepository.Verify(repo => repo.CreateListAsync(It.IsAny<List>(), userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<List>(sampleListDto), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<ListDto>(sampleList), Times.Once);
     }
 
     [Test]
     public void TestUpdateList()
     {
         // Arrange
-        var listId = "1";
-        var userId = "user124"; // Define user ID
+        var listId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var userId = Guid.Parse("22222222-2222-2222-2222-222222222222");
         var updatedList = new List
         {
-            Id = "1",
-            Name = "Updated List",
-            Description = "This is a updated sample list for demonstration purposes.",
-            UserId = "user124"
+            ListId = listId,
+            Title = "Updated List",
+            Description = "This is an updated sample list for demonstration purposes.",
+            UserId = userId,
+            CreatedAt = fixedTime,
+            UpdatedAt = fixedTime.AddHours(1),
+            Tasks = new List<ToDoListAPI.Models.Task>()
         };
 
         var updatedListDto = new ListDto
         {
-            Id = updatedList.Id,
-            Name = updatedList.Name,
+            ListId = updatedList.ListId,
+            Title = updatedList.Title,
             Description = updatedList.Description,
-            UserId = updatedList.UserId
+            UserId = updatedList.UserId,
+            CreatedAt = updatedList.CreatedAt,
+            UpdatedAt = updatedList.UpdatedAt,
+            Tasks = new List<TaskDto>()
         };
 
-        _unitOfWork.Setup(repo => repo.ListRepository.UpdateList(listId, It.IsAny<List>(), userId)).Returns(updatedList); // Pass userId to UpdateList
-        _mapper.Setup(mapper => mapper.Map<List>(It.IsAny<ListDto>())).Returns(updatedList);
+        _listRepository.Setup(repo => repo.GetListAsync(listId, userId)).Returns(System.Threading.Tasks.Task.FromResult(sampleList));
+        _listRepository.Setup(repo => repo.UpdateListAsync(listId, It.IsAny<List>(), userId)).Returns(System.Threading.Tasks.Task.FromResult(updatedList));
         _mapper.Setup(mapper => mapper.Map<ListDto>(It.IsAny<List>())).Returns(updatedListDto);
-
         // Act
-        var result = _listService.UpdateList(listId, updatedListDto, userId); // Pass userId to UpdateList
+        var result = _listService.UpdateListAsync(listId, updatedListDto, userId).Result;
 
         // Assert
-        result.Should().NotBeNull(); // Ensures the result is not null
-        result.Should().BeOfType<ListDto>(); // Checks that result is of type ListDto
-        result.Should().BeEquivalentTo(updatedListDto, options => options.ComparingByMembers<ListDto>()); // Deep compare the actual result to expected DTO
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ListDto>();
+        result.Should().BeEquivalentTo(updatedListDto, options => options.ComparingByMembers<ListDto>());
 
-        _unitOfWork.Verify(repo => repo.ListRepository.UpdateList(listId, It.IsAny<List>(), userId), Times.Once); // Verify that the UpdateList method was called exactly once
-        _mapper.Verify(mapper => mapper.Map<List>(updatedListDto), Times.Once); // Verify that the mapping to List was called exactly once with the specific input
-        _mapper.Verify(mapper => mapper.Map<ListDto>(updatedList), Times.Once); // Verify that the mapping to ListDto was called exactly once with the specific input
+        _listRepository.Verify(repo => repo.GetListAsync(listId, userId), Times.Once);
+        _listRepository.Verify(repo => repo.UpdateListAsync(listId, It.IsAny<List>(), userId), Times.Once);
+        _mapper.Verify(mapper => mapper.Map<ListDto>(updatedList), Times.Once);
     }
-
 
     [Test]
     public void TestDeleteList()
     {
         // Arrange
-        var listId = "1";
-        var userId = "user123"; // Define user ID
-        _unitOfWork.Setup(repo => repo.ListRepository.DeleteList(listId, userId)); // Pass userId to DeleteList
-
+        var listId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var userId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        _listRepository.Setup(repo => repo.DeleteListAsync(listId, userId)).Returns(System.Threading.Tasks.Task.FromResult(true));
         // Act
-        _listService.DeleteList(listId, userId); // Pass userId to DeleteList
-
+        var result = _listService.DeleteListAsync(listId, userId).Result;
         // Assert
-
-        _unitOfWork.Verify(repo => repo.ListRepository.DeleteList(listId, userId), Times.Once); // Verify that the DeleteList method was called exactly once
+        result.Should().BeTrue();
+        _listRepository.Verify(repo => repo.DeleteListAsync(listId, userId), Times.Once);
     }
 }

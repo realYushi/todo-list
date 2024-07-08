@@ -1,11 +1,9 @@
+using ToDoListAPI.DTOs;
+using ToDoListAPI.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using ToDoListAPI.DTOs;
-using ToDoListAPI.Interfaces;
-using Microsoft.Extensions.Configuration;
-using System;
 
 namespace ToDoListAPI.Services
 {
@@ -13,21 +11,36 @@ namespace ToDoListAPI.Services
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
+        private readonly IListService _listService;
 
-        public AuthService(IUserService userService, IConfiguration configuration)
+        public AuthService(IUserService userService, IConfiguration configuration, IListService listService)
         {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _userService = userService;
+            _configuration = configuration;
+            _listService = listService;
         }
 
-        public string Login(UserDto login)
+        public async Task<string> Login(UserDto login, HttpContext httpContext)
         {
-            var user = _userService.GetUser(login.UserName, login.Email, login.Password);
-            if (user != null)
+            var user = await _userService.GetUserAsync(login.Username, login.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
-                return GenerateJwtToken(user);
+                throw new UnauthorizedAccessException("Invalid username or password");
             }
-            return null;
+
+            var token = GenerateJwtToken(user);
+            SetJwtCookie(httpContext, token);
+            return token;
+        }
+
+        private void SetJwtCookie(HttpContext httpContext, string token)
+        {
+            httpContext.Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+            });
         }
 
         private string GenerateJwtToken(UserDto user)
@@ -35,39 +48,41 @@ namespace ToDoListAPI.Services
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>
+            var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1), // Adjust as necessary
+                expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public UserDto Register(UserDto registration)
+        public async Task<UserDto> Register(UserDto registration)
         {
-            if (_userService.GetUser(registration.UserName, registration.Email, registration.Password) != null)
+            // Check if user already exists
+            var existingUser = await _userService.GetUserAsync(registration.Username, registration.Email);
+            if (existingUser != null)
             {
-                return null; // User already exists
+                throw new InvalidOperationException("User already exists");
             }
-            return _userService.CreateUser(registration);
-        }
 
+            // Create the user
+            var createdUser = await _userService.CreateUserAsync(registration);
 
-        public void Logout()
-        {
-            // Client-side action: Remove the stored JWT token
-            // No server-side action is needed unless implementing token blacklisting
+            // Create a default list for the new user
+            var defaultList = new ListDto { };
+            await _listService.CreateListAsync(defaultList, (Guid)createdUser.UserId);
+
+            return createdUser;
         }
     }
 }

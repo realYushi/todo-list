@@ -1,51 +1,61 @@
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Interfaces;
 using AutoMapper;
-using Task = ToDoListAPI.Models.Task;
+using ToDoListAPI.Models;
+
 namespace ToDoListAPI.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITaskRepository _taskRepository;
         private readonly IMapper _mapper;
 
-        public TaskService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TaskService(ITaskRepository taskRepository, IMapper mapper)
         {
+            _taskRepository = taskRepository;
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
         }
 
-        public TaskDto CreateTask(TaskDto task, string userId)
+        public async Task<TaskDto> CreateTaskAsync(TaskDto task, Guid userId)
         {
-            Task taskEntity = _mapper.Map<Task>(task);
-            taskEntity.UserId = userId;  // Set the UserId for the task
-            _unitOfWork.TaskRepository.CreateTask(taskEntity, userId);
-            _unitOfWork.Save();
-            return _mapper.Map<TaskDto>(taskEntity);
+            task.UserId = userId;
+            Models.Task taskEntity = _mapper.Map<Models.Task>(task);
+            Models.Task createdTask = await _taskRepository.CreateTaskAsync(taskEntity, userId);
+            return _mapper.Map<TaskDto>(createdTask);
         }
 
-        public bool DeleteTask(string id, string userId)
+        public async Task<bool> DeleteTaskAsync(Guid taskId, Guid userId)
         {
-            return _unitOfWork.TaskRepository.DeleteTask(id, userId);
+            return await _taskRepository.DeleteTaskAsync(taskId, userId);
         }
 
-        public IEnumerable<TaskDto> GetAllTasks(string userId)
+        public async Task<IEnumerable<TaskDto>> GetAllTasksAsync(Guid userId)
         {
-            IEnumerable<Task> tasks = _unitOfWork.TaskRepository.GetAllTasks(userId);
+            IEnumerable<Models.Task> tasks = await _taskRepository.GetAllTasksAsync(userId);
             return _mapper.Map<IEnumerable<TaskDto>>(tasks);
         }
 
-        public TaskDto GetTask(string id, string userId)
+        public async Task<TaskDto> GetTaskAsync(Guid taskId, Guid userId)
         {
-            Task task = _unitOfWork.TaskRepository.GetTask(id, userId);
+            Models.Task task = await _taskRepository.GetTaskAsync(taskId, userId);
             return _mapper.Map<TaskDto>(task);
         }
 
-        public TaskDto UpdateTask(string id, TaskDto task, string userId)
+        public async Task<TaskDto> UpdateTaskAsync(Guid taskId, TaskDto taskDto, Guid userId)
         {
-            Task taskEntity = _mapper.Map<Models.Task>(task);
-            Task updatedTask = _unitOfWork.TaskRepository.UpdateTask(id, taskEntity, userId);
-            _unitOfWork.Save();
+            var existingTask = await _taskRepository.GetTaskAsync(taskId, userId);
+            if (existingTask == null)
+            {
+                return null;
+            }
+
+            // Map the DTO to the existing entity
+            existingTask.Title = taskDto.Title;
+            existingTask.Description = taskDto.Description;
+            existingTask.Status = (Models.Task.StatusEnum)taskDto.Status;
+            existingTask.DueDate = taskDto.DueDate;
+
+            var updatedTask = await _taskRepository.UpdateTaskAsync(taskId, existingTask, userId);
             return _mapper.Map<TaskDto>(updatedTask);
         }
     }

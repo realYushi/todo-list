@@ -2,75 +2,102 @@ using NUnit.Framework;
 using ToDoListAPI.Models;
 using ToDoListAPI.Data.Repositories;
 using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 [TestFixture]
-public class testTaskRepository : RepositoryTestBase
+public class TestTaskRepository : RepositoryTestBase
 {
     private TaskRepository taskRepository;
+    private Guid userId;
+    private Guid listId;
+    private List<ToDoListAPI.Models.Task> tasks;
 
     [SetUp]
     public void SetUp()
     {
+        base.SetUp();
         taskRepository = new TaskRepository(context);
+        SeedTestData();
+    }
+
+    private void SeedTestData()
+    {
+        var user = new User
+        {
+            UserId = Guid.NewGuid(),
+            Username = "TestUser",
+            Email = "test@example.com",
+            Password = "TestPassword123!" // Added password
+        };
+        context.Users.Add(user);
+        context.SaveChanges();
+        userId = (Guid)user.UserId;
+
+        var list = new ToDoListAPI.Models.List
+        {
+            ListId = Guid.NewGuid(),
+            UserId = userId,
+            Title = "Test List Title" // Added title
+        };
+        context.Lists.Add(list);
+        context.SaveChanges();
+        listId = list.ListId;
+
+        tasks = new List<ToDoListAPI.Models.Task>
+        {
+            new ToDoListAPI.Models.Task
+            {
+                TaskId = Guid.NewGuid(),
+                Title = "Wash dishes",
+                Description = "Wash all the dishes from dinner.",
+                DueDate = new DateTime(2023, 12, 31),
+            Status = ToDoListAPI.Models.Task.StatusEnum.Pending,
+            ListId = listId,
+            UserId = userId
+            },
+            new ToDoListAPI.Models.Task
+            {
+                TaskId = Guid.NewGuid(),
+                Title = "Prepare presentation",
+                Description = "Prepare the monthly performance presentation.",
+                DueDate = new DateTime(2023, 12, 31),
+            Status = ToDoListAPI.Models.Task.StatusEnum.InProgress,
+            ListId = listId,
+            UserId = userId
+            }
+        };
+
+        context.Tasks.AddRange(tasks);
+        context.SaveChanges();
     }
 
     [Test]
     public void TestGetAllTasks()
     {
-        // Arrange
-        var expect = new List<ToDoListAPI.Models.Task>()
-        {
-            new ToDoListAPI.Models.Task
-            {
-                Id = "task1",
-                Title = "Wash dishes",
-                Description = "Wash all the dishes from dinner.",
-                DueDate = new DateTime(2023, 12, 31),
-                Status = ToDoListAPI.Models.Task.StatusEnum.PendingEnum,
-                ListId = "list1",
-                UserId = "user1"  // Ensure the UserId is set in the expected object
-            },
-            new ToDoListAPI.Models.Task
-            {
-                Id = "task2",
-                Title = "Prepare presentation",
-                Description = "Prepare the monthly performance presentation.",
-                DueDate = new DateTime(2023, 12, 31),
-                Status = ToDoListAPI.Models.Task.StatusEnum.InProgressEnum,
-                ListId = "list2",
-                UserId = "user1"  // Ensure the UserId is set in the expected object
-            }
-};
-
         // Act
-        var result = taskRepository.GetAllTasks("user1");  // Corrected to pass only the userId
-
+        var result = taskRepository.GetAllTasksAsync(userId).Result;
         // Assert
-        result.Should().BeEquivalentTo(expect);
+        result.Should().BeEquivalentTo(tasks, options => options
+            .Excluding(x => x.List)
+            .Excluding(x => x.User)
+            .Excluding(x => x.RowVersion));
     }
 
     [Test]
     public void TestGetTask()
     {
         // Arrange
-        var expect = new ToDoListAPI.Models.Task
-        {
-            Id = "task1",
-            Title = "Wash dishes",
-            Description = "Wash all the dishes from dinner.",
-            DueDate = new DateTime(2023, 12, 31),
-            Status = ToDoListAPI.Models.Task.StatusEnum.PendingEnum,
-            ListId = "list1",
-            UserId = "user1"  // Ensure the UserId is set in the expected object
-        };
-        var id = "task1";
-        var userId = "user1";  // Corrected to include userId parameter
-
+        var expectedTask = tasks.First();
         // Act
-        var result = taskRepository.GetTask(id, userId);  // Corrected to pass the userId parameter
-
+        var result = taskRepository.GetTaskAsync(expectedTask.TaskId.Value, userId).Result;
         // Assert
-        result.Should().BeEquivalentTo(expect);
+        result.Should().BeEquivalentTo(expectedTask, options => options
+            .Excluding(x => x.List)
+            .Excluding(x => x.User)
+            .Excluding(x => x.RowVersion));
     }
 
     [Test]
@@ -82,22 +109,22 @@ public class testTaskRepository : RepositoryTestBase
             Title = "Clean room",
             Description = "Clean the entire room thoroughly.",
             DueDate = DateTime.Now.AddDays(2),
-            Status = ToDoListAPI.Models.Task.StatusEnum.PendingEnum,
-            ListId = "list1",
-            UserId = "user1"  // Ensure the UserId is set in the task object
+            Status = ToDoListAPI.Models.Task.StatusEnum.Pending,
+            ListId = listId,
+            UserId = userId
         };
 
         // Act
-        var result = taskRepository.CreateTask(task, "user1");  // Corrected to pass the userId parameter
-        context.SaveChanges();
+        var result = taskRepository.CreateTaskAsync(task, userId).Result;
 
         // Assert
-        result.Id.Should().NotBeNull("ID should be assigned after creation.");
+        result.TaskId.Should().NotBeNull("ID should be assigned after creation.");
         result.Title.Should().Be("Clean room");
         result.Description.Should().Be("Clean the entire room thoroughly.");
-        result.Status.Should().Be(ToDoListAPI.Models.Task.StatusEnum.PendingEnum);
-        result.ListId.Should().Be("list1");
-        var createdTask = taskRepository.GetTask(result.Id, "user1");  // Corrected to pass the userId parameter
+        result.Status.Should().Be(ToDoListAPI.Models.Task.StatusEnum.Pending);
+        result.ListId.Should().Be(listId);
+
+        var createdTask = taskRepository.GetTaskAsync(result.TaskId.Value, userId).Result;
         createdTask.Should().NotBeNull();
     }
 
@@ -105,39 +132,42 @@ public class testTaskRepository : RepositoryTestBase
     public void TestUpdateTask()
     {
         // Arrange
-        var task = new ToDoListAPI.Models.Task
+        var taskToUpdate = tasks.First();
+        var updatedTask = new ToDoListAPI.Models.Task
         {
-            Id = "task1",
+            TaskId = taskToUpdate.TaskId,
             Title = "Wash dishes quickly",
             Description = "Wash all the dishes from dinner quickly.",
             DueDate = DateTime.Now.AddDays(1),
-            Status = ToDoListAPI.Models.Task.StatusEnum.InProgressEnum,
-            ListId = "list1",
-            UserId = "user1"  // Ensure the UserId is set in the task object
+            Status = ToDoListAPI.Models.Task.StatusEnum.InProgress,
+            ListId = listId,
+            UserId = userId
         };
 
         // Act
-        taskRepository.UpdateTask(task.Id, task, "user1");  // Corrected to pass the userId parameter
-        context.SaveChanges();
-        var result = taskRepository.GetTask(task.Id, "user1");  // Corrected to pass the userId parameter
+        var result = taskRepository.UpdateTaskAsync(taskToUpdate.TaskId.Value, updatedTask, userId).Result;
 
         // Assert
-        result.Should().BeEquivalentTo(task);
+        result.Should().BeEquivalentTo(updatedTask, options => options
+            .Excluding(x => x.List)
+            .Excluding(x => x.User)
+            .Excluding(x => x.RowVersion));
     }
 
     [Test]
     public void TestDeleteTask()
     {
         // Arrange
-        var id = "task1";
-        var userId = "user1";  // Corrected to include userId parameter
+        var taskToDelete = tasks.First();
 
         // Act
-        taskRepository.DeleteTask(id, userId);  // Corrected to pass the userId parameter
-        context.SaveChanges();
-        var result = taskRepository.GetTask(id, userId);  // Corrected to pass the userId parameter
+        var deleteResult = taskRepository.DeleteTaskAsync(taskToDelete.TaskId.Value, userId).Result;
+        var getResult = taskRepository.GetTaskAsync(taskToDelete.TaskId.Value, userId).Result;
 
         // Assert
-        result.Should().BeNull();
+        deleteResult.Should().BeTrue();
+        getResult.Should().BeNull();
     }
+
+
 }

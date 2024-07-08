@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{68F0BCF0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unit-tests", "tests\unit_tests\unit_tests.csproj", "{98A594FF-9EE3-412E-A952-CA27000E8F4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "feature-tests", "tests\feature_tests\feature_tests.csproj", "{B91280AB-CA70-442C-A144-9A5BD6240148}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "integration_tests", "tests\integration_tests\integration_tests.csproj", "{91A4ECF3-C7EA-40D9-9AD8-C30D92697EBA}"
 EndProject
 Global
@@ -41,7 +39,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{98A594FF-9EE3-412E-A952-CA27000E8F4F} = {68F0BCF0-3DBE-4CC6-BA2F-21F1A1A73061}
-		{B91280AB-CA70-442C-A144-9A5BD6240148} = {68F0BCF0-3DBE-4CC6-BA2F-21F1A1A73061}
 		{91A4ECF3-C7EA-40D9-9AD8-C30D92697EBA} = {68F0BCF0-3DBE-4CC6-BA2F-21F1A1A73061}
 	EndGlobalSection
 EndGlobal

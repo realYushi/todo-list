@@ -2,49 +2,72 @@ using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace ToDoListAPI.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private ToDoListContext context;
+        private readonly ToDoListContext _context;
 
         public UserRepository(ToDoListContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public Models.User CreateUser(Models.User user)
+        public async Task<Models.User> CreateUserAsync(Models.User user)
         {
-            var createdUser = context.Users.Add(user);
+            var createdUser = await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return createdUser.Entity;
         }
 
-        public bool DeleteUser(string userId)
+        public async Task<bool> DeleteUserAsync(Guid userId)
         {
-            var user = context.Users.FirstOrDefault(u => u.UserId == userId);
-            if (user != null)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                context.Users.Remove(user);
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null) return false;
+
+                // Delete associated tasks
+                var tasks = await _context.Tasks.Where(t => t.List.UserId == userId).ToListAsync();
+                _context.Tasks.RemoveRange(tasks);
+
+                // Delete associated lists
+                var lists = await _context.Lists.Where(l => l.UserId == userId).ToListAsync();
+                _context.Lists.RemoveRange(lists);
+
+                // Delete the user
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return true;
             }
-            return false;
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
         }
 
-        public IEnumerable<Models.User> GetAllUsers()
+        public async Task<IEnumerable<Models.User>> GetAllUsersAsync()
         {
-            return context.Users;
+            return await _context.Users.ToListAsync();
         }
 
-        public Models.User GetUser(string userName, string email)
+        public async Task<Models.User> GetUserAsync(string userName, string email)
         {
-            return context.Users.FirstOrDefault(u => u.Username == userName && u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == userName && u.Email == email);
         }
 
-        public Models.User UpdateUser(string userId, Models.User user)
+        public async Task<Models.User> UpdateUserAsync(Guid userId, User userUpdate)
         {
-            user.UserId = userId; // Ensure UserId is set correctly
-            var updatedUser = context.Users.Update(user);
-            return updatedUser.Entity;
+            var existingUser = await _context.Users.FindAsync(userId);
+            if (existingUser == null) return null;
+            existingUser.Email = userUpdate.Email;
+            existingUser.Password = userUpdate.Password;
+            await _context.SaveChangesAsync();
+            return existingUser;
         }
     }
 }

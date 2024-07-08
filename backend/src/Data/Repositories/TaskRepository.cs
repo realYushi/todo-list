@@ -1,53 +1,65 @@
-using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
-using ToDoListAPI.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace ToDoListAPI.Data.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private ToDoListContext context;
+        private readonly ToDoListContext _context;
 
         public TaskRepository(ToDoListContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public Models.Task CreateTask(Models.Task task, string userId)
+        public async Task<Models.Task> CreateTaskAsync(Models.Task task, Guid userId)
         {
-            task.UserId = userId;  // Ensure the UserId is set
-            var createdTask = context.Tasks.Add(task);
+            var createdTask = await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
             return createdTask.Entity;
         }
 
-        public bool DeleteTask(string id, string userId)
+        public async Task<bool> DeleteTaskAsync(Guid taskId, Guid userId)
         {
-            var task = context.Tasks.SingleOrDefault(t => t.Id == id && t.UserId == userId);
-            if (task == null)
+            var task = await GetTaskByIdAndUserIdAsync(taskId, userId);
+            if (task == null) return false;
+
+            _context.Tasks.Remove(task);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<Models.Task>> GetAllTasksAsync(Guid userId)
+        {
+            return await _context.Tasks.Where(t => t.UserId == userId).ToListAsync();
+        }
+
+        public async Task<Models.Task> GetTaskAsync(Guid taskId, Guid userId)
+        {
+            return await GetTaskByIdAndUserIdAsync(taskId, userId);
+        }
+
+        public async Task<Models.Task> UpdateTaskAsync(Guid taskId, Models.Task updatedTask, Guid userId)
+        {
+            var existingTask = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.TaskId == taskId && t.UserId == userId);
+            if (existingTask == null)
             {
-                return false;
+                return null;
             }
-            context.Tasks.Remove(task);
-            return true;
+
+            existingTask.Title = updatedTask.Title;
+            existingTask.Description = updatedTask.Description;
+            existingTask.Status = updatedTask.Status;
+            existingTask.DueDate = updatedTask.DueDate;
+
+            await _context.SaveChangesAsync();
+
+            return existingTask;
         }
 
-        public IEnumerable<Models.Task> GetAllTasks(string userId)
+        private async Task<Models.Task> GetTaskByIdAndUserIdAsync(Guid taskId, Guid userId)
         {
-            var tasks = context.Tasks.Where(t => t.UserId == userId).AsQueryable();  // Filter by UserId
-            return tasks;
-        }
-
-        public Models.Task GetTask(string id, string userId)
-        {
-            var task = context.Tasks.FirstOrDefault(t => t.Id == id && t.UserId == userId);
-            return task;
-        }
-
-        public Models.Task UpdateTask(string id, Models.Task task, string userId)
-        {
-            task.UserId = userId;  // Ensure the UserId is set
-            var updatedTask = context.Tasks.Update(task);
-            return updatedTask.Entity;
+            return await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == taskId && t.UserId == userId);
         }
     }
 }

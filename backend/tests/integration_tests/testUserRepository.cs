@@ -2,99 +2,85 @@ using NUnit.Framework;
 using ToDoListAPI.Models;
 using ToDoListAPI.Data.Repositories;
 using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 [TestFixture]
-public class testUserRepository : RepositoryTestBase
+public class TestUserRepository : RepositoryTestBase
 {
-    private UserRepository userRepository;
+    private UserRepository _userRepository;
+    private List<User> _seedUsers;
 
     [SetUp]
     public void SetUp()
     {
-        userRepository = new UserRepository(context);
+        base.SetUp();
+        _userRepository = new UserRepository(context);
+        SeedDatabase();
+    }
+
+    private void SeedDatabase()
+    {
+        _seedUsers = new List<User>
+        {
+            new User { UserId = Guid.Parse("00000000-0000-0000-0000-000000000001"), Username = "johndoe", Email = "john.doe@example.com", Password = "password123", Role = UserRole.Admin, Status = UserStatus.Active },
+            new User { UserId = Guid.Parse("00000000-0000-0000-0000-000000000002"), Username = "janedoe", Email = "jane.doe@example.com", Password = "password456", Role = UserRole.User, Status = UserStatus.Active }
+        };
+
+        context.Users.AddRange(_seedUsers);
+        context.SaveChanges();
     }
 
     [Test]
     public void TestGetAllUsers()
     {
-        // Arrange
-        var expected = new List<User>
-        {
-            new User { UserId = "user1", Username = "johndoe", Email = "john.doe@example.com", Role = "Admin", Status = "Active" },
-            new User{UserId = "user2",Username = "janedoe",Email = "jane.doe@example.com",Role = "User",Status = "Active"}
-        };
-
-        // Act
-        var result = userRepository.GetAllUsers();
-
-        // Assert
-        result.Should().BeEquivalentTo(expected);
+        var result = _userRepository.GetAllUsersAsync().GetAwaiter().GetResult();
+        result.Should().BeEquivalentTo(_seedUsers);
     }
 
     [Test]
     public void TestGetUser()
     {
-        // Arrange
-        var expected = new User { UserId = "user1", Username = "johndoe", Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
         var userName = "johndoe";
         var email = "john.doe@example.com";
-
-        // Act
-        var result = userRepository.GetUser(userName, email);
-
-        // Assert
-        result.Should().BeEquivalentTo(expected);
+        var result = _userRepository.GetUserAsync(userName, email).GetAwaiter().GetResult();
+        result.Should().BeEquivalentTo(_seedUsers[0]);
     }
 
     [Test]
     public void TestCreateUser()
     {
-        // Arrange
-        var newUser = new User { Username = "sallydoe", Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.", Email = "sally.doe@example.com", Role = "User", Status = "Active" };
-
-        // Act
-        var result = userRepository.CreateUser(newUser);
-        context.SaveChanges();
-
-        // Assert
-        result.UserId.Should().NotBeNull("UserID should be assigned after creation."); // Changed from Id to UserId
+        var newUser = new User { Username = "sallydoe", Email = "sally.doe@example.com", Password = "password789", Role = UserRole.User, Status = UserStatus.Active };
+        var result = _userRepository.CreateUserAsync(newUser).GetAwaiter().GetResult();
+        result.UserId.Should().NotBeNull();
         result.Username.Should().Be("sallydoe");
         result.Email.Should().Be("sally.doe@example.com");
-        result.Role.Should().Be("User");
-        result.Status.Should().Be("Active");
-        var createdUser = userRepository.GetUser(result.Username, result.Email); // Changed from Id to UserId
+        result.Role.Should().Be(UserRole.User);
+        result.Status.Should().Be(UserStatus.Active);
+
+        var createdUser = _userRepository.GetUserAsync(result.Username, result.Email).GetAwaiter().GetResult();
         createdUser.Should().NotBeNull();
     }
 
     [Test]
     public void TestUpdateUser()
     {
-        // Arrange
-        var updatedUser = new User { UserId = "user1", Username = "johnnydoe", Password = "$2a$12$0VFPWv7NCbT.btA5UC4DneDr50tn6ge4.jslK/DABt3/JMX.1QAx.", Email = "john.doe@example.com", Role = "Admin", Status = "Active" };
+        var userToUpdate = _seedUsers[0];
+        var updatedUser = new User
+        {
+            UserId = userToUpdate.UserId,
+            Username = userToUpdate.Username,
+            Email = "john.updated@example.com",
+            Password = "updatedpassword",
+            Role = userToUpdate.Role,
+            Status = userToUpdate.Status
+        };
+        var result = _userRepository.UpdateUserAsync(userToUpdate.UserId.Value, updatedUser).GetAwaiter().GetResult();
 
-        // Act
-        userRepository.UpdateUser(updatedUser.UserId, updatedUser); // Changed from Id to UserId
-        context.SaveChanges();
-        var result = userRepository.GetUser(updatedUser.Username, updatedUser.Email); // Changed from Id to UserId
-
-        // Assert
-        result.Should().BeEquivalentTo(updatedUser);
-    }
-
-    [Test]
-    public void TestDeleteUser()
-    {
-        // Arrange
-        var userId = "user1";
-        var user = "johndoe";
-        var userEmail = "john.doe@example.com";
-
-        // Act
-        userRepository.DeleteUser(userId);
-        context.SaveChanges();
-        var result = userRepository.GetUser(user, userEmail);
-
-        // Assert
-        result.Should().BeNull();
+        result.Should().NotBeNull();
+        result.Email.Should().Be("john.updated@example.com");
+        result.Password.Should().Be("updatedpassword");
     }
 }

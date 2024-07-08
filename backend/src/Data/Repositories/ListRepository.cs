@@ -1,60 +1,57 @@
-using ToDoListAPI.Data;
 using ToDoListAPI.Interfaces;
-using ToDoListAPI.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace ToDoListAPI.Data.Repositories
 {
     public class ListRepository : IListRepository
     {
-        private ToDoListContext context;
+        private readonly ToDoListContext _context;
 
         public ListRepository(ToDoListContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public Models.List CreateList(Models.List list, string userId)
+        public async Task<Models.List> CreateListAsync(Models.List list, Guid userId)
         {
-            list.UserId = userId; // Ensure the list is associated with the user
-            var createdList = context.Lists.Add(list);
-            context.SaveChanges(); // Save changes here if not using a unit of work pattern
+            var createdList = await _context.Lists.AddAsync(list);
+            await _context.SaveChangesAsync();
             return createdList.Entity;
         }
 
-        public bool DeleteList(string id, string userId)
+        public async Task<bool> DeleteListAsync(Guid listId, Guid userId)
         {
-            var list = context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
-            if (list == null)
-            {
-                return false; // List not found, return false
-            }
+            var list = await GetListByIdAndUserId(listId, userId);
+            if (list == null) return false;
 
-            context.Lists.Remove(list);
-            int changes = context.SaveChanges(); // Store the number of changes
-
-            return changes > 0; // Return true if any changes were made, otherwise false
+            _context.Lists.Remove(list);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public IEnumerable<Models.List> GetAllLists(string userId)
+        public async Task<IEnumerable<Models.List>> GetAllListsAsync(Guid userId)
         {
-            return context.Lists.Where(l => l.UserId == userId).ToList();
+            return await _context.Lists.Where(l => l.UserId == userId).ToListAsync();
         }
 
-        public Models.List GetList(string id, string userId)
+        public async Task<Models.List> GetListAsync(Guid listId, Guid userId)
         {
-            return context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
+            return await GetListByIdAndUserId(listId, userId);
         }
 
-        public Models.List UpdateList(string id, Models.List list, string userId)
+        public async Task<Models.List> UpdateListAsync(Guid listId, Models.List list, Guid userId)
         {
-            var existingList = context.Lists.FirstOrDefault(l => l.Id == id && l.UserId == userId);
-            if (existingList != null)
-            {
-                context.Entry(existingList).CurrentValues.SetValues(list);
-                context.SaveChanges(); // Save changes here if not using a unit of work pattern
-                return existingList;
-            }
-            return null;
+            var existingList = await GetListByIdAndUserId(listId, userId);
+            if (existingList == null) return null;
+            existingList.Title = list.Title;
+            existingList.Description = list.Description;
+            existingList.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return existingList;
+        }
+
+        private async Task<Models.List> GetListByIdAndUserId(Guid listId, Guid userId)
+        {
+            return await _context.Lists.FirstOrDefaultAsync(l => l.ListId == listId && l.UserId == userId);
         }
     }
 }

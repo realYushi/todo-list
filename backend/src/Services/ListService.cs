@@ -3,55 +3,55 @@ using ToDoListAPI.Interfaces;
 using AutoMapper;
 using ToDoListAPI.Models;
 
-
 namespace ToDoListAPI.Services
 {
-
     public class ListService : IListService
     {
-
-        private readonly IUnitOfWork _unitOfWork;
-
+        private readonly IListRepository _listRepository;
         private readonly IMapper _mapper;
-        public ListService(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public ListService(IListRepository listRepository, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _listRepository = listRepository;
             _mapper = mapper;
         }
-        public ListDto CreateList(ListDto list, string userId)
+
+        public async Task<ListDto> CreateListAsync(ListDto list, Guid userId)
         {
-            List listEntity = _mapper.Map<List>(list);
-            listEntity.UserId = userId; // Set UserId before passing to repository
-            List createdListEntity = _unitOfWork.ListRepository.CreateList(listEntity, userId);
-            _unitOfWork.Save();
+            list.UserId = userId;
+            Models.List listEntity = _mapper.Map<Models.List>(list);
+            Models.List createdListEntity = await _listRepository.CreateListAsync(listEntity, userId);
             return _mapper.Map<ListDto>(createdListEntity);
         }
 
-        public bool DeleteList(string id, string userId)
+        public async Task<bool> DeleteListAsync(Guid listId, Guid userId)
         {
-            bool success = _unitOfWork.ListRepository.DeleteList(id, userId);
-            _unitOfWork.Save();
-            return success;
-
+            return await _listRepository.DeleteListAsync(listId, userId);
         }
 
-        public IEnumerable<ListDto> GetAllLists(string userId)
+        public async Task<IEnumerable<ListDto>> GetAllListsAsync(Guid userId)
         {
-            IEnumerable<Models.List> lists = _unitOfWork.ListRepository.GetAllLists(userId);
+            IEnumerable<Models.List> lists = await _listRepository.GetAllListsAsync(userId);
             return _mapper.Map<IEnumerable<ListDto>>(lists);
         }
 
-        public ListDto GetList(string id, string userId)
+        public async Task<ListDto> GetListAsync(Guid listId, Guid userId)
         {
-            List list = _unitOfWork.ListRepository.GetList(id, userId);
+            Models.List list = await _listRepository.GetListAsync(listId, userId);
             return _mapper.Map<ListDto>(list);
         }
 
-        public ListDto UpdateList(string id, ListDto list, string userId)
+        public async Task<ListDto> UpdateListAsync(Guid listId, ListDto list, Guid userId)
         {
-            List listEntity = _mapper.Map<List>(list);
-            List updatedListEntity = _unitOfWork.ListRepository.UpdateList(id, listEntity, userId);
-            _unitOfWork.Save();
+            var existingList = await _listRepository.GetListAsync(listId, userId);
+            if (existingList == null)
+            {
+                return null;
+            }
+
+            existingList.Title = list.Title;
+            existingList.Description = list.Description;
+            Models.List updatedListEntity = await _listRepository.UpdateListAsync(listId, existingList, userId);
             return _mapper.Map<ListDto>(updatedListEntity);
         }
     }

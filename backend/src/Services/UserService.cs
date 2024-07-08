@@ -2,61 +2,51 @@ using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
 using ToDoListAPI.Interfaces;
 using AutoMapper;
-using ToDoListAPI.Data;
 
 namespace ToDoListAPI.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
         }
-        public UserDto CreateUser(UserDto user)
+
+        public async Task<UserDto> CreateUserAsync(UserDto user)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             User userEntity = _mapper.Map<User>(user);
-            _unitOfWork.UserRepository.CreateUser(userEntity); // Pass userId
-            _unitOfWork.Save();
-            return _mapper.Map<UserDto>(userEntity);
+            User createdUser = await _userRepository.CreateUserAsync(userEntity);
+            return _mapper.Map<UserDto>(createdUser);
         }
 
-        public bool DeleteUser(string userId)
+        public async Task<bool> DeleteUserAsync(Guid userId)
         {
-            if (_unitOfWork.UserRepository.DeleteUser(userId))
-            {
-                _unitOfWork.Save();
-                return true;
-
-            }; // Pass userId
-            return false;
+            return await _userRepository.DeleteUserAsync(userId);
         }
 
-        public IEnumerable<UserDto> GetAllUsers()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            IEnumerable<User> users = _unitOfWork.UserRepository.GetAllUsers();
+            IEnumerable<User> users = await _userRepository.GetAllUsersAsync();
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public UserDto GetUser(string userName, string email, string password)
+        public async Task<UserDto> GetUserAsync(string userName, string email)
         {
-            User user = _unitOfWork.UserRepository.GetUser(userName, email);
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
-            {
-                return _mapper.Map<UserDto>(user);
-            }
-            return null; // Handle user not found or password mismatch
+            User user = await _userRepository.GetUserAsync(userName, email);
+            return _mapper.Map<UserDto>(user);
         }
 
-        public UserDto UpdateUser(string userId, UserDto user)
+        public async Task<UserDto> UpdateUserAsync(UserDto user, Guid userId)
         {
+            user.UserId = userId;
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             User userEntity = _mapper.Map<User>(user);
-            User updatedUserEntity = _unitOfWork.UserRepository.UpdateUser(userId, userEntity); // Pass userId
-            _unitOfWork.Save();
+            User updatedUserEntity = await _userRepository.UpdateUserAsync(userId, userEntity);
             return _mapper.Map<UserDto>(updatedUserEntity);
         }
     }
