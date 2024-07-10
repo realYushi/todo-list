@@ -26,8 +26,7 @@
    Testimonials or Reviews (optional): If available, showing user feedback can boost credibility.
    Responsive Navigation Bar: Includes links to Home, Dashboard, and maybe a contact or about section.
 5. Dashboard Page
-   Purpose: Provide a quick overview of the user's tasks and lists.
-   Design Elements:
+   Purpose: Provide a quick overview of the user's tasks and lists. Design Elements:
    Task Summary: Show pending, in-progress, and completed tasks. This could be visualized through graphs, progress bars, or simple lists.
    Quick Access to Lists: Buttons or links to view tasks by list.
    Add Task/List Buttons: Easily accessible buttons to add new tasks or lists.
