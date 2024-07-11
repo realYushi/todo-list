@@ -10,39 +10,39 @@ interface CardProps {
 
 export function Card({ title, icon, number }: CardProps) {
     return (
-        <div className="grid grid-rows-2">
-            <div className="grid grid-cols-2">
-                <h2>{title}</h2>
-                <div className="justify-self-end">{icon}</div>
+        <div className="card bg-base-100 shadow-xl m-4">
+            <div className="card-body">
+                <div className="flex justify-between items-center">
+                    <h2 className="card-title">{title}</h2>
+                    <div>{icon}</div>
+                </div>
+                <p className="text-lg font-bold">{number}</p>
             </div>
-            <p>{number}</p>
         </div>
     );
 }
 
 interface OverviewCardProps {
-    number: number;
+    totalNumber: number;
 }
 
-export function OverviewCard({ number }: OverviewCardProps) {
+export function OverviewCard({ totalNumber }: OverviewCardProps) {
     return (
-        <div>
-            <div className="grid grid-cols-2">
-                <h2>Overview</h2>
-                <FontAwesomeIcon
-                    icon={faCalendarAlt}
-                    className="justify-self-end"
-                />
-            </div>
-            <div className="grid">
-                <p>{number}</p>
-                <div className="grid grid-cols-3">
-                    <p>Streak</p>
-                    <FontAwesomeIcon
-                        icon={faFire}
-                        className="justify-self-center"
-                    />
-                    <p className="justify-self-end">7 days</p>
+        <div className="card bg-base-100 shadow-xl m-4">
+            <div>
+                <div className="stat">
+                    <div className="stat-figure text-secondary">
+                        <div className="avatar online">
+                            <div className="w-16 rounded-full">
+                                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-value">{totalNumber}%</div>
+                    <div className="stat-title">Tasks done</div>
+                    <div className="stat-desc text-secondary">
+                        31 tasks remaining
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,5 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 * {
-    outline: 1px solid red; /* for debug */
+    /* outline: 1px solid red; for debugd/ */
 }

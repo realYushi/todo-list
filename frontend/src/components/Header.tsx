@@ -1,14 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faBell, faUser } from "@fortawesome/free-solid-svg-icons";
 
 export function Header() {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-    const handleNavigation = () => {
-        setIsMenuOpen(false);
-    };
+    const location = useLocation();
+
     const getTitle = (pathname: string) => {
         switch (pathname) {
             case "/":
@@ -23,50 +18,52 @@ export function Header() {
                 return "ToDo List App";
         }
     };
+
     const title = getTitle(location.pathname);
 
+    const detailsRef = React.useRef<HTMLDetailsElement | null>(null);
+    const handleClick = () => {
+        if (detailsRef.current && detailsRef.current.open) {
+            detailsRef.current.removeAttribute("open");
+        }
+    };
+
     return (
-        <div>
-            <header className="grid grid-cols-8 items-center shadow-md py-4 gap-1 bg-gray-100">
-                <button
-                    className="col-span-1 text-gray-700 hover:text-gray-900"
-                    onClick={toggleMenu}
-                >
-                    <FontAwesomeIcon icon={faBars} size="lg" />
-                </button>
-                <h1 className="col-span-5 text-center text-xl font-bold text-gray-800">
-                    {title}
-                </h1>
-                <div className="col-span-2 grid grid-cols-2">
-                    <button className="text-gray-700 hover:text-gray-900">
-                        <FontAwesomeIcon icon={faBell} size="lg" />
-                    </button>
-                    <button className="text-gray-700 hover:text-gray-900">
-                        <FontAwesomeIcon icon={faUser} size="lg" />
-                    </button>
-                </div>
-            </header>
-            {isMenuOpen && (
-                <nav className="container mx-auto px-4 py-2 bg-white shadow-md">
-                    <ul className="grid grid-cols-1 gap-2">
-                        {["Home", "User", "Dashboard", "Task"].map((item) => (
-                            <li key={item}>
-                                <Link
-                                    to={
-                                        item === "Home"
-                                            ? "/"
-                                            : `/${item.toLowerCase()}`
-                                    }
-                                    onClick={handleNavigation}
-                                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded transition-colors"
-                                >
-                                    {item}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            )}
+        <div className="navbar bg-base-100 z-10">
+            <div className="flex-1">
+                <ul className="menu menu-horizontal px-1">
+                    <li>
+                        <details ref={detailsRef}>
+                            <summary>Menu</summary>
+                            <ul className="bg-base-100 rounded-t-none p-2">
+                                <li>
+                                    <Link to="/dashboard" onClick={handleClick}>
+                                        Dashboard
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/task" onClick={handleClick}>
+                                        Task
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/" onClick={handleClick}>
+                                        Home
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/user" onClick={handleClick}>
+                                        User
+                                    </Link>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </div>
+            <div className="flex-auto">
+                <a className="btn btn-ghost text-xl">{title}</a>
+            </div>
         </div>
     );
 }

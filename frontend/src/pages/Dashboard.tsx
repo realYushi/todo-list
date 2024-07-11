@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export function Dashboard() {
     return (
         <section>
-            <OverviewCard number={1234} />
+            <OverviewCard totalNumber={1234} />
             <Card
                 title="Users"
                 icon={<FontAwesomeIcon icon={faUser} size="lg" />}
