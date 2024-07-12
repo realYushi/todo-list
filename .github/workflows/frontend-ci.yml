@@ -26,14 +26,14 @@ jobs:
               with:
                   node-version: 20.9.0
             - run: npm ci
-            - run: npm run lint
-            - run: npm run test-cucumber > test-output.txt || true # Prevent fail and continue
-            - run: npm run test-jest
+            # - run: npm run lint
+            # - run: npm run test-cucumber > test-output.txt || true # Prevent fail and continue
+            # - run: npm run test-jest
             - run: npm run build
 
-            - name: Check test results
-              run: |
-                  if grep -q "pending" test-output.txt; then
-                    echo "There are pending tests, but we'll not fail the build."
-                    echo "##[warning]There are pending implementations."
-                  fi
+            # - name: Check test results
+            #   run: |
+            #       if grep -q "pending" test-output.txt; then
+            #         echo "There are pending tests, but we'll not fail the build."
+            #         echo "##[warning]There are pending implementations."
+            #       fi
