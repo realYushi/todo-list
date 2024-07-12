@@ -1,3 +1,8 @@
+import { UserInfo } from "../components/UserInfo";
 export function User() {
-    return <h1>User</h1>;
+    return (
+        <>
+            <UserInfo />
+        </>
+    );
 }
