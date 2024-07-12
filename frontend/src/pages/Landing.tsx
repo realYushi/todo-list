@@ -12,10 +12,10 @@ export function Landing() {
                     <div className="flex-none">
                         <ul className="menu menu-horizontal px-1">
                             <li>
-                                <a>Login</a>
+                                <a href="#loginForm">Login</a>
                             </li>
                             <li>
-                                <a>Register</a>
+                                <a href="#registerForm">Register</a>
                             </li>
                         </ul>
                     </div>
@@ -36,7 +36,7 @@ export function Landing() {
                                 due dates, and reminders.
                             </p>
                             <button className="btn btn-primary">
-                                Get Started
+                                <a href="#registerForm">Get Started</a>
                             </button>
                         </div>
                     </div>
@@ -56,7 +56,7 @@ export function Landing() {
                                 intuitive todo list app.
                             </p>
                             <button className="btn btn-primary">
-                                Get Started
+                                <a href="#registerForm">Get Started</a>
                             </button>
                         </div>
                     </div>
@@ -72,7 +72,10 @@ export function Landing() {
                             <div className="card bg-base-100 w-full   shadow-sm">
                                 <form className="card-body">
                                     <div className="form-control">
-                                        <label className="label">
+                                        <label
+                                            className="label"
+                                            id="registerForm"
+                                        >
                                             <span className="label-text">
                                                 User Name
                                             </span>
@@ -133,7 +136,7 @@ export function Landing() {
                             <div className="card bg-base-100 w-full shadow-sm">
                                 <form className="card-body">
                                     <div className="form-control">
-                                        <label className="label">
+                                        <label className="label" id="loginForm">
                                             <span className="label-text">
                                                 User Name
                                             </span>
