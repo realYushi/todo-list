@@ -20,8 +20,8 @@ export function Landing() {
                         </ul>
                     </div>
                 </div>
-                <div className="hero min-h-screen bg-white col-auto">
-                    <div className="hero-content flex-col lg:flex-row-reverse">
+                <div className="hero min-h-screen bg-white col-auto ">
+                    <div className="hero-content flex-col lg:flex-row-reverse lg:max-w-2xl">
                         <img
                             src={heroImage1}
                             className=" rounded-lg shadow-2xl"
@@ -42,10 +42,10 @@ export function Landing() {
                     </div>
                 </div>
                 <div className="hero bg-white min-h-screen">
-                    <div className="hero-content flex-col lg:flex-row">
+                    <div className="hero-content flex-col lg:flex-row lg:max-w-2xl">
                         <img
                             src={heroImage2}
-                            className=" rounded-lg shadow-2xl"
+                            className=" rounded-lg shadow-2xl "
                         />
                         <div>
                             <h1 className="text-5xl font-bold">
@@ -62,110 +62,116 @@ export function Landing() {
                     </div>
                 </div>
                 <div className="hero bg-base-200 min-h-screen ">
-                    <div className="hero-content flex-col card w-full shadow-lg lg:flex-row-reverse">
-                        <div className="text-center ">
-                            <h1 className="text-5xl font-bold">
-                                Register now!
-                            </h1>
+                    <div className="hero-content flex-col card w-full shadow-lg lg:flex-row  ">
+                        <div className="lg:flex-col lg:w-1/2 w-10/12">
+                            <div className="text-center ">
+                                <h1 className="text-5xl font-bold m-4 ">
+                                    Register
+                                </h1>
+                            </div>
+                            <div className="card bg-base-100 w-full   shadow-sm">
+                                <form className="card-body">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                User Name
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="user name"
+                                            className="input input-bordered"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                Email
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            placeholder="email"
+                                            className="input input-bordered"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                Password
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="password"
+                                            placeholder="password"
+                                            className="input input-bordered"
+                                            required
+                                        />
+                                        <label className="label">
+                                            <a
+                                                href="#"
+                                                className="label-text-alt link link-hover"
+                                            ></a>
+                                        </label>
+                                    </div>
+                                    <div className="gap-2 form-control mt-6 ">
+                                        <button className="btn btn-primary">
+                                            Register
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
-                            <form className="card-body">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            User Name
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="user name"
-                                        className="input input-bordered"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Email
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        placeholder="email"
-                                        className="input input-bordered"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Password
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        placeholder="password"
-                                        className="input input-bordered"
-                                        required
-                                    />
-                                    <label className="label">
-                                        <a
-                                            href="#"
-                                            className="label-text-alt link link-hover"
-                                        ></a>
-                                    </label>
-                                </div>
-                                <div className="gap-2 form-control mt-6 ">
-                                    <button className="btn btn-primary">
-                                        Register
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="text-center ">
-                            <h1 className="text-5xl font-bold">Login</h1>
-                        </div>
-                        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
-                            <form className="card-body">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            User Name
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="user name"
-                                        className="input input-bordered"
-                                        required
-                                    />
-                                </div>
+                        <div className="lg:flex-col lg:w-1/2 w-10/12">
+                            <div className="text-center ">
+                                <h1 className="text-5xl font-bold m-4">
+                                    Login
+                                </h1>
+                            </div>
+                            <div className="card bg-base-100 w-full shadow-sm">
+                                <form className="card-body">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                User Name
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="user name"
+                                            className="input input-bordered"
+                                            required
+                                        />
+                                    </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Password
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        placeholder="password"
-                                        className="input input-bordered"
-                                        required
-                                    />
-                                    <label className="label">
-                                        <a
-                                            href="#"
-                                            className="label-text-alt link link-hover"
-                                        ></a>
-                                    </label>
-                                </div>
-                                <div className="gap-2 form-control mt-6 ">
-                                    <button className="btn btn-primary">
-                                        Login
-                                    </button>
-                                </div>
-                            </form>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                Password
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="password"
+                                            placeholder="password"
+                                            className="input input-bordered"
+                                            required
+                                        />
+                                        <label className="label">
+                                            <a
+                                                href="#"
+                                                className="label-text-alt link link-hover"
+                                            ></a>
+                                        </label>
+                                    </div>
+                                    <div className="gap-2 form-control mt-6 ">
+                                        <button className="btn btn-primary">
+                                            Login
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
