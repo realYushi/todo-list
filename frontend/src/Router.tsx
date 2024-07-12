@@ -9,8 +9,8 @@ export function Router() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route element={<Home />} />
                 <Route path="/" element={<Layout />}>
-                    <Route index element={<Home />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="task" element={<Task />} />
                     <Route path="user" element={<User />} />
