@@ -1,12 +1,12 @@
-import { PasswordChange } from "../components/PasswordChange";
-import { Setting } from "../components/Setting";
-import { UserInfo } from "../components/UserInfo";
+import { PasswordChange } from "../components/User/PasswordChange";
+import { Setting } from "../components/User/Setting";
+import { UserInfo } from "../components/User/UserInfo";
 export function User() {
-    return (
-        <>
-            <UserInfo />
-            <PasswordChange />
-            <Setting />
-        </>
-    );
+  return (
+    <>
+      <UserInfo />
+      <PasswordChange />
+      <Setting />
+    </>
+  );
 }

@@ -1,9 +1,9 @@
-import { List } from "../components/List";
+import { List } from "../components/Task/List";
 export function Task() {
-    return (
-        <div>
-            <List />
-            <List />
-        </div>
-    );
+  return (
+    <div className="lg:flex-wrap">
+      <List />
+      <List />
+    </div>
+  );
 }
