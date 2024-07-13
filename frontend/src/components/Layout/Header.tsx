@@ -1,7 +1,15 @@
+import { useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export function Header() {
   const location = useLocation();
+  const navRef = useRef<HTMLDetailsElement | null>(null);
+
+  const removeAttribute = () => {
+    if (navRef.current) {
+      navRef.current.removeAttribute("open");
+    }
+  };
 
   const getTitle = (pathname: string) => {
     switch (pathname) {
@@ -21,8 +29,8 @@ export function Header() {
   return (
     <div className="navbar bg-base-100 px-4">
       <div className="navbar-start">
-        <div className="dropdown lg:hidden">
-          <label tabIndex={0} className="btn btn-ghost">
+        <details className="dropdown lg:hidden" ref={navRef}>
+          <summary tabIndex={0} className="btn btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -37,22 +45,22 @@ export function Header() {
                 d="M4 6h16M4 12h8m-8 6h16"
               />
             </svg>
-          </label>
+          </summary>
           <ul
             tabIndex={0}
             className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
           >
-            <li>
+            <li onClick={removeAttribute}>
               <Link to="/dashboard">Dashboard</Link>
             </li>
-            <li>
+            <li onClick={removeAttribute}>
               <Link to="/task">Task</Link>
             </li>
-            <li>
+            <li onClick={removeAttribute}>
               <Link to="/user">User</Link>
             </li>
           </ul>
-        </div>
+        </details>
         <ul className="menu menu-horizontal hidden gap-10 px-1 lg:flex">
           <li>
             <Link to="/dashboard">Dashboard</Link>

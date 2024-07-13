@@ -1,4 +1,4 @@
-import { Index } from "./components/Layout/Index";
+import { Index } from "./components/Layout/Body";
 import { Dashboard } from "./pages/Dashboard";
 import { Landing } from "./pages/Landing";
 import { Task } from "./pages/Task";
