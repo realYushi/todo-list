@@ -7,13 +7,15 @@ interface CardProps {
 
 export function Card({ title, icon, number }: CardProps) {
   return (
-    <div className="card m-4 min-h-60 bg-base-100 shadow-xl">
+    <div className="card m-4 min-h-40 bg-base-100 shadow-xl">
       <div className="card-body">
         <div className="flex items-center justify-between">
-          <h2 className="card-title">{title}</h2>
+          <h2 className="font-medium">{title}</h2>
           <div>{icon}</div>
         </div>
-        <p className="text-lg font-bold">{number}</p>
+        <div className="mt-4">
+          <p className="text-lg font-black">{number}</p>
+        </div>
       </div>
     </div>
   );

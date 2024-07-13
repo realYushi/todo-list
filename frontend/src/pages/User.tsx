@@ -4,9 +4,13 @@ import { UserInfo } from "../components/User/UserInfo";
 export function User() {
   return (
     <>
-      <UserInfo />
-      <PasswordChange />
-      <Setting />
+      <div className="flex justify-center">
+        <div className="grid-cols-2 -items-center lg:grid lg:w-3/4">
+          <UserInfo />
+          <PasswordChange />
+          <Setting />
+        </div>
+      </div>
     </>
   );
 }
