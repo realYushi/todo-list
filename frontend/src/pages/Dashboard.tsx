@@ -11,7 +11,10 @@ export function Dashboard() {
   return (
     <div className="flex justify-center">
       <section className="w-full grid-cols-2 lg:grid lg:w-3/4">
-        <OverviewCard totalNumber={1234} avatar="" />
+        <OverviewCard
+          totalNumber={1234}
+          avatar="https://avataaars.io/?avatarStyle=Transparent&topType=NoHair&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=UpDownNatural&mouthType=Twinkle&skinColor=Pale"
+        />
         <Card
           title="Done"
           icon={<FontAwesomeIcon icon={faCheckCircle} size="lg" />}
