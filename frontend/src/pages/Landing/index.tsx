@@ -1,10 +1,10 @@
-import heroImage1 from "../assets/hero-1.jpg";
-import heroImage2 from "../assets/hero-2.jpg";
+import heroImage1 from "@assets/hero-1.jpg";
+import heroImage2 from "@assets/hero-2.jpg";
 
-import { Navbar } from "../components/Landing/Nav";
-import { HeroSection } from "../components/Landing/Hero";
-import { FormComponent } from "../components/Landing/FormComponent";
-import { Footer } from "../components/Layout/Footer";
+import { Navbar } from "@pages/Landing/LandingNav";
+import { HeroSection } from "@pages/Landing/LandingHero";
+import { FormComponent } from "@pages/Landing//LandingForm";
+import { Footer } from "@components/Layout/Footer";
 export function Landing() {
   return (
     <>

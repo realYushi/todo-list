@@ -1,4 +1,4 @@
-import { Card, OverviewCard } from "../components/Dashborad/Card";
+import { Card, OverviewCard } from "@pages/Dashboard/DashboardCard";
 import {
   faCheckCircle,
   faClock,

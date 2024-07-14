@@ -1,4 +1,4 @@
-import { Task } from "./Task";
+import { Task } from "@pages/Task/TaskItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 export function Lists() {

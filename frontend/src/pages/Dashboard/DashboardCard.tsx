@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 interface CardProps {
   title: string;
   icon: React.ReactNode;
@@ -21,6 +23,12 @@ export function Card({ title, icon, number }: CardProps) {
   );
 }
 
+Card.propTypes = {
+  title: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+};
+
 interface OverviewCardProps {
   avatar: string;
   totalNumber: number;
@@ -41,8 +49,14 @@ export function OverviewCard({ totalNumber, avatar }: OverviewCardProps) {
           <div className="stat-value">{totalNumber}%</div>
           <div className="stat-title">Tasks done</div>
           <div className="stat-desc text-secondary">31 tasks remaining</div>
+          {/* Consider fetching the remaining tasks count dynamically */}
         </div>
       </div>
     </div>
   );
 }
+
+OverviewCard.propTypes = {
+  avatar: PropTypes.string.isRequired,
+  totalNumber: PropTypes.number.isRequired,
+};

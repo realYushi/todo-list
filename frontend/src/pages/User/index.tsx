@@ -1,5 +1,5 @@
-import { PasswordChange } from "../components/User/PasswordChange";
-import { UserInfo } from "../components/User/UserInfo";
+import { PasswordChange } from "@pages/User/UserPasswordChange";
+import { UserInfo } from "@pages/User/UserInfo";
 export function User() {
   return (
     <>
