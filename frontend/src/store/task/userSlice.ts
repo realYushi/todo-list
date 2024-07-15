@@ -1,22 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-interface UserState {
-  userId?: string; // Guid is represented as a string in TypeScript
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-  status: string;
-  createdAt: string; // DateTime is typically represented as a string in JSON
-  updatedAt?: string; // Optional field
-}
-const initialState: UserState = {
+import IUser from "@models/UserInterface";
+const initialState: IUser = {
+  userId: "",
   username: "",
   email: "",
   password: "",
-  role: "",
-  status: "",
-  createdAt: "",
-  updatedAt: "",
 };
 const userSlice = createSlice({
   name: "user",
@@ -29,3 +17,4 @@ const userSlice = createSlice({
   },
 });
 export default userSlice.reducer;
+export const { addUser, updateUser, deleteUser, readUsers } = userSlice.actions;

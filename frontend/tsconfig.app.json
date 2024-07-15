@@ -22,7 +22,8 @@
       "@components*": ["./components/*"],
       "@hooks*": ["./hooks/*"],
       "@pages*": ["./pages/*"],
-      "@store*": ["./store/*"]
+      "@store*": ["./store/*"],
+      "@models*": ["./models/*"]
     },
     /* Linting */
     "strict": true,

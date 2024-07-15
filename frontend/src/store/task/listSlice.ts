@@ -1,20 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-interface List {
-  listId: string | null;
-  title: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string | null;
-}
-interface ListState {
-  tasks: List[];
+import IList from "@models/ListInterface";
+export interface ListState {
+  lists: IList[];
 }
 
 const initialState: ListState = {
-  tasks: [],
+  lists: [],
 };
-const taskSlice = createSlice({
-  name: "task",
+const listSlice = createSlice({
+  name: "list",
   initialState,
   reducers: {
     addList() {},
@@ -23,4 +17,5 @@ const taskSlice = createSlice({
     readLists() {},
   },
 });
-export default taskSlice.reducer;
+export default listSlice.reducer;
+export const { addList, updateList, deleteList, readLists } = listSlice.actions;
