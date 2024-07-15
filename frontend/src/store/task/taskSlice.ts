@@ -1,16 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 interface Task {
-  taskId?: string;
+  taskId: string;
   title: string;
   description: string;
-  dueDate?: Date;
+  dueDate: Date;
   listId: string;
   status: "Pending" | "InProgress" | "Completed";
-  userId: string;
-  rowVersion?: string;
 }
-
-export interface TaskState {
+interface TaskState {
   tasks: Task[];
 }
 
@@ -20,6 +17,11 @@ const initialState: TaskState = {
 const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {},
+  reducers: {
+    addTask() {},
+    updateTask() {},
+    deleteTask() {},
+    readTasks() {},
+  },
 });
 export default taskSlice.reducer;
