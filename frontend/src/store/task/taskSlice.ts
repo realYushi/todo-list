@@ -14,7 +14,7 @@ interface TaskState {
 const initialState: TaskState = {
   tasks: [],
 };
-const taskSlice = createSlice({
+const listSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
@@ -24,4 +24,4 @@ const taskSlice = createSlice({
     readTasks() {},
   },
 });
-export default taskSlice.reducer;
+export default listSlice.reducer;
