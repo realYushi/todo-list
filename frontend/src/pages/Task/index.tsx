@@ -1,10 +1,8 @@
-import { NewList } from "@pages/Task/TaskNewList";
-import TaskController from "./TaskContainer";
+import TaskLists from "./TaskLists";
 export function Task() {
   return (
     <div className="lg:flex-wrap">
-      <TaskController />
-      <NewList />
+      <TaskLists />
     </div>
   );
 }
