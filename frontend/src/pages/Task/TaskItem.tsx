@@ -1,8 +1,6 @@
-import TaskItemInput from "./TaskItemInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import ITask from "@models/TaskInterface";
-import { Task } from "@pagesTask";
 
 interface TaskProps {
   task: ITask;
@@ -28,7 +26,6 @@ export default function TaskItem({ task }: TaskProps) {
           </div>
         </label>
       </div>
-      <TaskItemInput />
     </>
   );
 }
