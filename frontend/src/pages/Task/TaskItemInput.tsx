@@ -1,8 +1,7 @@
 import ITask from "@models/TaskInterface";
-import { RootState } from "@store/store";
 import { addTask, updateTask } from "@store/task/taskSlice";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 interface TaskItemInputProps {
   onTaskClose: () => void;
@@ -10,6 +9,9 @@ interface TaskItemInputProps {
   taskToUpdate: ITask | null;
 }
 
+/**
+ * Component for rendering a form to add or update a task.
+ */
 export default function TaskItemInput({
   onTaskClose,
   taskToUpdate,
@@ -17,27 +19,31 @@ export default function TaskItemInput({
 }: TaskItemInputProps) {
   const dispatch = useDispatch();
 
+  // State variables for storing the input values
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
 
+  // Set the input values when the taskToUpdate prop changes
   useEffect(() => {
     if (taskToUpdate) {
       setTitle(taskToUpdate.title);
       setDescription(taskToUpdate.description);
-      setDueDate(
-        taskToUpdate.dueDate
-          ? new Date(taskToUpdate.dueDate).toISOString().split("T")[0]
-          : "",
-      );
+      setDueDate(taskToUpdate.dueDate);
     }
   }, [taskToUpdate]);
+
+  /**
+   * Handles the task submission.
+   * If taskToUpdate is provided, updates the task, otherwise adds a new task.
+   * Dispatches the appropriate action and closes the form.
+   */
   const handleTask = () => {
     const task: ITask = {
       taskId: taskToUpdate ? taskToUpdate.taskId : Date.now().toString(),
       title,
       description,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : "",
+      dueDate,
       listId: taskToUpdate ? taskToUpdate.listId : listId,
       status: taskToUpdate ? taskToUpdate.status : "InProgress",
     };
@@ -79,7 +85,7 @@ export default function TaskItemInput({
         <input
           type="date"
           value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={(e) => setDueDate(e.target.value.toString())}
           className="input input-bordered w-full"
         />
       </div>
