@@ -2,7 +2,7 @@ import TaskList from "./TaskList";
 import { useSelector } from "react-redux";
 import { RootState } from "@store/store";
 import TaskListInput from "./TaskListInput";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function TaskLists() {
   const lists = useSelector((state: RootState) => state.list.lists);
@@ -18,7 +18,7 @@ export default function TaskLists() {
         className={`justify-center gap-12 lg:flex ${showForm ? "pointer-events-none blur-sm" : ""}`}
       >
         {lists.map((list) => (
-          <TaskList key={list.listId} list={list} tasks={list.tasks} />
+          <TaskList key={list.listId} list={list} />
         ))}
       </div>
       <div className="m-4 flex justify-center">

@@ -13,7 +13,7 @@ export default function TaskListInput({ onClose }: { onClose: any }) {
 
   const handleAddList = () => {
     let newList: IList = {
-      listId: lists.length.toString(),
+      listId: Date.now().toString(),
       title: title,
       description: description,
       tasks: [],
