@@ -1,35 +1,57 @@
-import ITask from "@modelsTaskInterface";
-import { RootState } from "@storestore";
-import { addTask } from "@storetask/taskSlice";
-import { useState } from "react";
+import ITask from "@models/TaskInterface";
+import { RootState } from "@store/store";
+import { addTask, updateTask } from "@store/task/taskSlice";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface TaskItemInputProps {
-  onClose: () => void;
+  onTaskClose: () => void;
   listId: string;
+  taskToUpdate: ITask | null;
 }
-export default function TaskItemInput({ onClose, listId }: TaskItemInputProps) {
-  const tasks = useSelector((state: RootState) => state.task.tasks);
+
+export default function TaskItemInput({
+  onTaskClose,
+  taskToUpdate,
+  listId,
+}: TaskItemInputProps) {
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
-  const handleAddTask = () => {
-    const newTask: ITask = {
-      taskId: tasks.length.toString(),
-      title: title,
-      description: description,
-      dueDate: new Date(dueDate).toString(),
-      listId: listId,
-      status: "Pending",
+
+  useEffect(() => {
+    if (taskToUpdate) {
+      setTitle(taskToUpdate.title);
+      setDescription(taskToUpdate.description);
+      setDueDate(
+        taskToUpdate.dueDate
+          ? new Date(taskToUpdate.dueDate).toISOString().split("T")[0]
+          : "",
+      );
+    }
+  }, [taskToUpdate]);
+  const handleTask = () => {
+    const task: ITask = {
+      taskId: taskToUpdate ? taskToUpdate.taskId : Date.now().toString(),
+      title,
+      description,
+      dueDate: dueDate ? new Date(dueDate).toISOString() : "",
+      listId: taskToUpdate ? taskToUpdate.listId : listId,
+      status: taskToUpdate ? taskToUpdate.status : "InProgress",
     };
-    dispatch(addTask(newTask));
-    onClose();
+
+    if (taskToUpdate) {
+      dispatch(updateTask(task));
+    } else {
+      dispatch(addTask(task));
+    }
+    onTaskClose();
   };
 
   return (
-    <div className="absolute rounded-lg bg-neutral-50">
+    <div className="absolute rounded-lg bg-neutral-50 p-4">
       <div className="label">
         <span className="label-text">Task Name</span>
         <span className="label-text-alt">Required</span>
@@ -62,10 +84,10 @@ export default function TaskItemInput({ onClose, listId }: TaskItemInputProps) {
         />
       </div>
       <div className="mt-5">
-        <button className="btn btn-primary w-1/2" onClick={handleAddTask}>
+        <button className="btn btn-primary w-1/2" onClick={handleTask}>
           Confirm
         </button>
-        <button className="btn btn-warning w-1/2" onClick={() => onClose()}>
+        <button className="btn btn-warning w-1/2" onClick={onTaskClose}>
           Close
         </button>
       </div>

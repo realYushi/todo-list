@@ -4,7 +4,7 @@ import IList from "@modelsListInterface";
 import { addList } from "@store/task/listSlice";
 import { useState } from "react";
 
-export default function TaskListInput({ onClose }: { onClose: any }) {
+export default function TaskListInput({ onListClose }: { onListClose: any }) {
   const lists = useSelector((state: RootState) => state.list.lists);
   const dispatch = useDispatch();
 
@@ -19,7 +19,7 @@ export default function TaskListInput({ onClose }: { onClose: any }) {
       tasks: [],
     };
     dispatch(addList(newList));
-    onClose();
+    onListClose();
   };
 
   return (
@@ -48,7 +48,7 @@ export default function TaskListInput({ onClose }: { onClose: any }) {
         <button className="btn btn-neutral w-1/2" onClick={handleAddList}>
           Confirm
         </button>
-        <button className="btn btn-active w-1/2" onClick={() => onClose()}>
+        <button className="btn btn-active w-1/2" onClick={() => onListClose()}>
           Close
         </button>
       </div>
