@@ -2,7 +2,7 @@ export default function TaskItemInput({ onClose }: { onClose: any }) {
   return (
     <div className="absolute rounded-lg bg-neutral-50">
       <div className="label">
-        <span className="label-text">Task Description</span>
+        <span className="label-text">Task Name</span>
         <span className="label-text-alt">Required</span>
       </div>
       <input

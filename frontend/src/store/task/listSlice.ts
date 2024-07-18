@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import IList from "@models/ListInterface";
 export interface ListState {
   lists: IList[];
@@ -11,7 +11,6 @@ const initialState: ListState = {
       listId: "1",
       title: "Grocery List",
       description: "Items needed for the week",
-      createdAt: "2023-10-01",
       updatedAt: "2023-10-05",
       tasks: [
         {
@@ -64,7 +63,9 @@ const listSlice = createSlice({
   name: "list",
   initialState,
   reducers: {
-    addList() {},
+    addList(state, action: PayloadAction<IList>) {
+      state.lists.push(action.payload);
+    },
     updateList() {},
     deleteList() {},
     readLists() {},

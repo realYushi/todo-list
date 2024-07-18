@@ -1,7 +1,7 @@
 import TaskList from "./TaskList";
 import { useSelector } from "react-redux";
 import { RootState } from "@store/store";
-import TaskItemInput from "./TaskItemInput";
+import TaskListInput from "./TaskListInput";
 import React, { useState } from "react";
 
 export default function TaskLists() {
@@ -31,7 +31,7 @@ export default function TaskLists() {
       </div>
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <TaskItemInput onClose={() => setShowForm(false)} />
+          <TaskListInput onClose={() => setShowForm(false)} />
         </div>
       )}
     </>
