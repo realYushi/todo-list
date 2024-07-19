@@ -5,10 +5,12 @@ import TaskListInput from "./TaskListInput";
 import TaskItemInput from "./TaskItemInput";
 import { useState } from "react";
 import ITask from "@modelsTaskInterface";
+import IList from "@modelsListInterface";
 
 export default function TaskLists() {
   const lists = useSelector((state: RootState) => state.list.lists);
   const [updateTask, setUpdateTask] = useState<ITask | null>(null);
+  const [updateList, setUpdateList] = useState<IList | null>(null);
   const [showListForm, setShowListForm] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [activeListId, setActiveListId] = useState<string | null>(null);
@@ -16,6 +18,11 @@ export default function TaskLists() {
   const handleAddListClick = () => {
     setShowListForm(true);
   };
+  const handleListInputClick = (list: IList) => {
+    setShowListForm(true);
+    setUpdateList(list);
+  };
+
   const handleAddTaskClick = (listId: string) => {
     setShowTaskForm(true);
     setActiveListId(listId);
@@ -39,6 +46,7 @@ export default function TaskLists() {
             list={list}
             onAddTaskClick={handleAddTaskClick}
             onUpdateTaskClick={handleTaskInputClick}
+            onUpdateListClick={handleListInputClick}
           />
         ))}
       </div>
@@ -52,7 +60,13 @@ export default function TaskLists() {
       </div>
       {showListForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <TaskListInput onListClose={() => setShowListForm(false)} />
+          <TaskListInput
+            onListClose={() => {
+              setShowListForm(false);
+              setUpdateList(null);
+            }}
+            listToUpdate={updateList}
+          />
         </div>
       )}
       {showTaskForm && activeListId && (

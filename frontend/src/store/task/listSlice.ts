@@ -30,7 +30,12 @@ const listSlice = createSlice({
     addList(state, action: PayloadAction<IList>) {
       state.lists.push(action.payload);
     },
-    updateList() {},
+    updateList(state, action: PayloadAction<IList>) {
+      const listIndex = state.lists.findIndex(
+        (list) => list.listId === action.payload.listId,
+      );
+      state.lists[listIndex] = action.payload;
+    },
     deleteList() {},
     readLists() {},
   },
