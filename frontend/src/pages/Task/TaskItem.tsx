@@ -1,8 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faPen,
+  faCheckCircle,
+  faHourglassHalf,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 import ITask from "@models/TaskInterface";
 import { useDispatch } from "react-redux";
-import { deleteTask } from "@storetask/taskSlice";
+import { deleteTask, updateTask } from "@store/task/taskSlice";
+import { useEffect, useState } from "react";
 
 interface TaskProps {
   task: ITask;
@@ -24,12 +31,47 @@ export default function TaskItem({
   const handleDeleteTask = () => {
     dispatch(deleteTask(task.taskId));
   };
+  const [taskStatus, setTaskStatus] = useState(faHourglassHalf);
+  useEffect(() => {
+    switch (task.status) {
+      case "Completed":
+        setTaskStatus(faCheckCircle);
+        break;
+      case "InProgress":
+        setTaskStatus(faHourglassHalf);
+        break;
+    }
+    if (
+      new Date(task.dueDate) <=
+        new Date(new Date().setDate(new Date().getDate() - 1)) &&
+      task.status !== "Completed"
+    ) {
+      setTaskStatus(faExclamationTriangle);
+    }
+  });
+
+  const handelCompleteTask = () => {
+    dispatch(
+      updateTask({
+        ...task,
+        status: task.status === "Completed" ? "InProgress" : "Completed",
+      }),
+    );
+  };
+
   return (
-    <div className="form-control">
+    <div className={`${task.status === "Completed" ? "line-through" : ""} `}>
       <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
-        <input type="checkbox" className="checkbox checkbox-md mr-4 size-8" />
+        <input
+          type="checkbox"
+          className="checkbox checkbox-md mr-4 size-8"
+          onClick={handelCompleteTask}
+        />
         <div className="flex-grow">
-          <h3 className="text-xl">{task.title}</h3>
+          <div className="flex gap-4">
+            <FontAwesomeIcon className="mt-1" icon={taskStatus} />
+            <h3 className="text-xl">{task.title}</h3>
+          </div>
           <p className="text-sm">{task.description}</p>
           <p className="text-sm">{task.dueDate.toString()}</p>
         </div>

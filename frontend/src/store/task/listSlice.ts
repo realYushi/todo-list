@@ -5,23 +5,7 @@ export interface ListState {
 }
 
 export const initialState: ListState = {
-  lists: [
-    {
-      listId: "1",
-      title: "Grocery List",
-      description: "Items needed for the week",
-      updatedAt: "2023-10-05",
-      tasks: [],
-    },
-    {
-      listId: "2",
-      title: "Work Tasks",
-      description: "Tasks for the upcoming week",
-      createdAt: "2023-10-02",
-      updatedAt: "2023-10-06",
-      tasks: [],
-    },
-  ],
+  lists: [],
 };
 const listSlice = createSlice({
   name: "list",

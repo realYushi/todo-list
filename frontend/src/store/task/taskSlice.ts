@@ -6,40 +6,7 @@ export interface TaskState {
 }
 
 export const initialState: TaskState = {
-  tasks: [
-    {
-      taskId: "1",
-      title: "Buy milk",
-      description: "2% milk",
-      dueDate: new Date("2023-10-07").toString(),
-      listId: "1",
-      status: "Pending",
-    },
-    {
-      taskId: "2",
-      title: "Buy eggs",
-      description: "A dozen eggs",
-      dueDate: new Date("2023-10-07").toString(),
-      listId: "1",
-      status: "InProgress",
-    },
-    {
-      taskId: "3",
-      title: "Prepare presentation",
-      description: "For the team meeting",
-      dueDate: new Date("2023-10-10").toString(),
-      listId: "2",
-      status: "Pending",
-    },
-    {
-      taskId: "4",
-      title: "Review code",
-      description: "Review the new feature implementation",
-      dueDate: new Date("2023-10-09").toString(),
-      listId: "2",
-      status: "InProgress",
-    },
-  ],
+  tasks: [],
 };
 
 const taskSlice = createSlice({

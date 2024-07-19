@@ -15,7 +15,10 @@ interface TaskItemsProps {
  * @param onTaskUpdate - Callback function for task update
  * @returns JSX element representing the list of task items
  */
-export default function TaskItems({ Tasks, onUpdateTaskClick }: TaskItemsProps) {
+export default function TaskItems({
+  Tasks,
+  onUpdateTaskClick,
+}: TaskItemsProps) {
   return (
     <div className="grid-cols-1ds card-actions grid">
       {Tasks.map((task) => (
