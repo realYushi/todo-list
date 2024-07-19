@@ -36,9 +36,12 @@ const listSlice = createSlice({
       );
       state.lists[listIndex] = action.payload;
     },
-    deleteList() {},
-    readLists() {},
+    deleteList(state, action: PayloadAction<string>) {
+      state.lists = state.lists.filter(
+        (list) => list.listId !== action.payload,
+      );
+    },
   },
 });
 export default listSlice.reducer;
-export const { addList, updateList, deleteList, readLists } = listSlice.actions;
+export const { addList, updateList, deleteList } = listSlice.actions;

@@ -1,11 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import TaskItems from "./TaskItems";
 import ITask from "@models/TaskInterface";
 import IList from "@models/ListInterface";
+import { deleteList } from "@store/task/listSlice";
 
 interface TaskListProps {
   list: IList;
@@ -30,6 +31,7 @@ export default function TaskList({
     state.task.tasks.filter((task) => task.listId === list.listId),
   );
 
+  const dispatch = useDispatch();
   /**
    * Handles the click event when the "Add Task" button is clicked.
    */
@@ -39,6 +41,10 @@ export default function TaskList({
   const handleUpdateListClicked = () => {
     onUpdateListClick(list);
   };
+  const handelDeleteListClicked = () => {
+    dispatch(deleteList(list.listId ?? ""));
+  };
+
   return (
     <div className="card m-4 bg-base-100 shadow-xl lg:w-1/3">
       <div className="card-body">
@@ -59,7 +65,10 @@ export default function TaskList({
         >
           <FontAwesomeIcon className="size-4" icon={faPen} />
         </button>
-        <button className="btn btn-circle btn-sm">
+        <button
+          className="btn btn-circle btn-sm"
+          onClick={handelDeleteListClicked}
+        >
           <FontAwesomeIcon className="size-4" icon={faTrash} />
         </button>
       </div>

@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import ITask from "@models/TaskInterface";
+import { useDispatch } from "react-redux";
+import { deleteTask } from "@storetask/taskSlice";
 
 interface TaskProps {
   task: ITask;
@@ -18,6 +20,10 @@ export default function TaskItem({
   task,
   onUpdateTaskClick,
 }: TaskProps): JSX.Element {
+  const dispatch = useDispatch();
+  const handleDeleteTask = () => {
+    dispatch(deleteTask(task.taskId));
+  };
   return (
     <div className="form-control">
       <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
@@ -28,7 +34,7 @@ export default function TaskItem({
           <p className="text-sm">{task.dueDate.toString()}</p>
         </div>
         <div className="flex flex-col space-y-2">
-          <button className="btn btn-circle btn-sm">
+          <button className="btn btn-circle btn-sm" onClick={handleDeleteTask}>
             <FontAwesomeIcon className="size-4" icon={faTrash} />
           </button>
           <button
