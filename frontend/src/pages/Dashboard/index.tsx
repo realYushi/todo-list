@@ -1,7 +1,6 @@
 import { Card, OverviewCard } from "@pages/Dashboard/DashboardCard";
 import {
   faCheckCircle,
-  faClock,
   faHourglassHalf,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";

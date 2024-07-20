@@ -1,12 +1,26 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { themeChange } from "theme-change";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+
 export function Header() {
+  const [isDark, setIsDark] = useState<boolean>(false);
+
   useEffect(() => {
+    const currentTheme = localStorage.getItem("theme");
+    setIsDark(currentTheme === "dracula");
+
     themeChange(false);
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = isDark ? "light" : "dracula";
+    setIsDark(!isDark);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
   const location = useLocation();
 
   const navRef = useRef<HTMLDetailsElement | null>(null);
@@ -82,19 +96,8 @@ export function Header() {
         <a className="btn btn-ghost text-xl">{title}</a>
       </div>
       <div className="navbar-end">
-        <button
-          className="btn btn-sm"
-          data-set-theme="dracula"
-          data-act-class="ACTIVECLASS"
-        >
-          <FontAwesomeIcon icon={faMoon} />
-        </button>
-        <button
-          className="btn btn-sm"
-          data-set-theme="light"
-          data-act-class="ACTIVECLASS"
-        >
-          <FontAwesomeIcon icon={faSun} />
+        <button className="btn btn-sm" onClick={toggleTheme}>
+          <FontAwesomeIcon icon={isDark ? faSun : faMoon} />
         </button>
       </div>
     </div>
