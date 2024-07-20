@@ -63,6 +63,7 @@ export default function TaskItem({
     <div className={`${task.status === "Completed" ? "line-through" : ""} `}>
       <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
         <input
+          checked={task.status === "Completed"}
           type="checkbox"
           className="checkbox checkbox-md mr-4 size-8"
           onClick={handelCompleteTask}

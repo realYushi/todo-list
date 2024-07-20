@@ -1,5 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
+
+import ITask from "@modelsTaskInterface";
 
 interface CardProps {
   title: string;
@@ -23,18 +24,17 @@ export function Card({ title, icon, number }: CardProps) {
   );
 }
 
-Card.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.node.isRequired,
-  number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-};
-
 interface OverviewCardProps {
   avatar: string;
-  totalNumber: number;
+  tasks: ITask[];
 }
 
-export function OverviewCard({ totalNumber, avatar }: OverviewCardProps) {
+export function OverviewCard({ tasks, avatar }: OverviewCardProps) {
+  const totalNumber = tasks.length;
+  const doneTasks = tasks.filter((task) => task.status === "Completed").length;
+  const doneTasksPercentage =
+    totalNumber > 0 ? (doneTasks / totalNumber) * 100 : 0;
+  const remainingTasks = totalNumber - doneTasks;
   return (
     <div className="card m-4 min-h-60 justify-center bg-base-100 shadow-xl">
       <div>
@@ -46,17 +46,13 @@ export function OverviewCard({ totalNumber, avatar }: OverviewCardProps) {
               </div>
             </div>
           </div>
-          <div className="stat-value">{totalNumber}%</div>
+          <div className="stat-value">{doneTasksPercentage} %</div>
           <div className="stat-title">Tasks done</div>
-          <div className="stat-desc text-secondary">31 tasks remaining</div>
-          {/* Consider fetching the remaining tasks count dynamically */}
+          <div className="stat-desc text-secondary">
+            {remainingTasks} Tasks remain
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-OverviewCard.propTypes = {
-  avatar: PropTypes.string.isRequired,
-  totalNumber: PropTypes.number.isRequired,
-};
