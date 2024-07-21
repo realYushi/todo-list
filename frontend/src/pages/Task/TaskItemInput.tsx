@@ -1,12 +1,11 @@
-import ITask from "@models/TaskInterface";
-import { addTask, updateTask } from "@store/task/taskSlice";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import ITask from "@models/TaskInterface"
+import { useAddTaskMutation, useUpdateTaskMutation } from "@servicetaskEndpoint"
+import { useState, useEffect } from "react"
 
 interface TaskItemInputProps {
-  onTaskClose: () => void;
-  listId: string;
-  taskToUpdate: ITask | null;
+  onTaskClose: () => void
+  listId: string
+  taskToUpdate: ITask | null
 }
 
 /**
@@ -17,21 +16,21 @@ export default function TaskItemInput({
   taskToUpdate,
   listId,
 }: TaskItemInputProps) {
-  const dispatch = useDispatch();
-
+  const [updateTask] = useUpdateTaskMutation()
+  const [addTask] = useAddTaskMutation()
   // State variables for storing the input values
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [dueDate, setDueDate] = useState<string>("");
+  const [title, setTitle] = useState<string>("")
+  const [description, setDescription] = useState<string>("")
+  const [dueDate, setDueDate] = useState<string>("")
 
   // Set the input values when the taskToUpdate prop changes
   useEffect(() => {
     if (taskToUpdate) {
-      setTitle(taskToUpdate.title);
-      setDescription(taskToUpdate.description);
-      setDueDate(taskToUpdate.dueDate);
+      setTitle(taskToUpdate.title)
+      setDescription(taskToUpdate.description)
+      setDueDate(taskToUpdate.dueDate)
     }
-  }, [taskToUpdate]);
+  }, [taskToUpdate])
 
   /**
    * Handles the task submission.
@@ -46,15 +45,15 @@ export default function TaskItemInput({
       dueDate,
       listId: taskToUpdate ? taskToUpdate.listId : listId,
       status: taskToUpdate ? taskToUpdate.status : "InProgress",
-    };
+    }
 
     if (taskToUpdate) {
-      dispatch(updateTask(task));
+      updateTask(task)
     } else {
-      dispatch(addTask(task));
+      addTask(task)
     }
-    onTaskClose();
-  };
+    onTaskClose()
+  }
 
   return (
     <div className="absolute rounded-lg bg-neutral-50 p-4">
@@ -65,7 +64,7 @@ export default function TaskItemInput({
       <input
         type="text"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={e => setTitle(e.target.value)}
         className="input input-bordered input-secondary w-full"
       />
       <div className="label">
@@ -74,7 +73,7 @@ export default function TaskItemInput({
       </div>
       <textarea
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={e => setDescription(e.target.value)}
         className="textarea textarea-bordered w-full"
       ></textarea>
       <div className="label">
@@ -85,7 +84,7 @@ export default function TaskItemInput({
         <input
           type="date"
           value={dueDate}
-          onChange={(e) => setDueDate(e.target.value.toString())}
+          onChange={e => setDueDate(e.target.value.toString())}
           className="input input-bordered w-full"
         />
       </div>
@@ -98,5 +97,5 @@ export default function TaskItemInput({
         </button>
       </div>
     </div>
-  );
+  )
 }

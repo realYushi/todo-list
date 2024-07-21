@@ -1,19 +1,21 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faTrash,
   faPen,
   faCheckCircle,
   faHourglassHalf,
   faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
-import ITask from "@models/TaskInterface";
-import { useDispatch } from "react-redux";
-import { deleteTask, updateTask } from "@store/task/taskSlice";
-import { useEffect, useState } from "react";
+} from "@fortawesome/free-solid-svg-icons"
+import ITask from "@models/TaskInterface"
+import { useEffect, useState } from "react"
+import {
+  useDeleteTaskMutation,
+  useUpdateTaskMutation,
+} from "@service/taskEndpoint"
 
 interface TaskProps {
-  task: ITask;
-  onUpdateTaskClick: (task: ITask) => void;
+  task: ITask
+  onUpdateTaskClick: (task: ITask) => void
 }
 
 /**
@@ -27,37 +29,36 @@ export default function TaskItem({
   task,
   onUpdateTaskClick,
 }: TaskProps): JSX.Element {
-  const dispatch = useDispatch();
+  const [deleteTask] = useDeleteTaskMutation()
+  const [updateTask] = useUpdateTaskMutation()
   const handleDeleteTask = () => {
-    dispatch(deleteTask(task.taskId));
-  };
-  const [taskStatus, setTaskStatus] = useState(faHourglassHalf);
+    deleteTask(task.taskId)
+  }
+  const [taskStatus, setTaskStatus] = useState(faHourglassHalf)
   useEffect(() => {
     switch (task.status) {
       case "Completed":
-        setTaskStatus(faCheckCircle);
-        break;
+        setTaskStatus(faCheckCircle)
+        break
       case "InProgress":
-        setTaskStatus(faHourglassHalf);
-        break;
+        setTaskStatus(faHourglassHalf)
+        break
     }
     if (
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
       task.status !== "Completed"
     ) {
-      setTaskStatus(faExclamationTriangle);
+      setTaskStatus(faExclamationTriangle)
     }
-  });
+  })
 
   const handelCompleteTask = () => {
-    dispatch(
-      updateTask({
-        ...task,
-        status: task.status === "Completed" ? "InProgress" : "Completed",
-      }),
-    );
-  };
+    updateTask({
+      ...task,
+      status: task.status === "Completed" ? "InProgress" : "Completed",
+    })
+  }
 
   return (
     <div className={`${task.status === "Completed" ? "line-through" : ""} `}>
@@ -89,5 +90,5 @@ export default function TaskItem({
         </div>
       </label>
     </div>
-  );
+  )
 }

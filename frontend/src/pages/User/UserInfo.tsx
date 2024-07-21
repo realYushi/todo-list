@@ -1,38 +1,49 @@
-import IUser from "@modelsUserInterface";
-import { useState } from "react";
-import { RootState } from "@storestore";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "@storetask/userSlice";
+import IUser from "@modelsUserInterface"
+import { useGetUserQuery, useUpdateUserMutation } from "@serviceuserEndpoint"
+import { useState } from "react"
 
 export function UserInfo() {
-  const dispatch = useDispatch();
-  const userId = useSelector((state: RootState) => state.user.userId);
-  const [userName, setUserName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [userName, setUserName] = useState<string>("")
+  const [currentEmail, setCurrentEmail] = useState<string>("")
+  const [newEmail, setNewEmail] = useState<string>("")
+  const [currentPassword, setCurrentPassword] = useState<string>("")
+  const [newPassword, setNewPassword] = useState<string>("")
+  const [confirmPassword, setConfirmPassword] = useState<string>("")
+  const [userId, setUserId] = useState<string>("")
+  const [updateUser] = useUpdateUserMutation()
 
   const handleUserInfo = () => {
     const newUser: IUser = {
-      email: email,
+      email: newEmail === "" ? currentEmail : newEmail,
       username: userName,
       password: newPassword === confirmPassword ? newPassword : "",
       userId: userId,
-    };
+    }
 
     if (
       newUser.password === "" ||
       newUser.email === "" ||
       newUser.username === ""
     ) {
-      alert("Please fill in all fields or check if the passwords match");
-      return;
+      alert("Please fill in all fields or check if the passwords match")
+      return
     } else {
-      dispatch(updateUser(newUser));
-      alert("User information updated successfully");
+      const {
+        data: currentUser,
+        isLoading,
+        error,
+      } = useGetUserQuery({
+        userName: userName,
+        email: currentEmail,
+      })
+      if (isLoading) return <div>Loading...</div>
+      if (error) return <div>Error: {error.toString()}</div>
+      if (!currentUser) return <div>No user found</div>
+      setUserId(currentUser.userId)
+      updateUser(newUser)
+      alert("User information updated successfully")
     }
-  };
+  }
 
   return (
     <div className="flex justify-center">
@@ -50,7 +61,7 @@ export function UserInfo() {
                 type="text"
                 value={userName}
                 placeholder="User Name"
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={e => setUserName(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -63,7 +74,19 @@ export function UserInfo() {
                 type="password"
                 value={currentPassword}
                 placeholder="Current Password"
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                onChange={e => setCurrentPassword(e.target.value)}
+                className="input input-bordered w-full max-w-xs"
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Current Email</span>
+              </div>
+              <input
+                type="email"
+                value={currentEmail}
+                placeholder="New Email"
+                onChange={e => setCurrentEmail(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -74,9 +97,9 @@ export function UserInfo() {
               </div>
               <input
                 type="email"
-                value={email}
+                value={newEmail}
                 placeholder="New Email"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setNewEmail(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -88,7 +111,7 @@ export function UserInfo() {
                 type="password"
                 value={newPassword}
                 placeholder="New Password"
-                onChange={(e) => setNewPassword(e.target.value)}
+                onChange={e => setNewPassword(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -101,7 +124,7 @@ export function UserInfo() {
                 type="password"
                 value={confirmPassword}
                 placeholder="Confirm Password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={e => setConfirmPassword(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -113,5 +136,5 @@ export function UserInfo() {
         </div>
       </div>
     </div>
-  );
+  )
 }

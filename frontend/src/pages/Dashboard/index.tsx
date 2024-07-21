@@ -1,27 +1,30 @@
-import { Card, OverviewCard } from "@pages/Dashboard/DashboardCard";
+import { Card, OverviewCard } from "@pages/Dashboard/DashboardCard"
 import {
   faCheckCircle,
   faHourglassHalf,
   faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector } from "react-redux";
-import { RootState } from "@store/store";
+} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useGetTasksQuery } from "@servicetaskEndpoint"
 
 export function Dashboard() {
-  const tasks = useSelector((state: RootState) => state.task.tasks);
+  const { data: tasks, isLoading, isError } = useGetTasksQuery()
 
-  const doneCount = tasks.filter((task) => task.status === "Completed").length;
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error fetching tasks</div>
+  if (!tasks) return <div>No tasks found</div>
+
+  const doneCount = tasks.filter(task => task.status === "Completed").length
   const inProgressCount = tasks.filter(
-    (task) => task.status === "InProgress",
-  ).length;
+    task => task.status === "InProgress",
+  ).length
 
   const overdueCount = tasks.filter(
-    (task) =>
+    task =>
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
       task.status !== "Completed",
-  ).length;
+  ).length
 
   return (
     <div className="flex justify-center">
@@ -47,5 +50,5 @@ export function Dashboard() {
         />
       </section>
     </div>
-  );
+  )
 }

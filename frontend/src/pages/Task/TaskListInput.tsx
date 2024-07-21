@@ -1,12 +1,11 @@
 // frontend/src/pages/Task/TaskListInput.tsx
-import IList from "@models/ListInterface";
-import { addList, updateList } from "@store/task/listSlice";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import IList from "@models/ListInterface"
+import { useAddListMutation, useUpdateListMutation } from "@service/listEndpoint"
+import { useState, useEffect } from "react"
 
 interface TaskListInputProps {
-  onListClose: () => void;
-  listToUpdate: IList | null;
+  onListClose: () => void
+  listToUpdate: IList | null
 }
 
 /**
@@ -16,19 +15,19 @@ export default function TaskListInput({
   onListClose,
   listToUpdate,
 }: TaskListInputProps) {
-  const dispatch = useDispatch();
-
+  const [addList] = useAddListMutation()
+  const [updateList] = useUpdateListMutation()
   // State variables for storing the input values
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>("")
+  const [description, setDescription] = useState<string>("")
 
   // Set the input values when the listToUpdate prop changes
   useEffect(() => {
     if (listToUpdate) {
-      setTitle(listToUpdate.title);
-      setDescription(listToUpdate.description);
+      setTitle(listToUpdate.title)
+      setDescription(listToUpdate.description)
     }
-  }, [listToUpdate]);
+  }, [listToUpdate])
 
   /**
    * Handles the list submission.
@@ -41,15 +40,15 @@ export default function TaskListInput({
       title,
       description,
       tasks: listToUpdate ? listToUpdate.tasks : [],
-    };
+    }
 
     if (listToUpdate) {
-      dispatch(updateList(list));
+      updateList(list)
     } else {
-      dispatch(addList(list));
+      addList(list)
     }
-    onListClose();
-  };
+    onListClose()
+  }
 
   return (
     <div className="absolute rounded-lg bg-neutral-50 p-4">
@@ -60,7 +59,7 @@ export default function TaskListInput({
       <input
         type="text"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={e => setTitle(e.target.value)}
         className="input input-bordered input-secondary w-full"
       />
       <div className="label">
@@ -69,7 +68,7 @@ export default function TaskListInput({
       </div>
       <textarea
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={e => setDescription(e.target.value)}
         className="textarea textarea-bordered w-full"
       ></textarea>
       <div className="mt-5">
@@ -81,5 +80,5 @@ export default function TaskListInput({
         </button>
       </div>
     </div>
-  );
+  )
 }

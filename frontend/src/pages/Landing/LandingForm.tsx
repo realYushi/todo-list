@@ -1,17 +1,8 @@
-import { RootState } from "@storestore";
-import { login, register } from "@storetask/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import IUser from "@modelsUserInterface"
+import { useLoginMutation, useRegisterMutation } from "@serviceuserEndpoint"
+import { useState } from "react"
+
 export function FormComponent() {
-  const user = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
-
-  const handleRegister = () => {
-    dispatch(register(user));
-  };
-  const handleLogin = () => {
-    dispatch(login(user));
-  };
-
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content w-full flex-col bg-neutral shadow-lg lg:flex-row">
@@ -19,9 +10,24 @@ export function FormComponent() {
         <LoginForm />
       </div>
     </div>
-  );
+  )
 }
 const RegisterForm = () => {
+  const [userName, setUserName] = useState("")
+  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [register] = useRegisterMutation()
+  const [login] = useLoginMutation()
+
+  const handleLogin = () => {
+    const user: IUser = {
+      userId: "",
+      username: userName,
+      email: email,
+      password: password,
+    }
+    login(user)
+  }
   return (
     <div className="w-10/12 lg:w-1/2 lg:flex-col">
       <div className="text-center">
@@ -35,6 +41,7 @@ const RegisterForm = () => {
             </label>
             <input
               type="text"
+              onChange={e => setUserName(e.target.value)}
               placeholder="user name"
               className="input input-bordered"
               required
@@ -48,6 +55,7 @@ const RegisterForm = () => {
               type="email"
               placeholder="email"
               className="input input-bordered"
+              onChange={e => setEmail(e.target.value)}
               required
             />
           </div>
@@ -59,6 +67,7 @@ const RegisterForm = () => {
               type="password"
               placeholder="password"
               className="input input-bordered"
+              onChange={e => setPassword(e.target.value)}
               required
             />
             <label className="label">
@@ -66,14 +75,30 @@ const RegisterForm = () => {
             </label>
           </div>
           <div className="form-control mt-6 gap-2">
-            <button className="btn btn-primary">Register</button>
+            <button className="btn btn-primary " onClick={handleLogin}>
+              Register
+            </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 const LoginForm = () => {
+  const [userName, setUserName] = useState("")
+  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [register] = useRegisterMutation()
+  const [login] = useLoginMutation()
+  const handleRegister = () => {
+    const user: IUser = {
+      userId: "",
+      username: userName,
+      email: email,
+      password: password,
+    }
+    register(user)
+  }
   return (
     <div className="w-10/12 lg:w-1/2 lg:flex-col">
       <div className="text-center">
@@ -89,6 +114,7 @@ const LoginForm = () => {
               type="text"
               placeholder="user name"
               className="input input-bordered"
+              onChange={e => setUserName(e.target.value)}
               required
             />
           </div>
@@ -100,6 +126,7 @@ const LoginForm = () => {
               type="password"
               placeholder="password"
               className="input input-bordered"
+              onChange={e => setPassword(e.target.value)}
               required
             />
             <label className="label">
@@ -107,10 +134,12 @@ const LoginForm = () => {
             </label>
           </div>
           <div className="form-control mt-6 gap-2">
-            <button className="btn btn-primary">Login</button>
+            <button className="btn btn-primary" onClick={handleRegister}>
+              Login
+            </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}

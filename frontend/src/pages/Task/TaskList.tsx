@@ -1,17 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@store/store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
-import TaskItems from "./TaskItems";
-import ITask from "@models/TaskInterface";
-import IList from "@models/ListInterface";
-import { deleteList } from "@store/task/listSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons"
+import TaskItems from "./TaskItems"
+import ITask from "@models/TaskInterface"
+import IList from "@models/ListInterface"
+import { useGetTasksQuery } from "@servicetaskEndpoint"
+import { useDeleteListMutation } from "@servicelistEndpoint"
 
 interface TaskListProps {
-  list: IList;
-  onUpdateListClick: (list: IList) => void;
-  onUpdateTaskClick: (task: ITask) => void;
-  onAddTaskClick: (listId: string) => void;
+  list: IList
+  onUpdateListClick: (list: IList) => void
+  onUpdateTaskClick: (task: ITask) => void
+  onAddTaskClick: (listId: string) => void
 }
 
 /**
@@ -26,23 +25,27 @@ export default function TaskList({
   onUpdateListClick,
 }: TaskListProps) {
   // Get the tasks from the Redux store that belong to the current list
-  const tasks: ITask[] = useSelector((state: RootState) =>
-    state.task.tasks.filter((task) => task.listId === list.listId),
-  );
+  const [deleteList] = useDeleteListMutation()
+  const { data: tasks, isLoading, isError } = useGetTasksQuery()
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error fetching tasks</div>
+  if (!tasks) return <div>No tasks found</div>
+  const filteredTasks: ITask[] = tasks.filter(
+    task => task.listId === list.listId,
+  )
 
-  const dispatch = useDispatch();
   /**
    * Handles the click event when the "Add Task" button is clicked.
    */
   const handleAddClicked = () => {
-    onAddTaskClick(list.listId ?? "");
-  };
+    onAddTaskClick(list.listId ?? "")
+  }
   const handleUpdateListClicked = () => {
-    onUpdateListClick(list);
-  };
+    onUpdateListClick(list)
+  }
   const handelDeleteListClicked = () => {
-    dispatch(deleteList(list.listId ?? ""));
-  };
+    deleteList(list.listId ?? "")
+  }
 
   return (
     <div className="card m-4 bg-base-100 shadow-xl lg:w-1/3">
@@ -50,7 +53,7 @@ export default function TaskList({
         <h2 className="card-title">{list.title}</h2>
         <p>{list.description}</p>
         <TaskItems
-          Tasks={tasks}
+          Tasks={filteredTasks}
           onUpdateTaskClick={onUpdateTaskClick}
         ></TaskItems>
         <button className="btn btn-neutral" onClick={handleAddClicked}>
@@ -72,5 +75,5 @@ export default function TaskList({
         </button>
       </div>
     </div>
-  );
+  )
 }
