@@ -14,7 +14,7 @@ export function HeroSection({
   buttonLink,
 }: HeroSectionProps) {
   return (
-    <div className="hero col-auto min-h-screen bg-white">
+    <div className="hero col-auto min-h-screen bg-neutral">
       <div className="hero-content flex-col lg:max-w-2xl lg:flex-row-reverse">
         <img src={imageSrc} className="rounded-lg shadow-2xl" />
         <div>

@@ -1,7 +1,20 @@
+import { RootState } from "@storestore";
+import { login, register } from "@storetask/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 export function FormComponent() {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
+  const handleRegister = () => {
+    dispatch(register(user));
+  };
+  const handleLogin = () => {
+    dispatch(login(user));
+  };
+
   return (
     <div className="hero min-h-screen bg-base-200">
-      <div className="card hero-content w-full flex-col bg-gray-50 shadow-lg lg:flex-row">
+      <div className="hero-content w-full flex-col bg-neutral shadow-lg lg:flex-row">
         <RegisterForm />
         <LoginForm />
       </div>

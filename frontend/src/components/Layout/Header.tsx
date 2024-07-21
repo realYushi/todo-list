@@ -4,6 +4,10 @@ import { themeChange } from "theme-change";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Renders the header component of the application.
+ * The header contains navigation links, a toggle for dark mode, and a title.
+ */
 export function Header() {
   const [isDark, setIsDark] = useState<boolean>(false);
 
@@ -14,6 +18,9 @@ export function Header() {
     themeChange(false);
   }, []);
 
+  /**
+   * Toggles the theme between light and dark mode.
+   */
   const toggleTheme = () => {
     const newTheme = isDark ? "light" : "dracula";
     setIsDark(!isDark);
@@ -24,12 +31,21 @@ export function Header() {
   const location = useLocation();
 
   const navRef = useRef<HTMLDetailsElement | null>(null);
+
+  /**
+   * Removes the "open" attribute from the dropdown menu.
+   */
   const removeAttribute = () => {
     if (navRef.current) {
       navRef.current.removeAttribute("open");
     }
   };
 
+  /**
+   * Returns the title based on the current pathname.
+   * @param pathname - The current pathname.
+   * @returns The title corresponding to the pathname.
+   */
   const getTitle = (pathname: string) => {
     switch (pathname) {
       case "/dashboard":

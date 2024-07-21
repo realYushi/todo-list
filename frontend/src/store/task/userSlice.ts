@@ -10,12 +10,13 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    addUser() {},
+    register(state, action: PayloadAction<IUser>) {},
     updateUser(state, action: PayloadAction<IUser>) {
       state.email = action.payload.email;
       state.password = action.payload.password;
     },
+    login(state, action: PayloadAction<IUser>) {},
   },
 });
 export default userSlice.reducer;
-export const { addUser, updateUser } = userSlice.actions;
+export const { login, register, updateUser } = userSlice.actions;
