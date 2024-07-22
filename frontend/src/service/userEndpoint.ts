@@ -22,6 +22,13 @@ export const userEndpoint = baseApi.injectEndpoints({
         }),
       },
     ),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: `auth/logout`,
+        method: "POST",
+        body: {},
+      }),
+    }),
     updateUser: builder.mutation<IUser, Partial<IUser>>({
       query: user => ({
         url: `user/${user.userId}`,
@@ -38,4 +45,5 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useUpdateUserMutation,
+  useLogoutMutation,
 } = userEndpoint

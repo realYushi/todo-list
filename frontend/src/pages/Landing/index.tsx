@@ -5,6 +5,8 @@ import { Navbar } from "@pages/Landing/LandingNav"
 import { HeroSection } from "@pages/Landing/LandingHero"
 import { FormComponent } from "@pages/Landing//LandingForm"
 import { Footer } from "@components/Layout/Footer"
+import { useLocation } from "react-router-dom"
+import { useEffect } from "react"
 export function Landing() {
   return (
     <>

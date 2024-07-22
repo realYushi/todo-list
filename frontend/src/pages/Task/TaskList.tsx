@@ -56,7 +56,7 @@ export default function TaskList({
   }
 
   return (
-    <div className="card m-4 bg-base-100 shadow-xl w-full  ">
+    <div className="card m-4 bg-base-100 shadow-xl w-full max-w-md ">
       <div className="card-body">
         <h2 className="card-title">{list.title}</h2>
         <p>{list.description}</p>

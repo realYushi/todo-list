@@ -37,7 +37,9 @@ export default function TaskLists() {
   return (
     <>
       <div
-        className={`justify-center lg:grid gap-14 grid-cols-3 ${isBlurred ? "pointer-events-none blur-sm" : ""}`}
+        className={`grid grid-cols-1 justify-items-center gap-14 md:grid-cols-2 lg:grid-cols-3 ${
+          isBlurred ? "pointer-events-none blur-sm" : ""
+        } ${lists && lists.length === 1 ? "md:grid-cols-1 lg:grid-cols-1" : ""}`}
       >
         {lists &&
           lists.map((list: IList) => (

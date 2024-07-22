@@ -1,6 +1,7 @@
-import IUser from "@modelsUserInterface"
-import { useLoginMutation, useRegisterMutation } from "@serviceuserEndpoint"
 import { useState, FormEvent } from "react"
+import { useNavigate } from "react-router-dom"
+import { useLoginMutation, useRegisterMutation } from "@serviceuserEndpoint"
+import IUser from "@modelsUserInterface"
 
 export function FormComponent() {
   return (
@@ -17,16 +18,33 @@ const RegisterForm = () => {
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
-  const [register] = useRegisterMutation()
+  const [register, { isLoading, isError, error }] = useRegisterMutation()
+  const [successMessage, setSuccessMessage] = useState("")
 
-  const handleRegister = (e: FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault()
+    setSuccessMessage("")
+
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters long")
+      return
+    }
     const user: Partial<IUser> = {
       username: userName,
       email: email,
       password: password,
     }
-    register(user)
+
+    try {
+      await register(user).unwrap()
+      setSuccessMessage("User registered successfully!")
+      // Clear form fields
+      setUserName("")
+      setPassword("")
+      setEmail("")
+    } catch (err) {
+      console.error("Failed to register:", err)
+    }
   }
 
   return (
@@ -76,10 +94,16 @@ const RegisterForm = () => {
             />
           </div>
           <div className="form-control mt-6 gap-2">
-            <button type="submit" className="btn btn-primary">
-              Register
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isLoading}
+            >
+              {isLoading ? "Registering..." : "Register"}
             </button>
           </div>
+          {isError && <p className="text-error">{"An error occurred"}</p>}
+          {successMessage && <p className="text-success">{successMessage}</p>}
         </form>
       </div>
     </div>
@@ -90,16 +114,23 @@ const LoginForm = () => {
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
-  const [login] = useLoginMutation()
+  const [login, { isLoading, isError, error }] = useLoginMutation()
+  const navigate = useNavigate()
 
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
     const user: Partial<IUser> = {
       username: userName,
       email: email,
       password: password,
     }
-    login(user)
+
+    try {
+      await login(user).unwrap()
+      navigate("/dashboard")
+    } catch (err) {
+      console.error("Failed to login:", err)
+    }
   }
 
   return (
@@ -149,10 +180,15 @@ const LoginForm = () => {
             />
           </div>
           <div className="form-control mt-6 gap-2">
-            <button type="submit" className="btn btn-primary">
-              Login
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isLoading}
+            >
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </div>
+          {isError && <p className="text-error">{"An error occurred"}</p>}
         </form>
       </div>
     </div>
