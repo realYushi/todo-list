@@ -1,6 +1,7 @@
-import IUser from "@modelsUserInterface"
-import { useGetUserQuery, useUpdateUserMutation } from "@serviceuserEndpoint"
+import IUser from "@models/UserInterface"
+import { useLoginMutation, useUpdateUserMutation } from "@service/userEndpoint"
 import { useState } from "react"
+import { jwtDecode } from "jwt-decode"
 
 export function UserInfo() {
   const [userName, setUserName] = useState<string>("")
@@ -10,38 +11,42 @@ export function UserInfo() {
   const [newPassword, setNewPassword] = useState<string>("")
   const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [userId, setUserId] = useState<string>("")
+  const [login] = useLoginMutation()
   const [updateUser] = useUpdateUserMutation()
 
-  const handleUserInfo = () => {
-    const newUser: IUser = {
-      email: newEmail === "" ? currentEmail : newEmail,
-      username: userName,
-      password: newPassword === confirmPassword ? newPassword : "",
-      userId: userId,
-    }
-
-    if (
-      newUser.password === "" ||
-      newUser.email === "" ||
-      newUser.username === ""
-    ) {
-      alert("Please fill in all fields or check if the passwords match")
-      return
-    } else {
-      const {
-        data: currentUser,
-        isLoading,
-        error,
-      } = useGetUserQuery({
-        userName: userName,
+  const handleUserInfo = async () => {
+    try {
+      // First, attempt to login with current credentials
+      const loginResult = await login({
+        username: userName,
         email: currentEmail,
-      })
-      if (isLoading) return <div>Loading...</div>
-      if (error) return <div>Error: {error.toString()}</div>
-      if (!currentUser) return <div>No user found</div>
-      setUserId(currentUser.userId)
-      updateUser(newUser)
-      alert("User information updated successfully")
+        password: currentPassword,
+      }).unwrap()
+
+      if (loginResult.token) {
+        // Decode the token to get user information
+        const decodedToken: any = jwtDecode(loginResult.token)
+        setUserId(decodedToken.sub) // Assuming the token contains userId
+
+        const newUser: IUser = {
+          email: newEmail || currentEmail,
+          username: userName,
+          password: newPassword === confirmPassword ? newPassword : "",
+          userId: decodedToken.sub,
+        }
+
+        if (!newUser.password || !newUser.email || !newUser.username) {
+          alert("Please fill in all fields or check if the passwords match")
+          return
+        }
+
+        // Update user information
+        await updateUser(newUser).unwrap()
+        alert("User information updated successfully")
+      }
+    } catch (error) {
+      console.error("Error updating user info:", error)
+      alert("Failed to update user information. Please check your credentials.")
     }
   }
 

@@ -8,9 +8,6 @@ import { useGetListsQuery } from "@service/listEndpoint"
 
 export default function TaskLists() {
   const { data: lists, isLoading, isError } = useGetListsQuery()
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error fetching tasks</div>
-  if (!lists) return <div>No tasks found</div>
   const [updateTask, setUpdateTask] = useState<ITask | null>(null)
   const [updateList, setUpdateList] = useState<IList | null>(null)
   const [showListForm, setShowListForm] = useState(false)
@@ -34,6 +31,10 @@ export default function TaskLists() {
     setShowTaskForm(true)
     setUpdateTask(task)
   }
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error fetching tasks</div>
+  if (!lists) return <div>No tasks found</div>
 
   const isBlurred = showListForm || showTaskForm
 

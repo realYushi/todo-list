@@ -1,5 +1,8 @@
 import ITask from "@models/TaskInterface"
-import { useAddTaskMutation, useUpdateTaskMutation } from "@servicetaskEndpoint"
+import {
+  useAddTaskMutation,
+  useUpdateTaskMutation,
+} from "@service/taskEndpoint"
 import { useState, useEffect } from "react"
 
 interface TaskItemInputProps {
@@ -8,9 +11,12 @@ interface TaskItemInputProps {
   taskToUpdate: ITask | null
 }
 
-/**
- * Component for rendering a form to add or update a task.
- */
+enum StatusEnum {
+  Pending = 1,
+  InProgress = 2,
+  Completed = 3,
+}
+
 export default function TaskItemInput({
   onTaskClose,
   taskToUpdate,
@@ -18,34 +24,38 @@ export default function TaskItemInput({
 }: TaskItemInputProps) {
   const [updateTask] = useUpdateTaskMutation()
   const [addTask] = useAddTaskMutation()
-  // State variables for storing the input values
+
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [dueDate, setDueDate] = useState<string>("")
 
-  // Set the input values when the taskToUpdate prop changes
   useEffect(() => {
     if (taskToUpdate) {
       setTitle(taskToUpdate.title)
-      setDescription(taskToUpdate.description)
-      setDueDate(taskToUpdate.dueDate)
+      setDescription(taskToUpdate.description || "")
+      setDueDate(taskToUpdate.dueDate || "")
     }
   }, [taskToUpdate])
 
-  /**
-   * Handles the task submission.
-   * If taskToUpdate is provided, updates the task, otherwise adds a new task.
-   * Dispatches the appropriate action and closes the form.
-   */
   const handleTask = () => {
-    const task: ITask = {
-      taskId: taskToUpdate ? taskToUpdate.taskId : Date.now().toString(),
+    const formattedDueDate = dueDate
+      ? new Date(dueDate).toISOString()
+      : undefined
+
+    const baseTask = {
       title,
       description,
-      dueDate,
       listId: taskToUpdate ? taskToUpdate.listId : listId,
-      status: taskToUpdate ? taskToUpdate.status : "InProgress",
+      dueDate: formattedDueDate,
     }
+
+    const task: Partial<ITask> = taskToUpdate
+      ? {
+          ...baseTask,
+          taskId: taskToUpdate.taskId,
+          status: taskToUpdate.status,
+        }
+      : { ...baseTask, status: StatusEnum.Pending }
 
     if (taskToUpdate) {
       updateTask(task)

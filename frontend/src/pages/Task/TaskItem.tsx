@@ -6,68 +6,79 @@ import {
   faHourglassHalf,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons"
-import ITask from "@models/TaskInterface"
 import { useEffect, useState } from "react"
 import {
   useDeleteTaskMutation,
   useUpdateTaskMutation,
 } from "@service/taskEndpoint"
+import ITask from "@models/TaskInterface"
+
+export enum StatusEnum {
+  Pending = 1,
+  InProgress = 2,
+  Completed = 3,
+}
 
 interface TaskProps {
   task: ITask
   onUpdateTaskClick: (task: ITask) => void
 }
 
-/**
- * Component representing a single task item.
- * @param {TaskProps} props - The props for the TaskItem component.
- * @param {ITask} props.task - The task object.
- * @param {(task: ITask) => void} props.onUpdateTaskClick - The function to call when the task is updated.
- * @returns {JSX.Element} The TaskItem component.
- */
 export default function TaskItem({
   task,
   onUpdateTaskClick,
 }: TaskProps): JSX.Element {
   const [deleteTask] = useDeleteTaskMutation()
   const [updateTask] = useUpdateTaskMutation()
-  const handleDeleteTask = () => {
-    deleteTask(task.taskId)
-  }
   const [taskStatus, setTaskStatus] = useState(faHourglassHalf)
+
   useEffect(() => {
     switch (task.status) {
-      case "Completed":
+      case StatusEnum.Completed:
         setTaskStatus(faCheckCircle)
         break
-      case "InProgress":
+      case StatusEnum.InProgress:
+        setTaskStatus(faHourglassHalf)
+        break
+      case StatusEnum.Pending:
         setTaskStatus(faHourglassHalf)
         break
     }
     if (
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
-      task.status !== "Completed"
+      task.status !== StatusEnum.Completed
     ) {
       setTaskStatus(faExclamationTriangle)
     }
-  })
+  }, [task.status, task.dueDate])
 
-  const handelCompleteTask = () => {
+  const handleDeleteTask = () => {
+    deleteTask(task.taskId)
+  }
+
+  const handleCompleteTask = () => {
+    const newStatus =
+      task.status === StatusEnum.Completed
+        ? StatusEnum.InProgress
+        : StatusEnum.Completed
+
     updateTask({
       ...task,
-      status: task.status === "Completed" ? "InProgress" : "Completed",
+      status: newStatus,
     })
   }
 
   return (
-    <div className={`${task.status === "Completed" ? "line-through" : ""} `}>
+    <div
+      className={`${task.status === StatusEnum.Completed ? "line-through" : ""} `}
+    >
       <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
         <input
-          checked={task.status === "Completed"}
+          checked={task.status === StatusEnum.Completed}
           type="checkbox"
           className="checkbox checkbox-md mr-4 size-8"
-          onClick={handelCompleteTask}
+          onClick={handleCompleteTask}
         />
         <div className="flex-grow">
           <div className="flex gap-4">
@@ -75,7 +86,7 @@ export default function TaskItem({
             <h3 className="text-xl">{task.title}</h3>
           </div>
           <p className="text-sm">{task.description}</p>
-          <p className="text-sm">{task.dueDate.toString()}</p>
+          <p className="text-sm">{task.dueDate}</p>
         </div>
         <div className="flex flex-col space-y-2">
           <button className="btn btn-circle btn-sm" onClick={handleDeleteTask}>

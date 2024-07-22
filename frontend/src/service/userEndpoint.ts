@@ -8,18 +8,20 @@ export const userEndpoint = baseApi.injectEndpoints({
     }),
     register: builder.mutation<IUser, Partial<IUser>>({
       query: user => ({
-        url: `user/register`,
+        url: `auth/register`,
         method: "POST",
         body: user,
       }),
     }),
-    login: builder.mutation<IUser, Partial<IUser>>({
-      query: user => ({
-        url: `user/login`,
-        method: "POST",
-        body: user,
-      }),
-    }),
+    login: builder.mutation<{ message: string; token: string }, Partial<IUser>>(
+      {
+        query: user => ({
+          url: `auth/login`,
+          method: "POST",
+          body: user,
+        }),
+      },
+    ),
     updateUser: builder.mutation<IUser, Partial<IUser>>({
       query: user => ({
         url: `user/${user.userId}`,

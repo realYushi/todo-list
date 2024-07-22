@@ -1,6 +1,9 @@
 // frontend/src/pages/Task/TaskListInput.tsx
 import IList from "@models/ListInterface"
-import { useAddListMutation, useUpdateListMutation } from "@service/listEndpoint"
+import {
+  useAddListMutation,
+  useUpdateListMutation,
+} from "@service/listEndpoint"
 import { useState, useEffect } from "react"
 
 interface TaskListInputProps {
@@ -35,18 +38,22 @@ export default function TaskListInput({
    * Dispatches the appropriate action and closes the form.
    */
   const handleList = () => {
-    const list: IList = {
-      listId: listToUpdate ? listToUpdate.listId : Date.now().toString(),
+    const baseList = {
       title,
       description,
       tasks: listToUpdate ? listToUpdate.tasks : [],
     }
 
+    const list: Partial<IList> = listToUpdate
+      ? { ...baseList, listId: listToUpdate.listId }
+      : baseList
+
     if (listToUpdate) {
-      updateList(list)
+      updateList(list as IList)
     } else {
       addList(list)
     }
+
     onListClose()
   }
 

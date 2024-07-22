@@ -1,12 +1,11 @@
-import {
-  createApi,
-  fetchBaseQuery,
-  setupListeners,
-} from "@reduxjs/toolkit/query/react"
-import { store } from "@store/store"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:5001/api/" }),
+  tagTypes: ["Task", "List"],
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://localhost:5001/api/",
+    credentials: "include",
+  }),
+
   endpoints: () => ({}),
 })
-setupListeners(store.dispatch)
