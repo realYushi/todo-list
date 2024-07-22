@@ -4,7 +4,7 @@ import TaskItems from "./TaskItems"
 import ITask from "@models/TaskInterface"
 import IList from "@models/ListInterface"
 import { useGetTasksQuery } from "@servicetaskEndpoint"
-import { useDeleteListMutation } from "@servicelistEndpoint"
+import { useDeleteListMutation, useGetListsQuery } from "@servicelistEndpoint"
 
 interface TaskListProps {
   list: IList
@@ -27,6 +27,8 @@ export default function TaskList({
   // Get the tasks from the Redux store that belong to the current list
   const [deleteList] = useDeleteListMutation()
   const { data: tasks, isLoading, isError } = useGetTasksQuery()
+  const { data: lists } = useGetListsQuery() // Add this line to fetch all lists
+
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error fetching tasks</div>
   if (!tasks) return <div>No tasks found</div>
@@ -44,11 +46,17 @@ export default function TaskList({
     onUpdateListClick(list)
   }
   const handelDeleteListClicked = () => {
-    deleteList(list.listId ?? "")
+    if (lists && lists.length > 1) {
+      deleteList(list.listId ?? "")
+    } else {
+      // Show an error message or notification
+      alert("Cannot delete the last list")
+      // Or use a more sophisticated notification system if available
+    }
   }
 
   return (
-    <div className="card m-4 bg-base-100 shadow-xl lg:w-1/3">
+    <div className="card m-4 bg-base-100 shadow-xl w-full  ">
       <div className="card-body">
         <h2 className="card-title">{list.title}</h2>
         <p>{list.description}</p>

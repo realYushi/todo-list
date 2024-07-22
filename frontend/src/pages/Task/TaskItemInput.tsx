@@ -66,7 +66,7 @@ export default function TaskItemInput({
   }
 
   return (
-    <div className="absolute rounded-lg bg-neutral-50 p-4">
+    <div className="absolute rounded-lg backdrop-blur-xl p-4">
       <div className="label">
         <span className="label-text">Task Name</span>
         <span className="label-text-alt">Required</span>

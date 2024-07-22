@@ -58,7 +58,7 @@ export default function TaskListInput({
   }
 
   return (
-    <div className="absolute rounded-lg bg-neutral-50 p-4">
+    <div className="absolute  rounded-lg backdrop-blur-xl p-4">
       <div className="label">
         <span className="label-text">List Name</span>
         <span className="label-text-alt">Required</span>

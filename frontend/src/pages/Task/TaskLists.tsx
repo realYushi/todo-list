@@ -1,13 +1,13 @@
 import TaskList from "./TaskList"
 import TaskListInput from "./TaskListInput"
 import TaskItemInput from "./TaskItemInput"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ITask from "@models/TaskInterface"
 import IList from "@models/ListInterface"
-import { useGetListsQuery } from "@service/listEndpoint"
+import { useAddListMutation, useGetListsQuery } from "@service/listEndpoint"
 
 export default function TaskLists() {
-  const { data: lists, isLoading, isError } = useGetListsQuery()
+  const { data: lists, isLoading, isError, error } = useGetListsQuery()
   const [updateTask, setUpdateTask] = useState<ITask | null>(null)
   const [updateList, setUpdateList] = useState<IList | null>(null)
   const [showListForm, setShowListForm] = useState(false)
@@ -32,26 +32,23 @@ export default function TaskLists() {
     setUpdateTask(task)
   }
 
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error fetching tasks</div>
-  if (!lists) return <div>No tasks found</div>
-
   const isBlurred = showListForm || showTaskForm
 
   return (
     <>
       <div
-        className={`justify-center gap-12 lg:flex ${isBlurred ? "pointer-events-none blur-sm" : ""}`}
+        className={`justify-center lg:grid gap-14 grid-cols-3 ${isBlurred ? "pointer-events-none blur-sm" : ""}`}
       >
-        {lists.map(list => (
-          <TaskList
-            key={list.listId}
-            list={list}
-            onAddTaskClick={handleAddTaskClick}
-            onUpdateTaskClick={handleTaskInputClick}
-            onUpdateListClick={handleListInputClick}
-          />
-        ))}
+        {lists &&
+          lists.map((list: IList) => (
+            <TaskList
+              key={list.listId}
+              list={list}
+              onAddTaskClick={handleAddTaskClick}
+              onUpdateTaskClick={handleTaskInputClick}
+              onUpdateListClick={handleListInputClick}
+            />
+          ))}
       </div>
       <div className="m-4 flex justify-center">
         <button
