@@ -52,7 +52,7 @@ namespace ToDoListAPI.Controllers
 
         public async Task<ActionResult<UserDto>> GetUser([FromRoute] string userName, [FromRoute] string email)
         {
-            var user = await _userService.GetUserAsync(userName, email);
+            var user = await _userService.GetUserAsync(userName);
             if (user == null)
             {
                 return NotFound($"User with username {userName} and email {email} not found.");

@@ -59,7 +59,7 @@ const RegisterForm = () => {
               <span className="label-text">User Name</span>
             </label>
             <input
-              id="registerUsername"
+              id="registerForm"
               type="text"
               onChange={e => setUserName(e.target.value)}
               placeholder="user name"
@@ -72,7 +72,6 @@ const RegisterForm = () => {
               <span className="label-text">Email</span>
             </label>
             <input
-              id="registerEmail"
               type="email"
               placeholder="email"
               className="input input-bordered"
@@ -85,7 +84,6 @@ const RegisterForm = () => {
               <span className="label-text">Password</span>
             </label>
             <input
-              id="registerPassword"
               type="password"
               placeholder="password"
               className="input input-bordered"
@@ -124,7 +122,7 @@ const LoginForm = () => {
       email: email,
       password: password,
     }
-
+    setEmail("login@example.com")
     try {
       await login(user).unwrap()
       navigate("/dashboard")
@@ -145,7 +143,7 @@ const LoginForm = () => {
               <span className="label-text">User Name</span>
             </label>
             <input
-              id="loginUsername"
+              id="loginForm"
               type="text"
               placeholder="user name"
               className="input input-bordered"
@@ -153,25 +151,12 @@ const LoginForm = () => {
               required
             />
           </div>
-          <div className="form-control">
-            <label className="label" htmlFor="loginEmail">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              id="loginEmail"
-              type="email"
-              placeholder="email"
-              className="input input-bordered"
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-          </div>
+
           <div className="form-control">
             <label className="label" htmlFor="loginPassword">
               <span className="label-text">Password</span>
             </label>
             <input
-              id="loginPassword"
               type="password"
               placeholder="password"
               className="input input-bordered"

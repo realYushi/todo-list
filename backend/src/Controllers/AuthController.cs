@@ -43,9 +43,15 @@ namespace ToDoListAPI.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized("Invalid username or password");
+                return Unauthorized(new { message = "Invalid username or password" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, new { message = "An error occurred during login" });
             }
         }
+
 
 
         [HttpPost("logout")]

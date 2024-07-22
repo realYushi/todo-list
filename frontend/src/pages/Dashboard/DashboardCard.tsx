@@ -1,13 +1,17 @@
-import React from "react";
+import React from "react"
 
-import ITask from "@modelsTaskInterface";
+import ITask from "@modelsTaskInterface"
 
 interface CardProps {
-  title: string;
-  icon: React.ReactNode;
-  number: number | string;
+  title: string
+  icon: React.ReactNode
+  number: number | string
 }
-
+enum StatusEnum {
+  Pending = 1,
+  InProgress = 2,
+  Completed = 3,
+}
 export function Card({ title, icon, number }: CardProps) {
   return (
     <div className="card m-4 min-h-40 bg-base-100 shadow-xl">
@@ -21,20 +25,22 @@ export function Card({ title, icon, number }: CardProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface OverviewCardProps {
-  avatar: string;
-  tasks: ITask[];
+  avatar: string
+  tasks: ITask[]
 }
 
 export function OverviewCard({ tasks, avatar }: OverviewCardProps) {
-  const totalNumber = tasks.length;
-  const doneTasks = tasks.filter((task) => task.status === "Completed").length;
+  const totalNumber = tasks.length
+  const doneTasks = tasks.filter(
+    task => task.status === StatusEnum.Completed,
+  ).length
   const doneTasksPercentage =
-    totalNumber > 0 ? (doneTasks / totalNumber) * 100 : 0;
-  const remainingTasks = totalNumber - doneTasks;
+    totalNumber > 0 ? (doneTasks / totalNumber) * 100 : 0
+  const remainingTasks = totalNumber - doneTasks
   return (
     <div className="card m-4 min-h-60 justify-center bg-base-100 shadow-xl">
       <div>
@@ -54,5 +60,5 @@ export function OverviewCard({ tasks, avatar }: OverviewCardProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

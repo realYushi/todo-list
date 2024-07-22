@@ -5,8 +5,6 @@ import { Navbar } from "@pages/Landing/LandingNav"
 import { HeroSection } from "@pages/Landing/LandingHero"
 import { FormComponent } from "@pages/Landing//LandingForm"
 import { Footer } from "@components/Layout/Footer"
-import { useLocation } from "react-router-dom"
-import { useEffect } from "react"
 export function Landing() {
   return (
     <>
@@ -17,14 +15,14 @@ export function Landing() {
           title="Streamline your workflow"
           description="Our todo app helps you stay organized and focused, with features like task prioritization, due dates, and reminders."
           buttonText="Get Started"
-          buttonLink="#loginForm"
+          buttonLink="#registerForm"
         />
         <HeroSection
           imageSrc={heroImage2}
           title="Simplify your life with Todo"
           description="Stay organized and on top of your tasks with our intuitive todo list app."
           buttonText="Get Started"
-          buttonLink="#loginForm"
+          buttonLink="#registerForm"
         />
         <FormComponent />
         <Footer />

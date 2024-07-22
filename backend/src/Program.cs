@@ -30,6 +30,17 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
+    services.AddCors(options =>
+   {
+       options.AddPolicy("AllowSpecificOrigin",
+           builder =>
+           {
+               builder.WithOrigins("https://localhost:5173") // Replace with your allowed origins
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials(); // Add this if you're using credentials (cookies)
+           });
+   });
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -89,11 +100,11 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
 void ConfigureApp(WebApplication app)
 {
+    app.UseHttpsRedirection();
+    app.UseCors("AllowSpecificOrigin");
     app.UseAuthentication();
     app.UseAuthorization();
 
-    ApplyMigrations(app);
-    app.UseHttpsRedirection();
 
     app.UseCookiePolicy(new CookiePolicyOptions
     {
@@ -103,6 +114,7 @@ void ConfigureApp(WebApplication app)
     });
 
     app.MapControllers();
+    ApplyMigrations(app);
 }
 
 void ApplyMigrations(WebApplication app)

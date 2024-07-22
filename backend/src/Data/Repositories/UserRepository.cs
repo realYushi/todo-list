@@ -55,10 +55,16 @@ namespace ToDoListAPI.Data.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<Models.User> GetUserAsync(string userName, string email)
+        public async Task<User> GetUserAsync(string userName)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == userName && u.Email == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userName);
+            if (user == null)
+            {
+                throw new Exception($"User with username '{userName}' not found.");
+            }
+            return user;
         }
+
 
         public async Task<Models.User> UpdateUserAsync(Guid userId, User userUpdate)
         {

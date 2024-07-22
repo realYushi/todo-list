@@ -4,7 +4,7 @@ namespace ToDoListAPI.DTOs
     {
         public Guid? UserId { get; set; }
         public required string Username { get; set; }
-        public required string Email { get; set; }
+        public required string? Email { get; set; }
         public required string Password { get; set; }
         public string Role { get; set; } = "User";
         public string Status { get; set; } = "Active";

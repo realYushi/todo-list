@@ -5,7 +5,7 @@ namespace ToDoListAPI.Interfaces
     {
         Task<IEnumerable<Models.User>> GetAllUsersAsync();
         Task<bool> DeleteUserAsync(Guid userId);
-        Task<Models.User> GetUserAsync(string userName, string email);
+        Task<Models.User> GetUserAsync(string userName);
         Task<Models.User> CreateUserAsync(Models.User user);
         Task<Models.User> UpdateUserAsync(Guid userId, Models.User user);
     }

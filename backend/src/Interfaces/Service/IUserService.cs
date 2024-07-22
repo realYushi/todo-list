@@ -6,7 +6,7 @@ namespace ToDoListAPI.Interfaces
         Task<UserDto> CreateUserAsync(UserDto user);
         Task<bool> DeleteUserAsync(Guid userId);
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
-        Task<UserDto> GetUserAsync(string userName, string email);
+        Task<UserDto> GetUserAsync(string userName);
         Task<UserDto> UpdateUserAsync(UserDto user, Guid userId);
     }
 }

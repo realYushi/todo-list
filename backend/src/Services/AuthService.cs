@@ -22,16 +22,32 @@ namespace ToDoListAPI.Services
 
         public async Task<string> Login(UserDto login, HttpContext httpContext)
         {
-            var user = await _userService.GetUserAsync(login.Username, login.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
+            try
             {
-                throw new UnauthorizedAccessException("Invalid username or password");
-            }
+                var user = await _userService.GetUserAsync(login.Username);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
+                {
+                    throw new UnauthorizedAccessException("Invalid username or password");
+                }
 
-            var token = GenerateJwtToken(user);
-            SetJwtCookie(httpContext, token);
-            return token;
+                var token = GenerateJwtToken(user);
+                SetJwtCookie(httpContext, token);
+                return token;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw; // Re-throw the exception to be caught in the controller
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Console.WriteLine($"Exception in Login method: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // Re-throw the exception to be caught in the controller
+            }
         }
+
+
 
         private void SetJwtCookie(HttpContext httpContext, string token)
         {
@@ -51,7 +67,6 @@ namespace ToDoListAPI.Services
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -69,7 +84,7 @@ namespace ToDoListAPI.Services
         public async Task<UserDto> Register(UserDto registration)
         {
             // Check if user already exists
-            var existingUser = await _userService.GetUserAsync(registration.Username, registration.Email);
+            var existingUser = await _userService.GetUserAsync(registration.Username);
             if (existingUser != null)
             {
                 throw new InvalidOperationException("User already exists");

@@ -23,7 +23,6 @@ namespace ToDoListAPI.Data.Repositories
         {
             var list = await GetListByIdAndUserId(listId, userId);
             if (list == null) return false;
-
             _context.Lists.Remove(list);
             return await _context.SaveChangesAsync() > 0;
         }

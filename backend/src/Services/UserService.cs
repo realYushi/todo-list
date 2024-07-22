@@ -35,10 +35,19 @@ namespace ToDoListAPI.Services
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<UserDto> GetUserAsync(string userName, string email)
+        public async Task<UserDto> GetUserAsync(string userName)
         {
-            User user = await _userRepository.GetUserAsync(userName, email);
-            return _mapper.Map<UserDto>(user);
+            try
+            {
+                User user = await _userRepository.GetUserAsync(userName);
+                return _mapper.Map<UserDto>(user);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception or log the error
+                Console.WriteLine($"An error occurred while getting the user: {ex.Message}");
+                throw; // Rethrow the exception to propagate it to the caller
+            }
         }
 
         public async Task<UserDto> UpdateUserAsync(UserDto user, Guid userId)
