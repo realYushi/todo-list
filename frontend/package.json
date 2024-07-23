@@ -9,7 +9,6 @@
     "tsc": "tsc",
     "build": " vite build",
     "preview": "vite preview",
-    "test": "vitest run",
     "format": "prettier --write .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
