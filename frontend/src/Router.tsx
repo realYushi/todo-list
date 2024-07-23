@@ -1,10 +1,9 @@
-import { Index } from "./components/Layout/Body";
-import { Dashboard } from "./pages/Dashboard";
-import { Landing } from "./pages/Landing";
-import { Task } from "./pages/Task";
-import { User } from "./pages/User";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import { Index } from "./components/Layout/Body"
+import { Dashboard } from "./pages/Dashboard"
+import { Landing } from "./pages/Landing"
+import { Task } from "./pages/Task"
+import { User } from "./pages/User"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 export function Router() {
   return (
     <BrowserRouter>
@@ -17,5 +16,5 @@ export function Router() {
         </Route>
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
