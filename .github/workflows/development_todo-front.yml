@@ -65,9 +65,6 @@ jobs:
                   tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FC2BFFD4A4FA48F087231179B883BB1E }}
                   subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_672D40DE800F4B82A217C1CAD46B025B }}
 
-            - name: List directory contents
-              run: ls -R
-
             - name: "Deploy to Azure Web App"
               id: deploy-to-webapp
               uses: azure/webapps-deploy@v3
