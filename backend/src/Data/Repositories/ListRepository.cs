@@ -15,6 +15,7 @@ namespace ToDoListAPI.Data.Repositories
         public async Task<Models.List> CreateListAsync(Models.List list, Guid userId)
         {
             var createdList = await _context.Lists.AddAsync(list);
+
             await _context.SaveChangesAsync();
             return createdList.Entity;
         }
