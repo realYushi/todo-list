@@ -27,6 +27,7 @@ export function Dashboard() {
   ).length
   const overdueCount = tasks.filter(
     task =>
+      task.dueDate &&
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
       task.status !== StatusEnum.Completed,
@@ -35,10 +36,7 @@ export function Dashboard() {
   return (
     <div className="flex justify-center">
       <section className="w-full grid-cols-2 lg:grid lg:w-3/4">
-        <OverviewCard
-          tasks={tasks}
-          avatar="https://avataaars.io/?avatarStyle=Transparent&topType=NoHair&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=UpDownNatural&mouthType=Twinkle&skinColor=Pale"
-        />
+        <OverviewCard tasks={tasks} />
         <Card
           title="Done"
           icon={<FontAwesomeIcon icon={faCheckCircle} size="lg" />}

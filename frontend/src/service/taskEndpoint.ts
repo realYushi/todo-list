@@ -21,20 +21,38 @@ export const taskEndpoint = baseApi.injectEndpoints({
       query: taskId => `task/${taskId}`,
     }),
     addTask: builder.mutation<ITask, Partial<ITask>>({
-      query: task => ({
-        url: `task`,
-        method: "POST",
-        body: task,
-      }),
+      query: task => {
+        // Create a new object without modifying the original task
+        const taskToSend = { ...task }
+
+        // Remove dueDate if it's undefined or null
+        if (taskToSend.dueDate === undefined || taskToSend.dueDate === null) {
+          delete taskToSend.dueDate
+        }
+
+        return {
+          url: `task`,
+          method: "POST",
+          body: taskToSend,
+        }
+      },
       invalidatesTags: [{ type: "Task", id: "LIST" }, "Task"],
     }),
     updateTask: builder.mutation<ITask, Partial<ITask>>({
-      query: task => ({
-        url: `task/${task.taskId}`,
-        method: "PUT",
-        body: task,
-      }),
-      invalidatesTags: (result, error, task) => [
+      query: task => {
+        const taskToSend = { ...task }
+
+        if (!taskToSend.dueDate) {
+          delete taskToSend.dueDate
+        }
+
+        return {
+          url: `task/${task.taskId}`,
+          method: "PUT",
+          body: taskToSend,
+        }
+      },
+      invalidatesTags: (result: any, error: any, task: any) => [
         { type: "Task", id: task.taskId?.toString() },
       ],
     }),

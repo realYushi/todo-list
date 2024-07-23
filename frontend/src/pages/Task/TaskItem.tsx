@@ -18,15 +18,17 @@ interface TaskProps {
   onUpdateTaskClick: (task: ITask) => void
 }
 
+/**
+ * Component that represents a single task item.
+ */
 export default function TaskItem({
   task,
   onUpdateTaskClick,
 }: TaskProps): JSX.Element {
-  console.log("Rendering TaskItem for task:", task)
-
   const [deleteTask] = useDeleteTaskMutation()
   const [updateTask] = useUpdateTaskMutation()
   const [taskStatus, setTaskStatus] = useState(faHourglassHalf)
+
   enum StatusEnum {
     Pending = 1,
     InProgress = 2,
@@ -34,13 +36,7 @@ export default function TaskItem({
   }
 
   useEffect(() => {
-    console.log(
-      "useEffect triggered. Task status:",
-      task.status,
-      "Due date:",
-      task.dueDate,
-    )
-
+    // Update task status icon based on task status
     switch (task.status) {
       case StatusEnum.Completed:
         setTaskStatus(faCheckCircle)
@@ -53,37 +49,35 @@ export default function TaskItem({
         break
     }
 
+    // Check if task is overdue
     if (
+      task.dueDate &&
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
       task.status !== StatusEnum.Completed
     ) {
       setTaskStatus(faExclamationTriangle)
-      console.log("Task is overdue")
     }
-
-    console.log("New task status icon:", taskStatus)
   }, [task.status, task.dueDate])
 
   const handleDeleteTask = () => {
-    console.log("Deleting task:", task.taskId)
+    // Delete the task
     deleteTask(task.taskId)
   }
 
   const handleCompleteTask = () => {
+    // Update task status
     const newStatus =
       task.status === StatusEnum.Completed
         ? StatusEnum.InProgress
         : StatusEnum.Completed
 
-    console.log("Updating task status. Old:", task.status, "New:", newStatus)
     updateTask({
       ...task,
       status: newStatus,
     })
   }
 
-  console.log("Rendering TaskItem UI")
   return (
     <div
       className={`${task.status === StatusEnum.Completed ? "line-through" : ""} `}
@@ -101,7 +95,9 @@ export default function TaskItem({
             <h3 className="text-xl">{task.title}</h3>
           </div>
           <p className="text-sm">{task.description}</p>
-          <p className="text-sm">{task.dueDate}</p>
+          <p className="text-sm">
+            {task.dueDate ? task.dueDate?.split("T")[0].toString() : null}
+          </p>
         </div>
         <div className="flex flex-col space-y-2">
           <button className="btn btn-circle btn-sm" onClick={handleDeleteTask}>

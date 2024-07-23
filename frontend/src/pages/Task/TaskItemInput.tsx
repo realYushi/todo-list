@@ -17,13 +17,14 @@ enum StatusEnum {
   Completed = 3,
 }
 
+/**
+ * Component for creating or updating a task.
+ */
 export default function TaskItemInput({
   onTaskClose,
   taskToUpdate,
   listId,
 }: TaskItemInputProps) {
-  console.log("TaskItemInput component rendered", { taskToUpdate, listId })
-
   const [updateTask] = useUpdateTaskMutation()
   const [addTask] = useAddTaskMutation()
 
@@ -32,26 +33,18 @@ export default function TaskItemInput({
   const [dueDate, setDueDate] = useState<string>("")
 
   useEffect(() => {
-    console.log("useEffect triggered", { taskToUpdate })
     if (taskToUpdate) {
       setTitle(taskToUpdate.title)
       setDescription(taskToUpdate.description || "")
       setDueDate(taskToUpdate.dueDate || "")
-      console.log("Task data set from taskToUpdate", {
-        title,
-        description,
-        dueDate,
-      })
     }
   }, [taskToUpdate])
 
+  /**
+   * Handles the task creation or update.
+   */
   const handleTask = () => {
-    console.log("handleTask called")
-    const formattedDueDate = dueDate
-      ? new Date(dueDate).toISOString()
-      : undefined
-
-    console.log("Formatted due date", formattedDueDate)
+    const formattedDueDate = dueDate ? dueDate : undefined
 
     const baseTask = {
       title,
@@ -59,8 +52,6 @@ export default function TaskItemInput({
       listId: taskToUpdate ? taskToUpdate.listId : listId,
       dueDate: formattedDueDate,
     }
-
-    console.log("Base task created", baseTask)
 
     const task: Partial<ITask> = taskToUpdate
       ? {
@@ -70,19 +61,13 @@ export default function TaskItemInput({
         }
       : { ...baseTask, status: StatusEnum.Pending }
 
-    console.log("Final task object", task)
-
     if (taskToUpdate) {
-      console.log("Updating existing task")
       updateTask(task)
     } else {
-      console.log("Adding new task")
       addTask(task)
     }
     onTaskClose()
   }
-
-  console.log("Current state", { title, description, dueDate })
 
   return (
     <div className="absolute rounded-lg backdrop-blur-xl p-4">
@@ -95,7 +80,6 @@ export default function TaskItemInput({
         value={title}
         onChange={e => {
           setTitle(e.target.value)
-          console.log("Title changed", e.target.value)
         }}
         className="input input-bordered input-secondary w-full"
       />
@@ -107,7 +91,6 @@ export default function TaskItemInput({
         value={description}
         onChange={e => {
           setDescription(e.target.value)
-          console.log("Description changed", e.target.value)
         }}
         className="textarea textarea-bordered w-full"
       ></textarea>
@@ -120,11 +103,19 @@ export default function TaskItemInput({
           type="date"
           value={dueDate}
           onChange={e => {
-            setDueDate(e.target.value.toString())
-            console.log("Due date changed", e.target.value)
+            const inputDate = e.target.value
+            setDueDate(inputDate) // Set the date directly without formatting
           }}
           className="input input-bordered w-full"
         />
+        {dueDate && (
+          <button
+            className="btn btn-ghost btn-sm ml-2"
+            onClick={() => setDueDate("")}
+          >
+            Clear
+          </button>
+        )}
       </div>
       <div className="mt-5">
         <button className="btn btn-primary w-1/2" onClick={handleTask}>

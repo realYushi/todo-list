@@ -50,7 +50,9 @@ export function UserInfo() {
 
         // Update user information
         await updateUser(newUser).unwrap()
-        alert("User information updated successfully")
+        alert("User information updated successfully, please login again")
+        navigate("/") // Redirect to login page after logout
+        navigate(0)
       }
     } catch (error) {
       console.error("Error updating user info:", error)
@@ -62,6 +64,7 @@ export function UserInfo() {
     try {
       logout()
       alert("Logged out successfully")
+
       navigate("/") // Redirect to login page after logout
       navigate(0)
     } catch (error) {

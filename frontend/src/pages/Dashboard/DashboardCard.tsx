@@ -1,6 +1,8 @@
 import React from "react"
 
 import ITask from "@modelsTaskInterface"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons"
 
 interface CardProps {
   title: string
@@ -29,11 +31,10 @@ export function Card({ title, icon, number }: CardProps) {
 }
 
 interface OverviewCardProps {
-  avatar: string
   tasks: ITask[]
 }
 
-export function OverviewCard({ tasks, avatar }: OverviewCardProps) {
+export function OverviewCard({ tasks }: OverviewCardProps) {
   const totalNumber = tasks.length
   const doneTasks = tasks.filter(
     task => task.status === StatusEnum.Completed,
@@ -46,10 +47,8 @@ export function OverviewCard({ tasks, avatar }: OverviewCardProps) {
       <div>
         <div className="stat">
           <div className="stat-figure text-secondary">
-            <div className="avatar online">
-              <div className="w-16 rounded-full">
-                <img src={avatar} />
-              </div>
+            <div className="avatar ">
+              <FontAwesomeIcon className="text-5xl" icon={faUser} />
             </div>
           </div>
           <div className="stat-value">{doneTasksPercentage} %</div>

@@ -7,7 +7,7 @@ public class TaskDto
     public Guid? TaskId { get; set; }
     public required string Title { get; set; }
     public string Description { get; set; } = "";
-    public DateTime? DueDate { get; set; }
+    public DateTime? DueDate { get; set; } = null;
     public Guid ListId { get; set; }
     public StatusEnum Status { get; set; } = StatusEnum.Pending;
     public Guid UserId { get; set; }
