@@ -1,19 +1,18 @@
 import TaskList from "./TaskList"
 import TaskListInput from "./TaskListInput"
 import TaskItemInput from "./TaskItemInput"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import ITask from "@models/TaskInterface"
 import IList from "@models/ListInterface"
-import { useAddListMutation, useGetListsQuery } from "@service/listEndpoint"
+import { useGetListsQuery } from "@service/listEndpoint"
 
 export default function TaskLists() {
-  const { data: lists, isLoading, isError, error } = useGetListsQuery()
+  const { data: lists } = useGetListsQuery()
   const [updateTask, setUpdateTask] = useState<ITask | null>(null)
   const [updateList, setUpdateList] = useState<IList | null>(null)
   const [showListForm, setShowListForm] = useState(false)
   const [showTaskForm, setShowTaskForm] = useState(false)
-  const [activeListId, setActiveListId] = useState<string | null>(null)
-
+  const [activeListId, setActiveListId] = useState<string>("")
   const handleAddListClick = () => {
     setShowListForm(true)
   }
@@ -33,7 +32,6 @@ export default function TaskLists() {
   }
 
   const isBlurred = showListForm || showTaskForm
-
   return (
     <>
       <div
@@ -71,7 +69,8 @@ export default function TaskLists() {
           />
         </div>
       )}
-      {showTaskForm && activeListId && (
+      {/* {showTaskForm && activeListId && ( */}
+      {showTaskForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <TaskItemInput
             taskToUpdate={updateTask}

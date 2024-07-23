@@ -35,10 +35,10 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
        options.AddPolicy("AllowSpecificOrigin",
            builder =>
            {
-               builder.WithOrigins("https://localhost:5173") // Replace with your allowed origins
+               builder.WithOrigins("https://localhost:5173")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
-                       .AllowCredentials(); // Add this if you're using credentials (cookies)
+                       .AllowCredentials();
            });
    });
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

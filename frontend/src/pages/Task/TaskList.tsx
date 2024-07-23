@@ -3,7 +3,7 @@ import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons"
 import TaskItems from "./TaskItems"
 import ITask from "@models/TaskInterface"
 import IList from "@models/ListInterface"
-import { useGetTasksQuery } from "@servicetaskEndpoint"
+import { useAddTaskMutation, useGetTasksQuery } from "@servicetaskEndpoint"
 import { useDeleteListMutation, useGetListsQuery } from "@servicelistEndpoint"
 
 interface TaskListProps {
@@ -26,12 +26,9 @@ export default function TaskList({
 }: TaskListProps) {
   // Get the tasks from the Redux store that belong to the current list
   const [deleteList] = useDeleteListMutation()
-  const { data: tasks, isLoading, isError } = useGetTasksQuery()
+  const { data: tasks = [], isLoading, isError } = useGetTasksQuery()
   const { data: lists } = useGetListsQuery() // Add this line to fetch all lists
 
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error fetching tasks</div>
-  if (!tasks) return <div>No tasks found</div>
   const filteredTasks: ITask[] = tasks.filter(
     task => task.listId === list.listId,
   )

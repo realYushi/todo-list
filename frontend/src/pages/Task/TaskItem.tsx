@@ -13,12 +13,6 @@ import {
 } from "@service/taskEndpoint"
 import ITask from "@models/TaskInterface"
 
-export enum StatusEnum {
-  Pending = 1,
-  InProgress = 2,
-  Completed = 3,
-}
-
 interface TaskProps {
   task: ITask
   onUpdateTaskClick: (task: ITask) => void
@@ -28,11 +22,25 @@ export default function TaskItem({
   task,
   onUpdateTaskClick,
 }: TaskProps): JSX.Element {
+  console.log("Rendering TaskItem for task:", task)
+
   const [deleteTask] = useDeleteTaskMutation()
   const [updateTask] = useUpdateTaskMutation()
   const [taskStatus, setTaskStatus] = useState(faHourglassHalf)
+  enum StatusEnum {
+    Pending = 1,
+    InProgress = 2,
+    Completed = 3,
+  }
 
   useEffect(() => {
+    console.log(
+      "useEffect triggered. Task status:",
+      task.status,
+      "Due date:",
+      task.dueDate,
+    )
+
     switch (task.status) {
       case StatusEnum.Completed:
         setTaskStatus(faCheckCircle)
@@ -44,16 +52,21 @@ export default function TaskItem({
         setTaskStatus(faHourglassHalf)
         break
     }
+
     if (
       new Date(task.dueDate) <=
         new Date(new Date().setDate(new Date().getDate() - 1)) &&
       task.status !== StatusEnum.Completed
     ) {
       setTaskStatus(faExclamationTriangle)
+      console.log("Task is overdue")
     }
+
+    console.log("New task status icon:", taskStatus)
   }, [task.status, task.dueDate])
 
   const handleDeleteTask = () => {
+    console.log("Deleting task:", task.taskId)
     deleteTask(task.taskId)
   }
 
@@ -63,19 +76,21 @@ export default function TaskItem({
         ? StatusEnum.InProgress
         : StatusEnum.Completed
 
+    console.log("Updating task status. Old:", task.status, "New:", newStatus)
     updateTask({
       ...task,
       status: newStatus,
     })
   }
 
+  console.log("Rendering TaskItem UI")
   return (
     <div
       className={`${task.status === StatusEnum.Completed ? "line-through" : ""} `}
     >
       <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
         <input
-          checked={task.status === StatusEnum.Completed}
+          defaultChecked={task.status === StatusEnum.Completed}
           type="checkbox"
           className="checkbox checkbox-md mr-4 size-8"
           onClick={handleCompleteTask}
