@@ -52,7 +52,7 @@ public class TestUserRepository : RepositoryTestBase
     [Test]
     public void TestCreateUser()
     {
-        var newUser = new User { Username = "sallydoe", Password = "password789", Role = UserRole.User, Status = UserStatus.Active };
+        var newUser = new User { Username = "sallydoe", email = "sally.doe@example.com", Password = "password789", Role = UserRole.User, Status = UserStatus.Active };
         var result = _userRepository.CreateUserAsync(newUser).GetAwaiter().GetResult();
         result.UserId.Should().NotBeNull();
         result.Username.Should().Be("sallydoe");
