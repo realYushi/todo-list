@@ -45,14 +45,14 @@ public class TestUserRepository : RepositoryTestBase
     {
         var userName = "johndoe";
         var email = "john.doe@example.com";
-        var result = _userRepository.GetUserAsync(userName, email).GetAwaiter().GetResult();
+        var result = _userRepository.GetUserAsync(userName).GetAwaiter().GetResult();
         result.Should().BeEquivalentTo(_seedUsers[0]);
     }
 
     [Test]
     public void TestCreateUser()
     {
-        var newUser = new User { Username = "sallydoe", Email = "sally.doe@example.com", Password = "password789", Role = UserRole.User, Status = UserStatus.Active };
+        var newUser = new User { Username = "sallydoe", Password = "password789", Role = UserRole.User, Status = UserStatus.Active };
         var result = _userRepository.CreateUserAsync(newUser).GetAwaiter().GetResult();
         result.UserId.Should().NotBeNull();
         result.Username.Should().Be("sallydoe");
@@ -60,7 +60,7 @@ public class TestUserRepository : RepositoryTestBase
         result.Role.Should().Be(UserRole.User);
         result.Status.Should().Be(UserStatus.Active);
 
-        var createdUser = _userRepository.GetUserAsync(result.Username, result.Email).GetAwaiter().GetResult();
+        var createdUser = _userRepository.GetUserAsync(result.Username).GetAwaiter().GetResult();
         createdUser.Should().NotBeNull();
     }
 

@@ -81,17 +81,17 @@ public class UserServiceTest
         var userName = "john_doe";
         var email = "john.doe@example.com";
 
-        _userRepository.Setup(repo => repo.GetUserAsync(userName, email)).ReturnsAsync(_sampleUser);
+        _userRepository.Setup(repo => repo.GetUserAsync(userName)).ReturnsAsync(_sampleUser);
         _mapper.Setup(mapper => mapper.Map<UserDto>(It.IsAny<User>())).Returns(_sampleUserDto);
         // Act
-        var result = _userService.GetUserAsync(userName, email).Result;
+        var result = _userService.GetUserAsync(userName).Result;
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<UserDto>();
         result.Should().BeEquivalentTo(_sampleUserDto, options => options.ComparingByMembers<UserDto>());
 
-        _userRepository.Verify(repo => repo.GetUserAsync(userName, email), Times.Once);
+        _userRepository.Verify(repo => repo.GetUserAsync(userName), Times.Once);
         _mapper.Verify(mapper => mapper.Map<UserDto>(_sampleUser), Times.Once);
     }
 
