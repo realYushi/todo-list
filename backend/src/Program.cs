@@ -24,7 +24,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
        options.AddPolicy("AllowSpecificOrigin",
            builder =>
            {
-               builder.WithOrigins("https://lively-sky-08f16590f.5.azurestaticapps.net")
+               builder.WithOrigins("https://salmon-sea-0a57e070f.5.azurestaticapps.net")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();
