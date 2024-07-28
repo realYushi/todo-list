@@ -54,75 +54,76 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             ValidAudience = jwtAudience,
             ClockSkew = TimeSpan.Zero
         };
+    });
 
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
+    services.AddControllers();
+    services.AddEndpointsApiExplorer();
+    var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
 
-        if (string.IsNullOrEmpty(dbConnectionString))
-        {
-            throw new InvalidOperationException("Connection string 'DefaultConnection' or environment variable 'DB_CONNECTION_STRING' is not set.");
-        }
-
-        services.AddDbContext<ToDoListContext>(options =>
-            options.UseSqlServer(dbConnectionString));
-        // Repositories
-        services.AddScoped<ITaskRepository, TaskRepository>();
-        services.AddScoped<IListRepository, ListRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        // Services
-        services.AddScoped<ITaskService, TaskService>();
-        services.AddScoped<IListService, ListService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IAuthService, AuthService>();
-        // Utilities
-        services.AddAutoMapper(typeof(Program));
-
-        // Logging
-        services.AddLogging(loggingBuilder =>
-        {
-            loggingBuilder.AddConsole();
-            loggingBuilder.AddDebug();
-        });
-
-        services.AddHttpContextAccessor();
+    if (string.IsNullOrEmpty(dbConnectionString))
+    {
+        throw new InvalidOperationException("Connection string 'DefaultConnection' or environment variable 'DB_CONNECTION_STRING' is not set.");
     }
+
+    services.AddDbContext<ToDoListContext>(options =>
+        options.UseSqlServer(dbConnectionString));
+    // Repositories
+    services.AddScoped<ITaskRepository, TaskRepository>();
+    services.AddScoped<IListRepository, ListRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
+    // Services
+    services.AddScoped<ITaskService, TaskService>();
+    services.AddScoped<IListService, ListService>();
+    services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IAuthService, AuthService>();
+    // Utilities
+    services.AddAutoMapper(typeof(Program));
+
+    // Logging
+    services.AddLogging(loggingBuilder =>
+    {
+        loggingBuilder.AddConsole();
+        loggingBuilder.AddDebug();
+    });
+
+    services.AddHttpContextAccessor();
+}
 
 void ConfigureApp(WebApplication app)
 {
-        app.UseHttpsRedirection();
-        app.UseCors("AllowSpecificOrigin");
-        app.UseAuthentication();
-        app.UseAuthorization();
+    app.UseHttpsRedirection();
+    app.UseCors("AllowSpecificOrigin");
+    app.UseAuthentication();
+    app.UseAuthorization();
 
 
-        app.UseCookiePolicy(new CookiePolicyOptions
-        {
-            MinimumSameSitePolicy = SameSiteMode.Strict,
-            HttpOnly = HttpOnlyPolicy.Always,
-            Secure = CookieSecurePolicy.Always
-        });
-
-        app.MapControllers();
-        ApplyMigrations(app);
-    }
-
-    void ApplyMigrations(WebApplication app)
+    app.UseCookiePolicy(new CookiePolicyOptions
     {
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            var dbContext = services.GetRequiredService<ToDoListContext>();
+        MinimumSameSitePolicy = SameSiteMode.Strict,
+        HttpOnly = HttpOnlyPolicy.Always,
+        Secure = CookieSecurePolicy.Always
+    });
 
-            try
-            {
-                dbContext.Database.Migrate();
-                logger.LogInformation("Database migrations applied successfully.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred while applying database migrations.");
-            }
+    app.MapControllers();
+    ApplyMigrations(app);
+}
+
+void ApplyMigrations(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        var dbContext = services.GetRequiredService<ToDoListContext>();
+
+        try
+        {
+            dbContext.Database.Migrate();
+            logger.LogInformation("Database migrations applied successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while applying database migrations.");
         }
     }
+}
