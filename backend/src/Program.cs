@@ -6,20 +6,9 @@ using ToDoListAPI.Data;
 using ToDoListAPI.Data.Repositories;
 using ToDoListAPI.Interfaces;
 using ToDoListAPI.Services;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseKestrel(options =>
-{
-    options.ListenAnyIP(5001, listenOptions =>
-    {
-        listenOptions.UseHttps(httpsOptions =>
-        {
-            httpsOptions.ServerCertificate = new X509Certificate2("/app/localhost.pfx", "");
-        });
-    });
-});
 ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
@@ -35,7 +24,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
        options.AddPolicy("AllowSpecificOrigin",
            builder =>
            {
-               builder.WithOrigins("https://localhost:5173")
+               builder.WithOrigins("https://lively-sky-08f16590f.5.azurestaticapps.net")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();
