@@ -24,7 +24,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
        options.AddPolicy("AllowSpecificOrigin",
            builder =>
            {
-               builder.WithOrigins("https://salmon-sea-0a57e070f.5.azurestaticapps.net")
+               builder.WithOrigins("https://todo.yushi91.com")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();
@@ -99,7 +99,7 @@ void ConfigureApp(WebApplication app)
 
     app.UseCookiePolicy(new CookiePolicyOptions
     {
-        MinimumSameSitePolicy = SameSiteMode.Strict,
+        MinimumSameSitePolicy = SameSiteMode.Lax,
         HttpOnly = HttpOnlyPolicy.Always,
         Secure = CookieSecurePolicy.Always
     });

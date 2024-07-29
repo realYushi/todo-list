@@ -3,8 +3,7 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   tagTypes: ["Task", "List"],
   baseQuery: fetchBaseQuery({
-    baseUrl:
-      "https://todo-be-fea9hthffwd9cwd4.australiaeast-01.azurewebsites.net/api/",
+    baseUrl: "https://todoapi.yushi91.com/api/",
     credentials: "include",
   }),
 

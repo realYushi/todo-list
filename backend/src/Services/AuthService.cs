@@ -55,7 +55,8 @@ namespace ToDoListAPI.Services
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.Lax,
+                Domain = ".yushi91.com",
             });
         }
 
