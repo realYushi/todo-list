@@ -24,7 +24,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
        options.AddPolicy("AllowSpecificOrigin",
            builder =>
            {
-               builder.WithOrigins("https://todo.yushi91.com")
+               builder.WithOrigins("https://todo.yushi91.com", "https://todoapi.yushi91.com")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();
