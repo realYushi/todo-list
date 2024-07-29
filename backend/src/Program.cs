@@ -47,7 +47,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(jwtKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidIssuer = jwtIssuer,
