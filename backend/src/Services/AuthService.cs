@@ -92,7 +92,7 @@ namespace ToDoListAPI.Services
                     throw new InvalidOperationException("User already exists");
                 }
             }
-            catch (Exception ex) when (ex.Message.Contains("not found")
+            catch (Exception ex) when (ex.Message.Contains("not found"))
             {
                 // user does not exist, continue with registration
             }
