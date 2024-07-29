@@ -57,12 +57,9 @@ namespace ToDoListAPI.Data.Repositories
 
         public async Task<User> GetUserAsync(string userName)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userName);
-            if (user == null)
-            {
-                throw new Exception($"User with username '{userName}' not found.");
-            }
-            return user;
+
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == userName);
+
         }
 
 

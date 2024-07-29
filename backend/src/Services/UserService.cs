@@ -42,6 +42,10 @@ namespace ToDoListAPI.Services
                 User user = await _userRepository.GetUserAsync(userName);
                 return _mapper.Map<UserDto>(user);
             }
+            catch (Exception ex) when (ex.Message.Contains("not found"))
+            {
+                return null;
+            }
             catch (Exception ex)
             {
                 // Handle the exception or log the error

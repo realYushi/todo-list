@@ -83,11 +83,18 @@ namespace ToDoListAPI.Services
 
         public async Task<UserDto> Register(UserDto registration)
         {
-            // Check if user already exists
-            var existingUser = await _userService.GetUserAsync(registration.Username);
-            if (existingUser != null)
+            try
             {
-                throw new InvalidOperationException("User already exists");
+                // Check if user already exists
+                var existingUser = await _userService.GetUserAsync(registration.Username);
+                if (existingUser != null)
+                {
+                    throw new InvalidOperationException("User already exists");
+                }
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found")
+            {
+                // user does not exist, continue with registration
             }
 
             // Create the user
