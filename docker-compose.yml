@@ -9,8 +9,7 @@ services:
         environment:
             DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};Encrypt=true; TrustServerCertificate=true;"
             ASPNETCORE_URLS: "https://*:5001"
-            ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/localhost.pfx"
-            ASPNETCORE_Kestrel__Certificates__Default__Password: ""
+
         depends_on:
             - db
 
@@ -21,6 +20,8 @@ services:
         image: realyushi/todo-list:frontend-latest
         ports:
             - "${FRONTEND_PORT}:80"
+        environment:
+            REACT_APP_BACKEND_URL: "https://localhost:${BACKEND_PORT}"
         depends_on:
             - backend
     db:

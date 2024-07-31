@@ -1,8 +1,8 @@
 <a id="readme-top"></a>
 
 <div align="center">
-  <a href="https://github.com/yushi1007/todo-list-app">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/realYushi/todo-list">
+    <img src="images/logo.webp" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">ToDo List Application</h3>
@@ -10,14 +10,14 @@
   <p align="center">
     A comprehensive, full-stack ToDo List application designed with a mobile-first approach.
     <br />
-    <a href="https://github.com/yushi1007/todo-list-app"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/realYushi/todo-list"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://todo.yushi91.com">View Demo</a>
     ·
-    <a href="https://github.com/yushi1007/todo-list-app/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/realYushi/todo-list/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/yushi1007/todo-list-app/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/realYushi/todo-list/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -42,7 +42,6 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -54,11 +53,11 @@ This repository contains the code for a comprehensive, full-stack ToDo List appl
 
 Key features of the ToDo List app include:
 
-- List Management: Users can create, update, and organize lists, which serve as group units for tasks. Each list has a title and an optional description.
-- Task Creation: Within each list, users can create tasks with customizable titles and descriptions.
-- Due Date Functionality: Tasks can have optional due dates. When a due date passes, the task automatically enters an overdue status.
-- Flexible Task Management: Users can modify task titles, descriptions, and due dates, or remove due dates entirely.
-- Dashboard: A comprehensive dashboard provides an overview of the user's productivity, displaying total task count, completed tasks, pending tasks, and overdue items.
+-   List Management: Users can create, update, and organize lists, which serve as group units for tasks. Each list has a title and an optional description.
+-   Task Creation: Within each list, users can create tasks with customizable titles and descriptions.
+-   Due Date Functionality: Tasks can have optional due dates. When a due date passes, the task automatically enters an overdue status.
+-   Flexible Task Management: Users can modify task titles, descriptions, and due dates, or remove due dates entirely.
+-   Dashboard: A comprehensive dashboard provides an overview of the user's productivity, displaying total task count, completed tasks, pending tasks, and overdue items.
 
 This application showcases modern web development practices, incorporating React, .NET, SQL, and WebSockets. It's being developed using test-driven development (TDD) and behavior-driven development (BDD) methodologies, and is fully containerized using Docker.
 
@@ -66,14 +65,14 @@ This application showcases modern web development practices, incorporating React
 
 ### Built With
 
-- [![React][React.js]][React-url]
-- [![.NET][.NET]][.NET-url]
-- [![SQL Server][SQL Server]][SQL Server-url]
-- [![Docker][Docker]][Docker-url]
-- [![TypeScript][TypeScript]][TypeScript-url]
-- [![Redux][Redux]][Redux-url]
-- [![Tailwind][Tailwind CSS]][Tailwind-url]
-- [![Azure][Azure]][Azure-url]
+-   [![React][React.js]][React-url]
+-   [![.NET][.NET]][.NET-url]
+-   [![SQL Server][SQL Server]][SQL Server-url]
+-   [![Docker][Docker]][Docker-url]
+-   [![TypeScript][TypeScript]][TypeScript-url]
+-   [![Redux][Redux]][Redux-url]
+-   [![Tailwind][Tailwind CSS]][Tailwind-url]
+-   [![Azure][Azure]][Azure-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -89,23 +88,23 @@ Simply visit the URL to start using the application. You can create an account, 
 
 For developers interested in running the project locally:
 
-- Git
-- Docker
+-   Git
+-   Docker
 
 ### Installation
 
 1. Clone the repo
-   ```sh
-   git clone https://github.com/realYushi/todo-list.git
-   ```
+    ```sh
+    git clone https://github.com/realYushi/todo-list.git
+    ```
 2. Navigate to the project directory
-   ```sh
-   cd todo-list-app
-   ```
+    ```sh
+    cd todo-list-app
+    ```
 3. Run the application using Docker Compose
-   ```sh
-   docker-compose up
-   ```
+    ```sh
+    docker-compose up
+    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -117,14 +116,14 @@ Use this space to show useful examples of how the project can be used. Additiona
 
 ## Roadmap
 
-- [x] User Authentication
-- [x] List Management
-- [x] Task Creation and Management
-- [x] Dashboard
-- [ ] Mobile App
-- [ ] Collaboration Features
+-   [x] User Authentication
+-   [x] List Management
+-   [x] Task Creation and Management
+-   [x] Dashboard
+-   [ ] AI Integration
+-   [ ] Collaboration Features
 
-See the [open issues](https://github.com/yushi1007/todo-list-app/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/realYushi/todo-list/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -147,12 +146,6 @@ Yu Shi - realYushi@gmail.com
 Project Link: [https://github.com/realYushi/todo-list](https://github.com/realYushi/todo-list)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Acknowledgments
-
-- []()
-- []()
-- []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
