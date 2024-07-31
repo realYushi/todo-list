@@ -28,21 +28,25 @@ This is the frontend for the ToDo List application, a comprehensive, full-stack 
 ### Installation
 
 1. Clone the repository
+
 ```sh
 git clone https://github.com/yushi1007/todo-list-app.git
 ```
 
 2. Navigate to the frontend directory
+
 ```sh
 cd todo-list-app/frontend
 ```
 
 3. Install NPM packages
+
 ```sh
 npm install
 ```
 
 4. Start the development server
+
 ```sh
 npm run dev
 ```
@@ -64,6 +68,6 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 
 ## Contact
 
-Yu Shi - realYushi@gmail.com
+Yushi Cui - realYushi@gmail.com
 
-Project Link: [https://github.com/yushi1007/todo-list-app](https://github.com/yushi1007/todo-list-app)
+Project Link: [https://github.com/realYushi/todo-list](https://github.com/realYushi/todo-list)
