@@ -1,27 +1,69 @@
-# vite-template-redux
+# ToDo List Application Frontend
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+This is the frontend for the ToDo List application, a comprehensive, full-stack task management system designed with a mobile-first approach.
 
+## Technologies Used
+
+- [React](https://reactjs.org/)
+- [Redux](https://redux.js.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/)
+
+## Features
+
+- User Authentication
+- List Management
+- Task Creation and Management
+- Dashboard with productivity overview
+- Responsive design for mobile and desktop
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
 ```sh
-npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
+git clone https://github.com/yushi1007/todo-list-app.git
 ```
 
-## Goals
+2. Navigate to the frontend directory
+```sh
+cd todo-list-app/frontend
+```
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+3. Install NPM packages
+```sh
+npm install
+```
 
-## Scripts
+4. Start the development server
+```sh
+npm run dev
+```
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+## Available Scripts
 
-## Inspiration
+- `npm run dev` - Starts the development server
+- `npm run build` - Builds the app for production
+- `npm run preview` - Locally preview production build
+- `npm run test` - Runs the test suite
 
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+## Contributing
+
+This is a personal project and is not open for contributions. However, feel free to fork the repository and customize it for your own use.
+
+## License
+
+Distributed under the MIT License. See `LICENSE` file for more information.
+
+## Contact
+
+Yu Shi - realYushi@gmail.com
+
+Project Link: [https://github.com/yushi1007/todo-list-app](https://github.com/yushi1007/todo-list-app)
