@@ -96,7 +96,7 @@ For developers interested in running the project locally:
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/yushi1007/todo-list-app.git
+   git clone https://github.com/realYushi/todo-list.git
    ```
 2. Navigate to the project directory
    ```sh
@@ -144,7 +144,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Yu Shi - realYushi@gmail.com
 
-Project Link: [https://github.com/yushi1007/todo-list-app](https://github.com/yushi1007/todo-list-app)
+Project Link: [https://github.com/realYushi/todo-list](https://github.com/realYushi/todo-list)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

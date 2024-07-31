@@ -30,7 +30,7 @@ This is the frontend for the ToDo List application, a comprehensive, full-stack 
 1. Clone the repository
 
 ```sh
-git clone https://github.com/yushi1007/todo-list-app.git
+git clone https://github.com/realYushi/todo-list.git
 ```
 
 2. Navigate to the frontend directory
