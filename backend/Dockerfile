@@ -1,35 +1,26 @@
-# Base stage: Set up the common base for building the project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
 WORKDIR /app
 COPY ./src/*.csproj ./
 RUN dotnet restore
 
-# Build stage: Compiles the application
 FROM base AS build
 COPY ./src ./
 RUN dotnet publish -c Release -o out
 
-# Test stage: Runs tests 
-FROM build AS test
-# Assuming test projects are copied similarly and use `dotnet test`
-# Note: Adjust paths and project files as necessary
-RUN dotnet test
+# Generate development certificate
+RUN dotnet dev-certs https -ep /https/aspnetapp.pfx -p password
 
-# Production stage: Prepares the runtime environment
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS production
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/out .
+COPY --from=build /https/aspnetapp.pfx /https/aspnetapp.pfx
 EXPOSE 5001
 
-# Copy SSL certificate file
-COPY localhost.pfx /app/localhost.pfx
-
-# Set permissions for the certificate file
-RUN chmod 600 /app/localhost.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=password
 
 RUN adduser --disabled-password --gecos "" myuser
-# Change ownership of the app directory to myuser
-RUN chown -R myuser:myuser /app
+RUN chown -R myuser:myuser /app /https
 
 USER myuser
 ENTRYPOINT ["dotnet", "ToDoListAPI.dll"]

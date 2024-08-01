@@ -4,12 +4,14 @@ WORKDIR /app
 COPY ./package.json ./package-lock.json ./
 RUN npm ci
 COPY ./ ./
+
 RUN npm run tsc
 RUN npm run build
 
-# Runner stage
-FROM nginx:stable-alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Final stage
+FROM caddy:2-alpine
+COPY --from=builder /app/dist /usr/share/caddy
+COPY Caddyfile /etc/caddy/Caddyfile
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 443
 

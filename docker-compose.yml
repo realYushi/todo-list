@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
     backend:
         build:
@@ -5,11 +7,14 @@ services:
             dockerfile: Dockerfile
         image: realyushi/todo-list:backend-latest
         ports:
-            - "${BACKEND_PORT}:5001"
+            - "${BACKEND_PORT:-5001}:5001"
         environment:
-            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};Encrypt=true; TrustServerCertificate=true;"
+            ASPNETCORE_ENVIRONMENT: Development
+            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME:-TodoList};User Id=${DB_USER:-sa};Password=${SA_PASSWORD};Encrypt=true;TrustServerCertificate=true;"
             ASPNETCORE_URLS: "https://*:5001"
-
+            JWT_KEY: "${JWT_KEY}"
+            JWT_ISSUER: "${JWT_ISSUER}"
+            JWT_AUDIENCE: "${JWT_AUDIENCE}"
         depends_on:
             - db
 
@@ -19,20 +24,25 @@ services:
             dockerfile: Dockerfile
         image: realyushi/todo-list:frontend-latest
         ports:
-            - "${FRONTEND_PORT}:80"
-        environment:
-            REACT_APP_BACKEND_URL: "https://localhost:${BACKEND_PORT}"
+            - "80:80"
+            - "443:443"
         depends_on:
             - backend
+        volumes:
+            - caddy_data:/data
+            - caddy_config:/config
+            - ./frontend/Caddyfile:/etc/caddy/Caddyfile
     db:
         image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
             SA_PASSWORD: "${SA_PASSWORD}"
-            ACCEPT_EULA: "${ACCEPT_EULA}"
+            ACCEPT_EULA: "Y"
         ports:
-            - "${DB_PORT}:1433"
+            - "${DB_PORT:-1433}:1433"
         volumes:
             - mssql_data:/var/opt/mssql
 
 volumes:
     mssql_data:
+    caddy_data:
+    caddy_config:

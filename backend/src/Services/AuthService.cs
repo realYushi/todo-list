@@ -12,12 +12,14 @@ namespace ToDoListAPI.Services
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly IListService _listService;
+        private readonly IWebHostEnvironment _environment;
 
-        public AuthService(IUserService userService, IConfiguration configuration, IListService listService)
+        public AuthService(IUserService userService, IConfiguration configuration, IListService listService, IWebHostEnvironment environment)
         {
             _userService = userService;
             _configuration = configuration;
             _listService = listService;
+            _environment = environment;
         }
 
         public async Task<string> Login(UserDto login, HttpContext httpContext)
@@ -51,14 +53,27 @@ namespace ToDoListAPI.Services
 
         private void SetJwtCookie(HttpContext httpContext, string token)
         {
-            httpContext.Response.Cookies.Append("jwt", token, new CookieOptions
+            var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
                 SameSite = SameSiteMode.Lax,
-                Domain = ".yushi91.com",
-            });
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            if (_environment.IsDevelopment())
+            {
+                cookieOptions.Secure = false;
+                cookieOptions.SameSite = SameSiteMode.None;
+            }
+            else
+            {
+                cookieOptions.Secure = true;
+                cookieOptions.Domain = ".yushi91.com";
+            }
+
+            httpContext.Response.Cookies.Append("jwt", token, cookieOptions);
         }
+
 
         private string GenerateJwtToken(UserDto user)
         {

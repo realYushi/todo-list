@@ -20,16 +20,19 @@ app.Run();
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
     services.AddCors(options =>
-   {
-       options.AddPolicy("AllowSpecificOrigin",
-           builder =>
-           {
-               builder.WithOrigins("https://todo.yushi91.com", "https://todoapi.yushi91.com")
-                       .AllowAnyMethod()
-                       .AllowAnyHeader()
-                       .AllowCredentials();
-           });
-   });
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder =>
+            {
+                // builder.SetIsOriginAllowed(origin => true)
+                builder.WithOrigins(
+                        configuration["AllowedOrigins"]?.Split(',') ??
+                        new[] { "https://localhost", "https://todo.yushi91.com" })
+                .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+            });
+    });
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          .AddJwtBearer(options =>
     {

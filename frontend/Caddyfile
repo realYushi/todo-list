@@ -1,0 +1,11 @@
+localhost {
+    encode gzip
+    root * /usr/share/caddy
+    try_files {path} /index.html
+    file_server
+
+    # Reverse proxy to backend
+    reverse_proxy /api/* backend:5001 {
+        header_up Host {upstream_hostport}
+    }
+}
