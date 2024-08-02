@@ -49,7 +49,11 @@
 
 This repository contains the code for a comprehensive, full-stack ToDo List application. It's designed with a mobile-first approach, ensuring a seamless experience across all platforms. Users can register and log in with their unique username and password, allowing them to access their data from any device. The app offers robust user authentication, including the ability to update passwords.
 
-[![Demo Video](https://raw.githubusercontent.com/realYushi/todo-list/main/Images/thumbnail.png)](https://github.com/realYushi/todo-list/raw/main/Images/demo.mp4)
+
+
+https://github.com/user-attachments/assets/9b325726-3b7c-4e58-b5f5-2fb04e4a93b7
+
+
 
 Key features of the ToDo List app include:
 
