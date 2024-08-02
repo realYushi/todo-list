@@ -123,7 +123,7 @@ For developers interested in running the project locally:
     > **Note:** If you don't set up a `.env` file or don't define all variables, the project will use the default values specified in the `docker-compose.yml` file.
 5. Run the application using Docker Compose
     ```sh
-    make up
+    make run
     ```
 6. Access the application in your browser(start with HTTPS)
 
