@@ -40,7 +40,7 @@ export function OverviewCard({ tasks }: OverviewCardProps) {
     task => task.status === StatusEnum.Completed,
   ).length
   const doneTasksPercentage =
-    totalNumber > 0 ? (doneTasks / totalNumber) * 100 : 0
+    totalNumber > 0 ? ((doneTasks / totalNumber) * 100).toFixed(0) : 0
   const remainingTasks = totalNumber - doneTasks
   return (
     <div className="card m-4 min-h-60 justify-center bg-base-100 shadow-xl">

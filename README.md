@@ -146,6 +146,7 @@ Use this space to show useful examples of how the project can be used. Additiona
 -   [x] Task Creation and Management
 -   [x] Dashboard
 -   [ ] Asynchronous Updates
+-   [ ] OAuth2.0 Integration
 -   [ ] Notifications
 -   [ ] Tags
 -   [ ] Search
