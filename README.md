@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="https://github.com/realYushi/todo-list">
-    <img src="images/logo.webp" alt="Logo" width="80" height="80">
+    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">ToDo List Application</h3>
@@ -47,8 +47,6 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://todo.yushi91.com)
-
 This repository contains the code for a comprehensive, full-stack ToDo List application. It's designed with a mobile-first approach, ensuring a seamless experience across all platforms. Users can register and log in with their unique username and password, allowing them to access their data from any device. The app offers robust user authentication, including the ability to update passwords.
 
 Key features of the ToDo List app include:
@@ -58,8 +56,17 @@ Key features of the ToDo List app include:
 -   Due Date Functionality: Tasks can have optional due dates. When a due date passes, the task automatically enters an overdue status.
 -   Flexible Task Management: Users can modify task titles, descriptions, and due dates, or remove due dates entirely.
 -   Dashboard: A comprehensive dashboard provides an overview of the user's productivity, displaying total task count, completed tasks, pending tasks, and overdue items.
+    |Feature|Desktop|Mobile|
+    |---|---|---|
+    |Theme|![Desktop Theme](Images/desktop_Theme.gif)|![Mobile Theme](images/mobile_theme.gif)|
+    |List Management|![Desktop List Management](images/desktop_List.gif)|![Mobile List Management](images/mobile_List.gif)|
+    |Task Management|![Desktop Task Management](images/desktop_Task.gif)|![Mobile Task Management](images/mobile_Task.gif)|
+    |Dashboard|![Desktop Dashboard](images/desktop_Dashboard.gif)|![Mobile Dashboard](images/mobile_Dashboard.gif)|
+    |User Authentication|![Desktop User Authentication](images/desktop_Landing.gif)|![Mobile User Authentication](images/mobile_Landing.gif)|\
+    |Password Management|![Desktop Password Management](images/desktop_Password.gif)|![Mobile Password Management](images/mobile_Password.gif)|
+    |Responsive Design|![Responsive Design](images/Responsive.gif)||
 
-This application showcases modern web development practices, incorporating React, .NET, SQL, and WebSockets. It's being developed using test-driven development (TDD) and behavior-driven development (BDD) methodologies, and is fully containerized using Docker.
+This application showcases modern web development practices, incorporating React, .NET, SQL, and WebSockets. It's being developed using test-driven development (TDD) methodologies, and is fully containerized using Docker.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -82,7 +89,7 @@ The ToDo List application is live and ready to use! You can access it directly a
 
 [https://todo.yushi91.com](https://todo.yushi91.com)
 
-Simply visit the URL to start using the application. You can create an account, log in, and begin managing your tasks right away.
+Simply visit the URL to start using the application. You can create an account, log in, and begin managing your tasks right away.(Due to the cost of the server, the database may need 30 seconds to wake up)
 
 ### Prerequisites
 
@@ -98,15 +105,30 @@ For developers interested in running the project locally:
     git clone https://github.com/realYushi/todo-list.git
     ```
 2. Navigate to the project directory
+
     ```sh
-    cd todo-list-app
-    ```
-3. Run the application using Docker Compose
-    ```sh
-    docker-compose up
+    cd todo-list
     ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+3. Copy the `.env.example` file to `.env`
+
+```sh
+    cp .env.example .env
+```
+
+4. Edit the `.env` file and replace the placeholder values with your actual configuration.
+    > **Note:** If you don't set up a `.env` file or don't define all variables, the project will use the default values specified in the `docker-compose.yml` file.
+5. Run the application using Docker Compose
+    ```sh
+    make up
+    ```
+6. Access the application in your browser(start with HTTPS)
+
+```sh
+    https://localhost
+```
+
+  <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
 
@@ -120,6 +142,10 @@ Use this space to show useful examples of how the project can be used. Additiona
 -   [x] List Management
 -   [x] Task Creation and Management
 -   [x] Dashboard
+-   [ ] Asynchronous Updates
+-   [ ] Notifications
+-   [ ] Tags
+-   [ ] Search
 -   [ ] AI Integration
 -   [ ] Collaboration Features
 
@@ -141,11 +167,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Yu Shi - realYushi@gmail.com
+Yushi Cui - realYushi@gmail.com
 
 Project Link: [https://github.com/realYushi/todo-list](https://github.com/realYushi/todo-list)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Blog: [https://blog.yushi91.com](https://blog.yushi91.com)
+
+LinkedIn: [https://www.linkedin.com/in/yushi-cui-6043aa285/](https://www.linkedin.com/in/yushi-cui-6043aa285)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

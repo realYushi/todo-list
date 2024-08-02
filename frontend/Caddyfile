@@ -8,4 +8,10 @@ localhost {
     reverse_proxy /api/* backend:5001 {
         header_up Host {upstream_hostport}
     }
+
+    # Handle SPA routing
+    handle_errors {
+        rewrite * /index.html
+        file_server
+    }
 }

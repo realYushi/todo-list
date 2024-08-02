@@ -11,7 +11,7 @@ export function Footer() {
             href="https://www.linkedin.com/in/yushi-cui-6043aa285/"
             className="mx-2 hover:text-gray-300"
           >
-            Linkedin
+            LinkedIn
           </a>
           <a
             href="https://github.com/realYushi"

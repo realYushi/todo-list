@@ -6,15 +6,17 @@ services:
             context: ./backend
             dockerfile: Dockerfile
         image: realyushi/todo-list:backend-latest
-        ports:
-            - "${BACKEND_PORT:-5001}:5001"
+
         environment:
             ASPNETCORE_ENVIRONMENT: Development
-            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME:-TodoList};User Id=${DB_USER:-sa};Password=${SA_PASSWORD};Encrypt=true;TrustServerCertificate=true;"
-            ASPNETCORE_URLS: "https://*:5001"
-            JWT_KEY: "${JWT_KEY}"
-            JWT_ISSUER: "${JWT_ISSUER}"
-            JWT_AUDIENCE: "${JWT_AUDIENCE}"
+            DB_CONNECTION_STRING: "Server=db;Database=${DB_NAME:-TodoList};User Id=${DB_USER:-sa};Password=${SA_PASSWORD:-YourStrongPassword!};Encrypt=true;TrustServerCertificate=true;"
+            ASPNETCORE_URLS: "https://*:${BACKEND_PORT:-5001}"
+            JWT_KEY: "${JWT_KEY:-thisisaverylongsecretkeypleasechangethis}"
+            JWT_ISSUER: "${JWT_ISSUER:-YourIssuer}"
+            JWT_AUDIENCE: "${JWT_AUDIENCE:-YourAudience}"
+        ports:
+            - "${BACKEND_PORT:-5001}:5001"
+
         depends_on:
             - db
 
@@ -24,8 +26,7 @@ services:
             dockerfile: Dockerfile
         image: realyushi/todo-list:frontend-latest
         ports:
-            - "80:80"
-            - "443:443"
+            - "${FRONTEND_PORT:-443}:443"
         depends_on:
             - backend
         volumes:
@@ -35,7 +36,7 @@ services:
     db:
         image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
-            SA_PASSWORD: "${SA_PASSWORD}"
+            SA_PASSWORD: "${SA_PASSWORD:-YourStrongPassword!}"
             ACCEPT_EULA: "Y"
         ports:
             - "${DB_PORT:-1433}:1433"
