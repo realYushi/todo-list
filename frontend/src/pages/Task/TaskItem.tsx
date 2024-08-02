@@ -82,7 +82,7 @@ export default function TaskItem({
     <div
       className={`${task.status === StatusEnum.Completed ? "line-through" : ""} `}
     >
-      <label className="label relative m-4 flex items-center rounded-md p-4 shadow-md">
+      <label className="label relative m-4 w-full flex items-center rounded-md p-4 shadow-md">
         <input
           defaultChecked={task.status === StatusEnum.Completed}
           type="checkbox"

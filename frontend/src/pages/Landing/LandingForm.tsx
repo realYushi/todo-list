@@ -20,10 +20,14 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("")
   const [register, { isLoading, isError, error }] = useRegisterMutation()
   const [successMessage, setSuccessMessage] = useState("")
+  const [warningMessage, setWarningMessage] = useState("")
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault()
     setSuccessMessage("")
+    setWarningMessage(
+      "Registration may take up to 30 seconds due to server booting. Please wait...",
+    )
 
     if (password.length < 8) {
       alert("Password must be at least 8 characters long")
@@ -38,12 +42,14 @@ const RegisterForm = () => {
     try {
       await register(user).unwrap()
       setSuccessMessage("User registered successfully!")
+      setWarningMessage("")
       // Clear form fields
       setUserName("")
       setPassword("")
       setEmail("")
     } catch (err) {
       console.error("Failed to register:", err)
+      setWarningMessage("")
     }
   }
 
@@ -102,6 +108,7 @@ const RegisterForm = () => {
           </div>
           {isError && <p className="text-error">{"An error occurred"}</p>}
           {successMessage && <p className="text-success">{successMessage}</p>}
+          {warningMessage && <p className="text-warning">{warningMessage}</p>}
         </form>
       </div>
     </div>
@@ -114,9 +121,13 @@ const LoginForm = () => {
   const [email, setEmail] = useState("")
   const [login, { isLoading, isError, error }] = useLoginMutation()
   const navigate = useNavigate()
+  const [warningMessage, setWarningMessage] = useState("")
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
+    setWarningMessage(
+      "Login may take up to 30 seconds due to server booting. Please wait...",
+    )
     const user: Partial<IUser> = {
       username: userName,
       email: email,
@@ -125,9 +136,11 @@ const LoginForm = () => {
     setEmail("login@example.com")
     try {
       await login(user).unwrap()
+      setWarningMessage("")
       navigate("/dashboard")
     } catch (err) {
       console.error("Failed to login:", err)
+      setWarningMessage("")
     }
   }
 
@@ -174,6 +187,7 @@ const LoginForm = () => {
             </button>
           </div>
           {isError && <p className="text-error">{"An error occurred"}</p>}
+          {warningMessage && <p className="text-warning">{warningMessage}</p>}
         </form>
       </div>
     </div>

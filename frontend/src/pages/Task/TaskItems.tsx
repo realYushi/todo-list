@@ -1,12 +1,12 @@
-import ITask from "@models/TaskInterface";
-import TaskItem from "@pages/Task/TaskItem";
+import ITask from "@models/TaskInterface"
+import TaskItem from "@pages/Task/TaskItem"
 
 /**
  * Props for the TaskItems component.
  */
 interface TaskItemsProps {
-  Tasks: ITask[]; // An array of tasks
-  onUpdateTaskClick: (task: ITask) => void; // Callback function for task update
+  Tasks: ITask[] // An array of tasks
+  onUpdateTaskClick: (task: ITask) => void // Callback function for task update
 }
 
 /**
@@ -20,8 +20,8 @@ export default function TaskItems({
   onUpdateTaskClick,
 }: TaskItemsProps) {
   return (
-    <div className="grid-cols-1ds card-actions grid">
-      {Tasks.map((task) => (
+    <div className="grid card-actions grid-cols-1">
+      {Tasks.map(task => (
         <TaskItem
           key={task.taskId}
           task={task}
@@ -29,5 +29,5 @@ export default function TaskItems({
         />
       ))}
     </div>
-  );
+  )
 }

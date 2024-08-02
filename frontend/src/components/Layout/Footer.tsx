@@ -7,14 +7,23 @@ export function Footer() {
         </div>
 
         <div className="w-full md:w-1/3 text-center md:text-right">
-          <a href="#" className="mx-2 hover:text-gray-300">
-            Facebook
+          <a
+            href="https://www.linkedin.com/in/yushi-cui-6043aa285/"
+            className="mx-2 hover:text-gray-300"
+          >
+            Linkedin
           </a>
-          <a href="#" className="mx-2 hover:text-gray-300">
-            Twitter
+          <a
+            href="https://github.com/realYushi"
+            className="mx-2 hover:text-gray-300"
+          >
+            Github
           </a>
-          <a href="#" className="mx-2 hover:text-gray-300">
-            Instagram
+          <a
+            href="https://blog.yushi91.com"
+            className="mx-2 hover:text-gray-300"
+          >
+            Blog
           </a>
         </div>
       </div>
