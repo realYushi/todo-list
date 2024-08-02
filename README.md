@@ -73,12 +73,15 @@ This application showcases modern web development practices, incorporating React
 ### Built With
 
 -   [![React][React.js]][React-url]
+-   [![React Router][ReactRouter-shield]][ReactRouter-url]
 -   [![.NET][.NET]][.NET-url]
 -   [![SQL Server][SQL Server]][SQL Server-url]
 -   [![Docker][Docker]][Docker-url]
 -   [![TypeScript][TypeScript]][TypeScript-url]
 -   [![Redux][Redux]][Redux-url]
+-   [![RTK Query][RTKQuery-shield]][RTKQuery-url]
 -   [![Tailwind][Tailwind CSS]][Tailwind-url]
+-   [![DaisyUI][DaisyUI-shield]][DaisyUI-url]
 -   [![Azure][Azure]][Azure-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -179,6 +182,8 @@ LinkedIn: [https://www.linkedin.com/in/yushi-cui-6043aa285/](https://www.linkedi
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[ReactRouter-shield]: https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white
+[ReactRouter-url]: https://reactrouter.com/
 [.NET]: https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white
 [.NET-url]: https://dotnet.microsoft.com/
 [SQL Server]: https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white
@@ -193,4 +198,7 @@ LinkedIn: [https://www.linkedin.com/in/yushi-cui-6043aa285/](https://www.linkedi
 [Tailwind-url]: https://tailwindcss.com/
 [Azure]: https://img.shields.io/badge/Azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white
 [Azure-url]: https://azure.microsoft.com/
-[product-screenshot]: Images/screenshot.png
+[DaisyUI-shield]: https://img.shields.io/badge/DaisyUI-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white
+[DaisyUI-url]: https://daisyui.com/
+[RTKQuery-shield]: https://img.shields.io/badge/RTK%20Query-593D88?style=for-the-badge&logo=redux&logoColor=white
+[RTKQuery-url]: https://redux-toolkit.js.org/rtk-query/overview
