@@ -58,7 +58,7 @@ Key features of the ToDo List app include:
 -   Dashboard: A comprehensive dashboard provides an overview of the user's productivity, displaying total task count, completed tasks, pending tasks, and overdue items.
     |Feature|Desktop|Mobile|
     |---|---|---|
-    |Theme|![Desktop Theme](Images/desktop_Theme.gif)|![Mobile Theme](images/mobile_theme.gif)|
+    |Theme|![Desktop Theme](images/desktop_Theme.gif)|![Mobile Theme](images/mobile_theme.gif)|
     |List Management|![Desktop List Management](images/desktop_List.gif)|![Mobile List Management](images/mobile_List.gif)|
     |Task Management|![Desktop Task Management](images/desktop_Task.gif)|![Mobile Task Management](images/mobile_Task.gif)|
     |Dashboard|![Desktop Dashboard](images/desktop_Dashboard.gif)|![Mobile Dashboard](images/mobile_Dashboard.gif)|
