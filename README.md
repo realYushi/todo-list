@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="https://github.com/realYushi/todo-list">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+    <img src="Images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">ToDo List Application</h3>
@@ -58,13 +58,13 @@ Key features of the ToDo List app include:
 -   Dashboard: A comprehensive dashboard provides an overview of the user's productivity, displaying total task count, completed tasks, pending tasks, and overdue items.
     |Feature|Desktop|Mobile|
     |---|---|---|
-    |Theme|![Desktop Theme](images/desktop_Theme.gif)|![Mobile Theme](images/mobile_theme.gif)|
-    |List Management|![Desktop List Management](images/desktop_List.gif)|![Mobile List Management](images/mobile_List.gif)|
-    |Task Management|![Desktop Task Management](images/desktop_Task.gif)|![Mobile Task Management](images/mobile_Task.gif)|
-    |Dashboard|![Desktop Dashboard](images/desktop_Dashboard.gif)|![Mobile Dashboard](images/mobile_Dashboard.gif)|
-    |User Authentication|![Desktop User Authentication](images/desktop_Landing.gif)|![Mobile User Authentication](images/mobile_Landing.gif)|\
-    |Password Management|![Desktop Password Management](images/desktop_Password.gif)|![Mobile Password Management](images/mobile_Password.gif)|
-    |Responsive Design|![Responsive Design](images/Responsive.gif)||
+    |Theme|![Desktop Theme](Images/desktop_Theme.gif)|![Mobile Theme](Images/mobile_theme.gif)|
+    |List Management|![Desktop List Management](Images/desktop_List.gif)|![Mobile List Management](Images/mobile_List.gif)|
+    |Task Management|![Desktop Task Management](Images/desktop_Task.gif)|![Mobile Task Management](Images/mobile_Task.gif)|
+    |Dashboard|![Desktop Dashboard](Images/desktop_Dashboard.gif)|![Mobile Dashboard](Images/mobile_Dashboard.gif)|
+    |User Authentication|![Desktop User Authentication](Images/desktop_Landing.gif)|![Mobile User Authentication](Images/mobile_Landing.gif)|\
+    |Password Management|![Desktop Password Management](Images/desktop_Password.gif)|![Mobile Password Management](Images/mobile_Password.gif)|
+    |Responsive Design|![Responsive Design](Images/Responsive.gif)||
 
 This application showcases modern web development practices, incorporating React, .NET, SQL, and WebSockets. It's being developed using test-driven development (TDD) methodologies, and is fully containerized using Docker.
 
@@ -193,4 +193,4 @@ LinkedIn: [https://www.linkedin.com/in/yushi-cui-6043aa285/](https://www.linkedi
 [Tailwind-url]: https://tailwindcss.com/
 [Azure]: https://img.shields.io/badge/Azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white
 [Azure-url]: https://azure.microsoft.com/
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: Images/screenshot.png
