@@ -49,11 +49,7 @@
 
 This repository contains the code for a comprehensive, full-stack ToDo List application. It's designed with a mobile-first approach, ensuring a seamless experience across all platforms. Users can register and log in with their unique username and password, allowing them to access their data from any device. The app offers robust user authentication, including the ability to update passwords.
 
-
-
 https://github.com/user-attachments/assets/9b325726-3b7c-4e58-b5f5-2fb04e4a93b7
-
-
 
 Key features of the ToDo List app include:
 
@@ -136,6 +132,20 @@ For developers interested in running the project locally:
 ```sh
     https://localhost
 ```
+
+7. Accessing localhost with HTTPS:
+
+    - Use Google Chrome or Microsoft Edge to access the website.
+    - For Chrome:
+        1. Enter `chrome://flags/#allow-insecure-localhost` in the address bar.
+        2. Enable the "Allow invalid certificates for resources loaded from localhost" option.
+    - For Edge:
+        1. Enter `edge://flags/#allow-insecure-localhost` in the address bar.
+        2. Enable the "Allow invalid certificates for resources loaded from localhost" option.
+    - Restart your browser for the changes to take effect.
+
+        This step is necessary because the development server uses a self-signed certificate, which browsers typically flag as insecure.
+        ![Allow Insecure Localhost](Images/chrome_setting.png)
 
   <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
