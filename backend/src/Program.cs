@@ -28,7 +28,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                 builder.WithOrigins(
                         configuration["AllowedOrigins"]?.Split(',') ??
                         new[] { "https://localhost", "https://todo.yushi91.com" })
-                .AllowAnyMethod()
+                            .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
             });
@@ -110,7 +110,7 @@ void ConfigureApp(WebApplication app)
 
     app.UseCookiePolicy(new CookiePolicyOptions
     {
-        MinimumSameSitePolicy = SameSiteMode.Lax,
+        MinimumSameSitePolicy = SameSiteMode.None,
         HttpOnly = HttpOnlyPolicy.Always,
         Secure = CookieSecurePolicy.Always
     });

@@ -68,7 +68,7 @@ namespace ToDoListAPI.Services
             else
             {
                 cookieOptions.Secure = true;
-                cookieOptions.Domain = ".yushi91.com";
+                cookieOptions.Domain = "todo-be-fea9hthffwd9cwd4.australiaeast-01.azurewebsites.net";
             }
 
             httpContext.Response.Cookies.Append("jwt", token, cookieOptions);
