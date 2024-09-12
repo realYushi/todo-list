@@ -56,19 +56,19 @@ namespace ToDoListAPI.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
+                
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 
             if (_environment.IsDevelopment())
             {
-                cookieOptions.Secure = false;
-                cookieOptions.SameSite = SameSiteMode.None;
+                cookieOptions.Secure = true;
+                cookieOptions.SameSite = SameSiteMode.Lax;
             }
             else
             {
                 cookieOptions.Secure = true;
-                cookieOptions.Domain = "todo-be-fea9hthffwd9cwd4.australiaeast-01.azurewebsites.net";
             }
 
             httpContext.Response.Cookies.Append("jwt", token, cookieOptions);
