@@ -4,7 +4,7 @@ const getBaseUrl = () => {
   if (hostname === "localhost") {
     return "https://localhost:5001/api/"
   } else {
-    return "https://todoapi.yushi91.com/api/"
+    return "todo-be-fea9hthffwd9cwd4.australiaeast-01.azurewebsites.net/api/"
   }
 }
 export const baseApi = createApi({
