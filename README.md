@@ -137,8 +137,10 @@ For developers interested in running the project locally:
 
     - Use Google Chrome or Microsoft Edge to access the website.
     - For Chrome:
-        1. Enter `chrome://flags/#allow-insecure-localhost` in the address bar.
-        2. Enable the "Allow invalid certificates for resources loaded from localhost" option.
+        Enter `chrome://flags` in the address bar.
+        1. Enable Temporarily unexpire MXX flag
+        2. Enable allow-insecure-localhost flag
+        3. Enable the "Allow invalid certificates for resources loaded from localhost" option.
     - For Edge:
         1. Enter `edge://flags/#allow-insecure-localhost` in the address bar.
         2. Enable the "Allow invalid certificates for resources loaded from localhost" option.

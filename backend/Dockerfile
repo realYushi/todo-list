@@ -8,6 +8,7 @@ COPY ./src ./
 RUN dotnet publish -c Release -o out
 
 # Generate development certificate
+RUN mkdir -p /https   # Ensure the directory exists
 RUN dotnet dev-certs https -ep /https/aspnetapp.pfx -p password
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
